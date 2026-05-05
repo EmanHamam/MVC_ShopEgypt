@@ -9,10 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="10.0.5" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="10.0.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.5" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,6 +20,11 @@
     <Folder Include="Repositories\Implementations\" />
     <Folder Include="Services\Interfaces\" />
     <Folder Include="Services\Implementations\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ShopEgypt.Application\ShopEgypt.Application.csproj" />
+    <ProjectReference Include="..\ShopEgypt.Infrastructure\ShopEgypt.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

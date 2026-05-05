@@ -1,0 +1,16 @@
+D:\IDA\MVC\project\MVC_ShopEgypt\ShopEgypt.Application\bin\Debug\net10.0\ShopEgypt.Application.deps.json
+D:\IDA\MVC\project\MVC_ShopEgypt\ShopEgypt.Application\bin\Debug\net10.0\ShopEgypt.Application.dll
+D:\IDA\MVC\project\MVC_ShopEgypt\ShopEgypt.Application\bin\Debug\net10.0\ShopEgypt.Application.pdb
+D:\IDA\MVC\project\MVC_ShopEgypt\ShopEgypt.Application\bin\Debug\net10.0\ShopEgypt.Domain.dll
+D:\IDA\MVC\project\MVC_ShopEgypt\ShopEgypt.Application\bin\Debug\net10.0\ShopEgypt.Domain.pdb
+D:\IDA\MVC\project\MVC_ShopEgypt\ShopEgypt.Application\obj\Debug\net10.0\ShopEgypt.Application.csproj.AssemblyReference.cache
+D:\IDA\MVC\project\MVC_ShopEgypt\ShopEgypt.Application\obj\Debug\net10.0\ShopEgypt.Application.GeneratedMSBuildEditorConfig.editorconfig
+D:\IDA\MVC\project\MVC_ShopEgypt\ShopEgypt.Application\obj\Debug\net10.0\ShopEgypt.Application.AssemblyInfoInputs.cache
+D:\IDA\MVC\project\MVC_ShopEgypt\ShopEgypt.Application\obj\Debug\net10.0\ShopEgypt.Application.AssemblyInfo.cs
+D:\IDA\MVC\project\MVC_ShopEgypt\ShopEgypt.Application\obj\Debug\net10.0\ShopEgypt.Application.csproj.CoreCompileInputs.cache
+D:\IDA\MVC\project\MVC_ShopEgypt\ShopEgypt.Application\obj\Debug\net10.0\ShopEgypt.Application.sourcelink.json
+D:\IDA\MVC\project\MVC_ShopEgypt\ShopEgypt.Application\obj\Debug\net10.0\ShopEgyp.AA5B76D4.Up2Date
+D:\IDA\MVC\project\MVC_ShopEgypt\ShopEgypt.Application\obj\Debug\net10.0\ShopEgypt.Application.dll
+D:\IDA\MVC\project\MVC_ShopEgypt\ShopEgypt.Application\obj\Debug\net10.0\refint\ShopEgypt.Application.dll
+D:\IDA\MVC\project\MVC_ShopEgypt\ShopEgypt.Application\obj\Debug\net10.0\ShopEgypt.Application.pdb
+D:\IDA\MVC\project\MVC_ShopEgypt\ShopEgypt.Application\obj\Debug\net10.0\ref\ShopEgypt.Application.dll
