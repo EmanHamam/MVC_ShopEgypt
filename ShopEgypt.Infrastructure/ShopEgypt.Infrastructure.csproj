@@ -9,8 +9,8 @@
   <ItemGroup>
     <Folder Include="ExternalInterfaces\" />
     <Folder Include="ExternalServices\" />
-    <Folder Include="ExternalDTOs\" />
-    <Folder Include="Middlewares\" />
+	  <Folder Include="ExternalDTOs\" />
+	  <Folder Include="Middlewares\" />
     <Folder Include="Validations\" />
     <Folder Include="Repositories\" />
   </ItemGroup>

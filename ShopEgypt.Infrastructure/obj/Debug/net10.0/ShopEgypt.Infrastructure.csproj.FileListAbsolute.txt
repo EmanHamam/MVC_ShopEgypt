@@ -18,3 +18,23 @@ D:\IDA\MVC\project\MVC_ShopEgypt\ShopEgypt.Infrastructure\obj\Debug\net10.0\refi
 D:\IDA\MVC\project\MVC_ShopEgypt\ShopEgypt.Infrastructure\obj\Debug\net10.0\ShopEgypt.Infrastructure.pdb
 D:\IDA\MVC\project\MVC_ShopEgypt\ShopEgypt.Infrastructure\obj\Debug\net10.0\ShopEgypt.Infrastructure.genruntimeconfig.cache
 D:\IDA\MVC\project\MVC_ShopEgypt\ShopEgypt.Infrastructure\obj\Debug\net10.0\ref\ShopEgypt.Infrastructure.dll
+E:\ITI\ASP.NET MVC\Project\Repo\MVC_ShopEgypt\ShopEgypt.Infrastructure\bin\Debug\net10.0\ShopEgypt.Infrastructure.deps.json
+E:\ITI\ASP.NET MVC\Project\Repo\MVC_ShopEgypt\ShopEgypt.Infrastructure\bin\Debug\net10.0\ShopEgypt.Infrastructure.runtimeconfig.json
+E:\ITI\ASP.NET MVC\Project\Repo\MVC_ShopEgypt\ShopEgypt.Infrastructure\bin\Debug\net10.0\ShopEgypt.Infrastructure.dll
+E:\ITI\ASP.NET MVC\Project\Repo\MVC_ShopEgypt\ShopEgypt.Infrastructure\bin\Debug\net10.0\ShopEgypt.Infrastructure.pdb
+E:\ITI\ASP.NET MVC\Project\Repo\MVC_ShopEgypt\ShopEgypt.Infrastructure\bin\Debug\net10.0\ShopEgypt.Application.dll
+E:\ITI\ASP.NET MVC\Project\Repo\MVC_ShopEgypt\ShopEgypt.Infrastructure\bin\Debug\net10.0\ShopEgypt.Domain.dll
+E:\ITI\ASP.NET MVC\Project\Repo\MVC_ShopEgypt\ShopEgypt.Infrastructure\bin\Debug\net10.0\ShopEgypt.Application.pdb
+E:\ITI\ASP.NET MVC\Project\Repo\MVC_ShopEgypt\ShopEgypt.Infrastructure\bin\Debug\net10.0\ShopEgypt.Domain.pdb
+E:\ITI\ASP.NET MVC\Project\Repo\MVC_ShopEgypt\ShopEgypt.Infrastructure\obj\Debug\net10.0\ShopEgypt.Infrastructure.csproj.AssemblyReference.cache
+E:\ITI\ASP.NET MVC\Project\Repo\MVC_ShopEgypt\ShopEgypt.Infrastructure\obj\Debug\net10.0\ShopEgypt.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+E:\ITI\ASP.NET MVC\Project\Repo\MVC_ShopEgypt\ShopEgypt.Infrastructure\obj\Debug\net10.0\ShopEgypt.Infrastructure.AssemblyInfoInputs.cache
+E:\ITI\ASP.NET MVC\Project\Repo\MVC_ShopEgypt\ShopEgypt.Infrastructure\obj\Debug\net10.0\ShopEgypt.Infrastructure.AssemblyInfo.cs
+E:\ITI\ASP.NET MVC\Project\Repo\MVC_ShopEgypt\ShopEgypt.Infrastructure\obj\Debug\net10.0\ShopEgypt.Infrastructure.csproj.CoreCompileInputs.cache
+E:\ITI\ASP.NET MVC\Project\Repo\MVC_ShopEgypt\ShopEgypt.Infrastructure\obj\Debug\net10.0\ShopEgypt.Infrastructure.sourcelink.json
+E:\ITI\ASP.NET MVC\Project\Repo\MVC_ShopEgypt\ShopEgypt.Infrastructure\obj\Debug\net10.0\ShopEgyp.F5DF5027.Up2Date
+E:\ITI\ASP.NET MVC\Project\Repo\MVC_ShopEgypt\ShopEgypt.Infrastructure\obj\Debug\net10.0\ShopEgypt.Infrastructure.dll
+E:\ITI\ASP.NET MVC\Project\Repo\MVC_ShopEgypt\ShopEgypt.Infrastructure\obj\Debug\net10.0\refint\ShopEgypt.Infrastructure.dll
+E:\ITI\ASP.NET MVC\Project\Repo\MVC_ShopEgypt\ShopEgypt.Infrastructure\obj\Debug\net10.0\ShopEgypt.Infrastructure.pdb
+E:\ITI\ASP.NET MVC\Project\Repo\MVC_ShopEgypt\ShopEgypt.Infrastructure\obj\Debug\net10.0\ShopEgypt.Infrastructure.genruntimeconfig.cache
+E:\ITI\ASP.NET MVC\Project\Repo\MVC_ShopEgypt\ShopEgypt.Infrastructure\obj\Debug\net10.0\ref\ShopEgypt.Infrastructure.dll

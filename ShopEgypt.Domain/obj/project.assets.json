@@ -43,23 +43,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Action\\.nuget\\packages\\": {},
+    "C:\\Users\\mr hendy\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\IDA\\MVC\\project\\MVC_ShopEgypt\\ShopEgypt.Domain\\ShopEgypt.Domain.csproj",
+      "projectUniqueName": "E:\\ITI\\ASP.NET MVC\\Project\\Repo\\MVC_ShopEgypt\\ShopEgypt.Domain\\ShopEgypt.Domain.csproj",
       "projectName": "ShopEgypt.Domain",
-      "projectPath": "D:\\IDA\\MVC\\project\\MVC_ShopEgypt\\ShopEgypt.Domain\\ShopEgypt.Domain.csproj",
-      "packagesPath": "C:\\Users\\Action\\.nuget\\packages\\",
-      "outputPath": "D:\\IDA\\MVC\\project\\MVC_ShopEgypt\\ShopEgypt.Domain\\obj\\",
+      "projectPath": "E:\\ITI\\ASP.NET MVC\\Project\\Repo\\MVC_ShopEgypt\\ShopEgypt.Domain\\ShopEgypt.Domain.csproj",
+      "packagesPath": "C:\\Users\\mr hendy\\.nuget\\packages\\",
+      "outputPath": "E:\\ITI\\ASP.NET MVC\\Project\\Repo\\MVC_ShopEgypt\\ShopEgypt.Domain\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\Action\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\mr hendy\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
