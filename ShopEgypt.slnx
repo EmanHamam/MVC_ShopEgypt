@@ -1,3 +1,6 @@
 <Solution>
+  <Project Path="ShopEgypt.Application/ShopEgypt.Application.csproj" Id="52ce2daa-5290-48d6-9216-c47807e6ff30" />
+  <Project Path="ShopEgypt.Domain/ShopEgypt.Domain.csproj" Id="d25a9740-1c2d-40e2-96f7-0772035e7a93" />
+  <Project Path="ShopEgypt.Infrastructure/ShopEgypt.Infrastructure.csproj" Id="e8ce6142-63a5-422a-8a60-9db5019f6735" />
   <Project Path="ShopEgypt/ShopEgypt.csproj" />
 </Solution>
