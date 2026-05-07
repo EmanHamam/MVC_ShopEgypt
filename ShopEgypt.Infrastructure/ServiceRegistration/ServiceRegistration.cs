@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using ShopEgypt.Application.Interfaces.ICartService;
 using ShopEgypt.Application.Mappings;
 using ShopEgypt.Data.Context;
+using ShopEgypt.Infrastructure.Services.CartService;
 using ShopEgypt.Infrastructure.UnitOfWork;
 using System;
 using System.Collections.Generic;
@@ -38,7 +39,7 @@ namespace ShopEgypt.Infrastructure.ServiceRegistration
 
             //Application Services Registration
             services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
-            services.AddScoped<ICartService, ICartService>();
+            services.AddScoped<ICartService, CartService>();
 
 
             // Auto Mapper
