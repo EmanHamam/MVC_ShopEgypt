@@ -14,16 +14,16 @@ namespace ShopEgypt
             // Add services to the container.
 
             //Services Registration
-            builder.Services.AddInfrastructureServices(builder.Configuration);
-
-
-
 
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            builder
+                .Services.AddDefaultIdentity<IdentityUser>(options =>
+                    options.SignIn.RequireConfirmedAccount = true
+                )
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
+            builder.Services.AddInfrastructureServices(builder.Configuration);
 
             builder.Services.AddControllersWithViews();
 
@@ -44,11 +44,11 @@ namespace ShopEgypt
 
             app.MapStaticAssets();
             app.MapControllerRoute(
-                name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}")
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}"
+                )
                 .WithStaticAssets();
-            app.MapRazorPages()
-               .WithStaticAssets();
+            app.MapRazorPages().WithStaticAssets();
 
             app.Run();
         }
