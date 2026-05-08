@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ShopEgypt.Application.Interfaces.ICartService;
-using ShopEgypt.Application.Mappings;
 using ShopEgypt.Data.Context;
 using ShopEgypt.Domain.Entities;
 using ShopEgypt.Infrastructure.Services.CartService;
@@ -39,6 +38,7 @@ namespace ShopEgypt.Infrastructure.ServiceRegistration
             //Application Services Registration
             services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
             services.AddScoped<ICartService, CartService>();
+
 
             // Auto Mapper
             services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfile>());
