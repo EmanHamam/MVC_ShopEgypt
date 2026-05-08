@@ -1,11 +1,15 @@
-﻿using AutoMapper.Configuration;
+﻿//using AutoMapper.Configuration;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ShopEgypt.Application.Interfaces.ICartService;
+using ShopEgypt.Application.Interfaces.IImageStorageService;
+using ShopEgypt.Application.Interfaces.IProductService;
 using ShopEgypt.Data.Context;
 using ShopEgypt.Infrastructure.Services.CartService;
+using ShopEgypt.Infrastructure.Services.CloudinaryService;
+using ShopEgypt.Infrastructure.Services.ProductService;
 using ShopEgypt.Infrastructure.UnitOfWork;
 using System;
 using System.Collections.Generic;
@@ -35,19 +39,22 @@ namespace ShopEgypt.Infrastructure.ServiceRegistration
 
 
             //External Services Registration
+            services.Configure<CloudinarySettings>(configuration.GetSection("CloudinarySettings"));
+            services.AddScoped<IImageStorageService, CloudinaryImageStorageService>();
 
             //Application Services Registration
             services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
             services.AddScoped<ICartService, CartService>();
+            services.AddScoped<IProductService, ProductService>();
 
-<<<<<<< HEAD
+            //<<<<<<< HEAD
 
             // Auto Mapper
-            services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfile>());
+            //services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfile>());
 
 
-=======
->>>>>>> a2edcce (MapsterConfig)
+//=======
+//>>>>>>> a2edcce (MapsterConfig)
             return services;
         }
         

@@ -1,0 +1,52 @@
+@using ShopEgypt.Application.DTOs
+@model PagedResultDto<ProductListItemDto>
+
+<h1>Products</h1>
+
+<p>Total: @Model.TotalCount</p>
+
+
+<p>
+    <a href="/products/create">Create New</a>
+</p>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Title</th>
+            <th>Price</th>
+            <th>Discount</th>
+            <th>Final Price</th>
+            <th>Stock</th>
+            <th>Rating</th>
+            <th>Is Active</th>
+            <th>Thumbnail</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.Items)
+    {
+        <tr>
+            <td>@item.Id</td>
+            <td>@item.Title</td>
+            <td>@item.Price</td>
+            <td>@item.DiscountPrice</td>
+            <td>@(item.Price - item.DiscountPrice)</td>
+            <td>@item.Stock</td>
+            <td>@item.AverageRating</td>
+            <td>@item.IsActive</td>
+            <td><img src="@item.ThumbnailUrl" alt="Thumbnail" style="max-width: 100px;" /></td>
+
+            <td>
+                <a href="/products/details/@item.Id">Details</a>
+                |
+                <a href="/products/edit/@item.Id">Edit</a>
+                |
+                <a href="/products/delete/@item.Id">Delete</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
