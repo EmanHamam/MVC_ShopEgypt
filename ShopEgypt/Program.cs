@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ShopEgypt.Data.Context;
+using ShopEgypt.Application.Mappings;
 using ShopEgypt.Infrastructure.ServiceRegistration;
 
 namespace ShopEgypt
@@ -26,6 +27,8 @@ namespace ShopEgypt
 
 
             builder.Services.AddControllersWithViews();
+
+            MapsterConfig.RegisterMappings();
 
             var app = builder.Build();
 

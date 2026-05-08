@@ -1,7 +1,6 @@
-﻿using ShopEgypt.Application.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using ShopEgypt.Application.DTOs;
 
 namespace ShopEgypt.Application.Interfaces.IProductService
 {
