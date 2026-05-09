@@ -1,9 +1,42 @@
 @using ShopEgypt.Application.DTOs
+@using ShopEgypt.Domain.Enums.ProductEnums
 @model PagedResultDto<ProductListItemDto>
+
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+@{
+    var categories = (SelectList)ViewBag.Categories;
+    var selectedCategoryId = (int?)ViewBag.SelectedCategoryId;
+    var sortBy = (ProductSortBy?)ViewBag.SortBy;
+    var keyword = (string)ViewBag.KeyWord;
+    var sortItems = Html.GetEnumSelectList<ProductSortBy>().ToList();
+    var selectedSortValue = sortBy.HasValue ? ((int)sortBy.Value).ToString() : string.Empty;
+    foreach (var item in sortItems)
+    {
+        item.Selected = item.Value == selectedSortValue;
+    }
+}
 
 <h1>Products</h1>
 
 <p>Total: @Model.TotalCount</p>
+
+<form method="get" action="/products" class="mb-3">
+    <label>Category</label>
+    <select name="categoryId" class="form-select" asp-items="categories">
+        <option value="">All</option>
+    </select>
+
+    <label class="mt-2">Sort</label>
+    <select name="sortBy" class="form-select" asp-items="sortItems">
+        <option value="" selected="@(string.IsNullOrEmpty(selectedSortValue) ? "selected" : null)">All</option>
+    </select>
+
+    <label class="mt-2">Search</label>
+    <input type="text" name="keyWord" class="form-control" value="@keyword" />
+
+    <button type="submit" class="btn btn-primary mt-2">Apply</button>
+</form>
 
 
 <p>

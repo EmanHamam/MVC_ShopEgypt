@@ -42,6 +42,8 @@ namespace ShopEgypt.Application.Mappings
                 .Map(dest => dest.Images, src => src.ProductImages
                     .OrderBy(i => i.DisplayOrder)
                     .ToList());
+
+            TypeAdapterConfig<Category, CategoryDto>.NewConfig();
         }
     }
 }
