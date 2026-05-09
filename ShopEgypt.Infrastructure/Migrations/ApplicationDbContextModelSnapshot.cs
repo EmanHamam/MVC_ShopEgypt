@@ -156,6 +156,39 @@ namespace ShopEgypt.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("ShopEgypt.Domain.Entities.Address", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Country")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("State")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Street")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ZipCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
+
+                    b.ToTable("Address");
+                });
+
             modelBuilder.Entity("ShopEgypt.Domain.Entities.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -219,6 +252,7 @@ namespace ShopEgypt.Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("ProfilePicUrl")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
@@ -243,6 +277,23 @@ namespace ShopEgypt.Infrastructure.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("ShopEgypt.Domain.Entities.Brand", b =>
+                {
+                    b.Property<int>("BrandID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BrandID"));
+
+                    b.Property<string>("BrandName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("BrandID");
+
+                    b.ToTable("Brand");
                 });
 
             modelBuilder.Entity("ShopEgypt.Domain.Entities.Cart", b =>
@@ -343,31 +394,17 @@ namespace ShopEgypt.Infrastructure.Migrations
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("City")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Governorate")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
                     b.Property<DateTime>("OrderDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("(getdate())");
 
-                    b.Property<string>("PostalCode")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                    b.Property<int>("ShippingAddressId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
+                    b.Property<int>("Status")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Street")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("int");
 
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18, 2)");
@@ -376,6 +413,8 @@ namespace ShopEgypt.Infrastructure.Migrations
                         .HasName("PK__Order__3214EC071DA8F112");
 
                     b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("ShippingAddressId");
 
                     b.ToTable("Order");
                 });
@@ -427,10 +466,12 @@ namespace ShopEgypt.Infrastructure.Migrations
                     b.Property<DateTime?>("PaidAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
+                    b.Property<string>("PaymentMethod")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("int");
 
                     b.Property<string>("StripePaymentIntentId")
                         .HasMaxLength(255)
@@ -439,7 +480,8 @@ namespace ShopEgypt.Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("PK__Payment__3214EC072BE14C30");
 
-                    b.HasIndex("OrderId");
+                    b.HasIndex("OrderId")
+                        .IsUnique();
 
                     b.ToTable("Payment");
                 });
@@ -452,8 +494,14 @@ namespace ShopEgypt.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("BrandID")
+                        .HasColumnType("int");
+
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Color")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -479,6 +527,9 @@ namespace ShopEgypt.Infrastructure.Migrations
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("Size")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Stock")
                         .HasColumnType("int");
 
@@ -489,6 +540,8 @@ namespace ShopEgypt.Infrastructure.Migrations
 
                     b.HasKey("Id")
                         .HasName("PK__Product__3214EC07E567E955");
+
+                    b.HasIndex("BrandID");
 
                     b.HasIndex("CategoryId");
 
@@ -640,6 +693,15 @@ namespace ShopEgypt.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ShopEgypt.Domain.Entities.Address", b =>
+                {
+                    b.HasOne("ShopEgypt.Domain.Entities.ApplicationUser", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("AppUserId");
+
+                    b.Navigation("AppUser");
+                });
+
             modelBuilder.Entity("ShopEgypt.Domain.Entities.Cart", b =>
                 {
                     b.HasOne("ShopEgypt.Domain.Entities.ApplicationUser", "ApplicationUser")
@@ -690,7 +752,15 @@ namespace ShopEgypt.Infrastructure.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_Order_ApplicationUser");
 
+                    b.HasOne("ShopEgypt.Domain.Entities.Address", "ShippingAddress")
+                        .WithMany()
+                        .HasForeignKey("ShippingAddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("ApplicationUser");
+
+                    b.Navigation("ShippingAddress");
                 });
 
             modelBuilder.Entity("ShopEgypt.Domain.Entities.OrderItem", b =>
@@ -716,8 +786,8 @@ namespace ShopEgypt.Infrastructure.Migrations
             modelBuilder.Entity("ShopEgypt.Domain.Entities.Payment", b =>
                 {
                     b.HasOne("ShopEgypt.Domain.Entities.Order", "Order")
-                        .WithMany("Payments")
-                        .HasForeignKey("OrderId")
+                        .WithOne("Payment")
+                        .HasForeignKey("ShopEgypt.Domain.Entities.Payment", "OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_Payment_Order");
@@ -727,6 +797,12 @@ namespace ShopEgypt.Infrastructure.Migrations
 
             modelBuilder.Entity("ShopEgypt.Domain.Entities.Product", b =>
                 {
+                    b.HasOne("ShopEgypt.Domain.Entities.Brand", "Brand")
+                        .WithMany("Products")
+                        .HasForeignKey("BrandID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("ShopEgypt.Domain.Entities.Category", "Category")
                         .WithMany("Products")
                         .HasForeignKey("CategoryId")
@@ -738,6 +814,8 @@ namespace ShopEgypt.Infrastructure.Migrations
                         .HasForeignKey("SellerId")
                         .IsRequired()
                         .HasConstraintName("FK_Product_Seller");
+
+                    b.Navigation("Brand");
 
                     b.Navigation("Category");
 
@@ -809,6 +887,11 @@ namespace ShopEgypt.Infrastructure.Migrations
                     b.Navigation("WishlistItems");
                 });
 
+            modelBuilder.Entity("ShopEgypt.Domain.Entities.Brand", b =>
+                {
+                    b.Navigation("Products");
+                });
+
             modelBuilder.Entity("ShopEgypt.Domain.Entities.Cart", b =>
                 {
                     b.Navigation("CartItems");
@@ -825,7 +908,8 @@ namespace ShopEgypt.Infrastructure.Migrations
                 {
                     b.Navigation("OrderItems");
 
-                    b.Navigation("Payments");
+                    b.Navigation("Payment")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ShopEgypt.Domain.Entities.Product", b =>
