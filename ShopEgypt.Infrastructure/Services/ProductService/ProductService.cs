@@ -9,6 +9,7 @@ using ShopEgypt.Application.DTOs;
 using ShopEgypt.Application.Interfaces.IProductService;
 using ShopEgypt.Data.Context;
 using ShopEgypt.Domain.Entities;
+using ShopEgypt.Domain.Enums.ProductEnums;
 
 namespace ShopEgypt.Infrastructure.Services.ProductService
 {
@@ -19,17 +20,44 @@ namespace ShopEgypt.Infrastructure.Services.ProductService
         {
             Context = context;
         }
-        public async Task<PagedResultDto<ProductListItemDto>> GetAllProductsAsync(int pageNumber,int pageSize,
-            CancellationToken cancellationToken)
+        public async Task<PagedResultDto<ProductListItemDto>> GetAllProductsAsync(int pageNumber,int pageSize,int? categoryId, 
+            ProductSortBy? sortBy,string? keyWord, CancellationToken cancellationToken)
         {
-            var query = Context.Products
+            IQueryable<Product> query = Context.Products
                 .AsNoTracking()
                 .Include(p => p.ProductImages)
                 .Include(p => p.Reviews);
+
+            if (categoryId.HasValue)
+            {
+                query = query.Where(p => p.CategoryId == categoryId.Value);
+            }
+            if (sortBy.HasValue)
+            {
+                switch (sortBy.Value)
+                {
+                    case ProductSortBy.Newest:
+                        query = query.OrderBy(p => p.CreatedAt);
+                        break;
+                    case ProductSortBy.PriceLowToHigh:
+                        query = query.OrderBy(p => p.Price);
+                        break;
+                    case ProductSortBy.PriceHighToLow:
+                        query = query.OrderByDescending(p => p.Price);
+                        break;
+                    case ProductSortBy.Rated:
+                        query = query.OrderByDescending(p => p.Reviews.Any() ? p.Reviews.Average(p => p.Rating) : 0);
+                        break;
+                }
+            }
+            if (!string.IsNullOrEmpty(keyWord))
+            {
+                keyWord = keyWord.Trim().ToLower();
+                query = query.Where(p => p.Title.ToLower().Contains(keyWord) || p.Description.ToLower().Contains(keyWord));
+            }
             var totalCount = await query.CountAsync(cancellationToken);
 
             var products = await query
-                .OrderBy(p => p.Id)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync(cancellationToken);
