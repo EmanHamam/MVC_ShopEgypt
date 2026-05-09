@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ShopEgypt.Data.Context;
 using ShopEgypt.Application.Mappings;
 using ShopEgypt.Infrastructure.ServiceRegistration;
+using ShopEgypt.Domain.Entities;
 
 namespace ShopEgypt
 {
@@ -18,8 +19,12 @@ namespace ShopEgypt
 
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+            //builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+            //       .AddEntityFrameworkStores<ApplicationDbContext>()
+            //       .AddDefaultTokenProviders();
+
             builder
-                .Services.AddDefaultIdentity<IdentityUser>(options =>
+                .Services.AddDefaultIdentity<ApplicationUser>(options =>
                     options.SignIn.RequireConfirmedAccount = true
                 )
                 .AddEntityFrameworkStores<ApplicationDbContext>();
