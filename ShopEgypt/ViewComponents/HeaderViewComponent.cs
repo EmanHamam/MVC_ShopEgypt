@@ -15,11 +15,11 @@ namespace ShopEgypt.ViewComponents
            // _wishlistService = wishlistService;
         }
 
-        public IViewComponentResult Invoke()
+        public async Task<IViewComponentResult> InvokeAsync()
         {
             var model = new HeaderViewModel
             {
-                //CartCount = _cartService.GetCartCount(),
+                CartCount = await _cartService.GetCartCountAsync(),
                 //WishlistCount = _wishlistService.GetWishlistCount()
             };
 

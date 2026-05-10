@@ -1,0 +1,117 @@
+﻿@model ShopEgypt.ViewModels.Cart.CartIndexViewModel
+
+@{
+    ViewData["Title"] = "Your bag";
+}
+
+<section class="cart-page">
+    <div class="cart-wrapper">
+        <div class="cart-heading">
+            <h1>Your bag</h1>
+            <p>@Model.ItemCount @(Model.ItemCount == 1 ? "item" : "items")</p>
+        </div>
+
+        @if (Model == null || Model.Items == null || !Model.Items.Any())
+        {
+            <div class="cart-empty">
+                <div class="cart-empty-inner">
+                    <h2>Your bag is empty.</h2>
+                    <a asp-controller="Shop" asp-action="Index" class="cart-start-btn">
+                        Start shopping
+                        <span>→</span>
+                    </a>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="cart-grid">
+                <div class="cart-items">
+                    @foreach (var item in Model.Items)
+                    {
+                        <div class="cart-card">
+                            <div class="cart-card-image">
+                                <img src="@item.ImageUrl" alt="@item.ProductName" />
+                            </div>
+
+                            <div class="cart-card-content">
+                                <div class="cart-card-top">
+                                    <div>
+                                        <a asp-controller="Product"
+                                               asp-action="Details"
+                                               asp-route-id="@item.ProductId"
+                                               class="cart-product-name">
+                                            @item.ProductName
+                                        </a>
+                                        <p class="cart-product-price">@item.UnitPrice.ToString("N0") EGP</p>
+                                    </div>
+
+                                    <form asp-controller="Cart" asp-action="Remove" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="productId" value="@item.ProductId" />
+                                        <button type="submit" class="cart-remove-btn" title="Remove item">×</button>
+                                    </form>
+                                </div>
+
+                                <div class="cart-card-bottom">
+                                    <div class="qty-box">
+                                        <form asp-controller="Cart" asp-action="Decrease" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="productId" value="@item.ProductId" />
+                                            <button type="submit" class="qty-btn" title="Decrease quantity">−</button>
+                                        </form>
+
+                                        <span class="qty-value">@item.Quantity</span>
+
+                                        <form asp-controller="Cart" asp-action="Increase" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="productId" value="@item.ProductId" />
+                                            <button type="submit" class="qty-btn" title="Increase quantity">+</button>
+                                        </form>
+                                    </div>
+
+                                    <div class="cart-line-total">
+                                        @item.TotalPrice.ToString("N0") EGP
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <aside class="cart-summary">
+                    <h2>Summary</h2>
+
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span>@Model.Subtotal.ToString("N0") EGP</span>
+                    </div>
+
+                    <div class="summary-row">
+                        <span>Shipping</span>
+                        <span>
+                            @(Model.Shipping == 0 ? "Free" : Model.Shipping.ToString("N0") + " EGP")
+                        </span>
+                    </div>
+
+                    <div class="summary-divider"></div>
+
+                    <div class="summary-row summary-total">
+                        <span>Total</span>
+                        <span>@Model.Total.ToString("N0") EGP</span>
+                    </div>
+
+                    <input type="text" class="promo-input" placeholder="Promo code" />
+
+                    <a asp-controller="Checkout" asp-action="Index" class="checkout-btn">
+                        Checkout
+                    </a>
+
+                    <a asp-controller="Shop" asp-action="Index" class="continue-shopping">
+                        Continue shopping
+                    </a>
+                </aside>
+            </div>
+        }
+    </div>
+</section>
