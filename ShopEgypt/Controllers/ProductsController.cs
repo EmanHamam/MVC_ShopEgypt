@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using ShopEgypt.Application.Interfaces.ICategoryService;
 using ShopEgypt.Application.Interfaces.IImageStorageService;
 using ShopEgypt.Application.Interfaces.IProductService;
 using ShopEgypt.Domain.Entities;
+using ShopEgypt.Domain.Enums.ProductEnums;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,19 +17,30 @@ namespace ShopEgypt.Controllers
     {
         private readonly IProductService _productService;
         private readonly IImageStorageService _imageStorage;
+        private readonly ICategoryService _categoryService;
 
-        public ProductsController(IProductService productService, IImageStorageService imageStorage)
+        public ProductsController(
+            IProductService productService,
+            IImageStorageService imageStorage,
+            ICategoryService categoryService
+        )
         {
             _productService = productService;
             _imageStorage = imageStorage;
+            _categoryService = categoryService;
         }
 
         // GET: Products
         [HttpGet]
         [Route("")]
-        public async Task<IActionResult> Index(int page = 1, int pageSize = 12, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 12, int? categoryId = null, ProductSortBy? sortBy = null, string? keyWord = null, CancellationToken cancellationToken = default)
         {
-            var result = await _productService.GetAllProductsAsync(page, pageSize, cancellationToken);
+            var result = await _productService.GetAllProductsAsync(page, pageSize, categoryId, sortBy, keyWord, cancellationToken);
+            var categories = await _categoryService.GetAllCategoriesAsync(cancellationToken);
+            ViewBag.Categories = new SelectList(categories, "Id", "Name", categoryId);
+            ViewBag.SelectedCategoryId = categoryId;
+            ViewBag.SortBy = sortBy;
+            ViewBag.KeyWord = keyWord;
             return View(result);
         }
 

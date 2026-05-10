@@ -57,6 +57,7 @@ namespace ShopEgypt.Application.Mappings
             // Create ReviewDto Mapping, no need to mapping as share the same properties
             
 
+            TypeAdapterConfig<Category, CategoryDto>.NewConfig();
         }
     }
 }

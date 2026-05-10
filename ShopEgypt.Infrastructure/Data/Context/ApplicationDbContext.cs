@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ShopEgypt.Domain.Entities;
 
 namespace ShopEgypt.Data.Context
 {
-    public class ApplicationDbContext : IdentityDbContext<IdentityUser>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
         
@@ -100,7 +100,7 @@ namespace ShopEgypt.Data.Context
             {
                 entity.HasKey(e => e.Id).HasName("PK__Payment__3214EC072BE14C30");
 
-                entity.HasOne(d => d.Order).WithMany(p => p.Payments).HasConstraintName("FK_Payment_Order");
+                entity.HasOne(d => d.Order).WithOne(p => p.Payment).HasConstraintName("FK_Payment_Order");
             });
 
             builder.Entity<Product>(entity =>

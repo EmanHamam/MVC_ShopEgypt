@@ -1,0 +1,54 @@
+﻿@model ShopEgypt.ViewModels.Header.HeaderViewModel
+
+<header class="site-header">
+    <div class="container header-container">
+        <a asp-controller="Home" asp-action="Index" class="logo">
+            <span class="logo-dot"></span>
+            <span class="logo-text">Shop<span>Egypt</span></span>
+        </a>
+
+        <nav class="main-nav" id="mainNav">
+            <a asp-controller="Shop" asp-action="Index">Shop</a>
+            <a asp-controller="Categories" asp-action="Index">Categories</a>
+            <a asp-controller="Home" asp-action="About">About</a>
+            <a asp-controller="Home" asp-action="Contact">Contact</a>
+        </nav>
+
+        <div class="header-icons">
+            <a href="#" class="icon-btn" aria-label="Search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </a>
+
+            <a asp-controller="Wishlist" asp-action="Index" class="icon-btn badge-wrap" aria-label="Wishlist">
+                <i class="fa-regular fa-heart"></i>
+                @if (Model.WishlistCount > 0)
+                {
+                    <span class="badge mustard">@Model.WishlistCount</span>
+                }
+            </a>
+
+            <a asp-controller="Account" asp-action="Index" class="icon-btn" aria-label="Account">
+                <i class="fa-regular fa-user"></i>
+            </a>
+
+            <a asp-controller="Cart" asp-action="Index" class="icon-btn badge-wrap" aria-label="Cart">
+                <i class="fa-solid fa-bag-shopping"></i>
+                @if (Model.CartCount > 0)
+                {
+                    <span class="badge olive">@Model.CartCount</span>
+                }
+            </a>
+
+            <button class="icon-btn mobile-menu-btn" id="mobileMenuBtn" type="button" aria-label="Menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="mobile-nav" id="mobileNav">
+        <a asp-controller="Shop" asp-action="Index">Shop</a>
+        <a asp-controller="Categories" asp-action="Index">Categories</a>
+        <a asp-controller="Home" asp-action="About">About</a>
+        <a asp-controller="Home" asp-action="Contact">Contact</a>
+    </div>
+</header>

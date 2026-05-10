@@ -29,7 +29,11 @@ public partial class Product
 
     public bool IsActive { get; set; }
 
+    public string? Color { get; set; }
+    public string? Size { get; set; }
+
     public int CategoryId { get; set; }
+    public int BrandID { get; set; }
 
     [Required]
     [StringLength(450)]
@@ -59,4 +63,5 @@ public partial class Product
 
     [InverseProperty("Product")]
     public virtual ICollection<WishlistItem> WishlistItems { get; set; } = new List<WishlistItem>();
+    public virtual Brand? Brand { get; set; }
 }

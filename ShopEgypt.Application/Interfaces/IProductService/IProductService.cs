@@ -2,12 +2,14 @@
 using System.Threading.Tasks;
 using ShopEgypt.Application.DTOs;
 using ShopEgypt.Domain.Entities;
+using ShopEgypt.Domain.Enums.ProductEnums;
 
 namespace ShopEgypt.Application.Interfaces.IProductService
 {
     public interface IProductService
     {
-        Task<PagedResultDto<ProductListItemDto>> GetAllProductsAsync(int pageNumber, int pageSize, CancellationToken cancellationToken);
+        Task<PagedResultDto<ProductListItemDto>> GetAllProductsAsync(int pageNumber, int pageSize,int? categoryId ,
+            ProductSortBy? sortBy,string? keyWord, CancellationToken cancellationToken);
         Task<ProductDetailDto?> GetProductByIdAsync(int id, CancellationToken cancellationToken);
         Task<Product?> GetProductEntityByIdAsync(int id, CancellationToken cancellationToken);
 

@@ -3,12 +3,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ShopEgypt.Application.Interfaces.ICartService;
+using ShopEgypt.Application.Interfaces.ICategoryService;
 using ShopEgypt.Application.Interfaces.IImageStorageService;
 using ShopEgypt.Application.Interfaces.IProductService;
 using ShopEgypt.Application.Interfaces.IReviewService;
 using ShopEgypt.Data.Context;
 using ShopEgypt.Domain.Entities;
 using ShopEgypt.Infrastructure.Services.CartService;
+using ShopEgypt.Infrastructure.Services.CategoryService;
 using ShopEgypt.Infrastructure.Services.CloudinaryService;
 using ShopEgypt.Infrastructure.Services.ProductService;
 using ShopEgypt.Infrastructure.Services.ReviewService;
@@ -46,8 +48,11 @@ namespace ShopEgypt.Infrastructure.ServiceRegistration
             //Application Services Registration
             services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
             services.AddScoped<ICartService, CartService>();
+            services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IReviewService, ReviewService>();
+            services.AddScoped<ICategoryService, CategoryService>();
+
 
 
             // Auto Mapper
