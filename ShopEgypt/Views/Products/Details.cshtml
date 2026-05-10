@@ -51,3 +51,33 @@ else
     <a href="/products/delete/@Model.Id">Delete</a> |
     <a href="/products">Back</a>
 </p>
+
+
+<hr />
+
+<h3>Add a Review</h3>
+<form asp-controller="Reviews" asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+
+    <input type="hidden" name="ProductId" value="@Model.Id" />
+    {{!-- replace with actual logged-in user id --}}
+    <input type="hidden" name="ApplicationUserId" value="267824f8-683c-4812-afc8-1e1dbdafe519" />
+
+    <div class="mb-3">
+        <label class="form-label">Rating (1-5)</label>
+        <input type="number" name="Rating" min="1" max="5" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Comment</label>
+        <textarea name="Comment" class="form-control" rows="3"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit Review</button>
+</form>
+
+<p class="mt-3">
+    <a href="/products/edit/@Model.Id">Edit</a> |
+    <a href="/products/delete/@Model.Id">Delete</a> |
+    <a href="/products">Back</a>
+</p>

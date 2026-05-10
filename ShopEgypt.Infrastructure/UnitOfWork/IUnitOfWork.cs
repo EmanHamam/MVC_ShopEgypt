@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ShopEgypt.Application.Interfaces.IReviewService;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,5 +7,7 @@ namespace ShopEgypt.Infrastructure.UnitOfWork
 {
     public interface IUnitOfWork
     {
+        IReviewService ReviewService { get; }
+        Task<int> SaveAllAsync(CancellationToken cancellationToken = default);
     }
 }

@@ -5,11 +5,13 @@ using Microsoft.Extensions.DependencyInjection;
 using ShopEgypt.Application.Interfaces.ICartService;
 using ShopEgypt.Application.Interfaces.IImageStorageService;
 using ShopEgypt.Application.Interfaces.IProductService;
+using ShopEgypt.Application.Interfaces.IReviewService;
 using ShopEgypt.Data.Context;
 using ShopEgypt.Domain.Entities;
 using ShopEgypt.Infrastructure.Services.CartService;
 using ShopEgypt.Infrastructure.Services.CloudinaryService;
 using ShopEgypt.Infrastructure.Services.ProductService;
+using ShopEgypt.Infrastructure.Services.ReviewService;
 using ShopEgypt.Infrastructure.UnitOfWork;
 using System;
 using System.Collections.Generic;
@@ -45,6 +47,7 @@ namespace ShopEgypt.Infrastructure.ServiceRegistration
             services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
             services.AddScoped<ICartService, CartService>();
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IReviewService, ReviewService>();
 
 
             // Auto Mapper
