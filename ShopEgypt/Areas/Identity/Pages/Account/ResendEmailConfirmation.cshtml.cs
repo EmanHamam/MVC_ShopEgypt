@@ -5,7 +5,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
-using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -14,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using ShopEgypt.Domain.Entities;
+using ShopEgypt.Infrastructure.Email;
 
 namespace ShopEgypt.Areas.Identity.Pages.Account
 {
@@ -75,12 +75,12 @@ namespace ShopEgypt.Areas.Identity.Pages.Account
             var callbackUrl = Url.Page(
                 "/Account/ConfirmEmail",
                 pageHandler: null,
-                values: new { userId = userId, code = code },
+                values: new { area = "Identity", userId = userId, code = code, returnUrl = Url.Content("~/") },
                 protocol: Request.Scheme);
             await _emailSender.SendEmailAsync(
                 Input.Email,
-                "Confirm your email",
-                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                "Confirm your ShopEgypt email",
+                IdentityEmailTemplates.ConfirmAccount(user.FirstName, callbackUrl));
 
             ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
             return Page();

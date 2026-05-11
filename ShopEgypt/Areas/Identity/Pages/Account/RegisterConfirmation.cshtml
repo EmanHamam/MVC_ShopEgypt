@@ -1,23 +1,30 @@
 ﻿@page
 @model RegisterConfirmationModel
 @{
-    ViewData["Title"] = "Register confirmation";
+    ViewData["Title"] = "Almost there";
 }
 
-<h1>@ViewData["Title"]</h1>
-@{
-    if (@Model.DisplayConfirmAccountLink)
-    {
-<p>
-    This app does not currently have a real email sender registered, see <a href="https://aka.ms/aspaccountconf">these docs</a> for how to configure a real email sender.
-    Normally this would be emailed: <a id="confirm-link" href="@Model.EmailConfirmationUrl">Click here to confirm your account</a>
-</p>
-    }
-    else
-    {
-<p>
-        Please check your email to confirm your account.
-</p>
-    }
-}
+<div class="auth-page">
+    <div class="auth-card auth-card--wide">
+        <h1 class="auth-title">Confirm your email</h1>
+        <p class="auth-subtitle">We have sent you a message with a confirmation link.</p>
 
+        @if (Model.DisplayConfirmAccountLink)
+        {
+            <p class="auth-body-text">
+                This app does not currently have a real email sender registered. See
+                <a href="https://aka.ms/aspaccountconf" target="_blank" rel="noopener" class="auth-link-accent">these docs</a>
+                to configure email. For development you can use this link:
+            </p>
+            <p class="auth-body-text">
+                <a id="confirm-link" href="@Model.EmailConfirmationUrl" class="auth-link-accent">Confirm your account</a>
+            </p>
+        }
+        else
+        {
+            <p class="auth-body-text">Please check your email to confirm your account before signing in.</p>
+        }
+
+        <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl" class="auth-btn auth-btn-signin text-decoration-none mt-2 d-inline-flex">Go to sign in</a>
+    </div>
+</div>

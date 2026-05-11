@@ -4,5 +4,12 @@
     ViewData["Title"] = "Confirm email";
 }
 
-<h1>@ViewData["Title"]</h1>
-<partial name="_StatusMessage" model="Model.StatusMessage" />
+<div class="auth-page">
+    <div class="auth-card">
+        <h1 class="auth-title">Confirming&hellip;</h1>
+        <p class="auth-body-text">
+            You should be redirected to sign in with a status message. If nothing happens,
+            <a asp-page="./Login" class="auth-link-accent">open the sign-in page</a>.
+        </p>
+    </div>
+</div>
