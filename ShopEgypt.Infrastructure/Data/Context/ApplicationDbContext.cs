@@ -13,6 +13,8 @@ namespace ShopEgypt.Data.Context
 
         public virtual DbSet<Cart> Carts { get; set; }
 
+        public virtual DbSet<Address> Address { get; set; }
+
         public virtual DbSet<CartItem> CartItems { get; set; }
 
         public virtual DbSet<Category> Categories { get; set; }
