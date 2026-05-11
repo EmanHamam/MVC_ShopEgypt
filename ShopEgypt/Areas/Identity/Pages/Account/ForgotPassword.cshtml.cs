@@ -5,7 +5,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
-using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -14,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using ShopEgypt.Domain.Entities;
+using ShopEgypt.Infrastructure.Email;
 
 namespace ShopEgypt.Areas.Identity.Pages.Account
 {
@@ -73,8 +73,8 @@ namespace ShopEgypt.Areas.Identity.Pages.Account
 
                 await _emailSender.SendEmailAsync(
                     Input.Email,
-                    "Reset Password",
-                    $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    "Reset your ShopEgypt password",
+                    IdentityEmailTemplates.ResetPassword(user.FirstName, callbackUrl));
 
                 return RedirectToPage("./ForgotPasswordConfirmation");
             }
