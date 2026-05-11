@@ -49,14 +49,28 @@ namespace ShopEgypt.Controllers
         // GET: Products/Details/5
         [HttpGet]
         [Route("details/{id}")]
-        public async Task<IActionResult> Details(int id, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> Details(int id, string? reviewSort = null, CancellationToken cancellationToken = default)
         {
+            
             var product = await _productService.GetProductByIdAsync(id, cancellationToken);
             if (product == null)
             {
                 return NotFound();
             }
 
+            // Sort reviews based on reviewSort parameter
+            if (product.ProductReviews != null && product.ProductReviews.Any())
+            {
+                product.ProductReviews = reviewSort switch
+                {
+                    "highest" => product.ProductReviews.OrderByDescending(r => r.Rating).ToList(),
+                    "lowest" => product.ProductReviews.OrderBy(r => r.Rating).ToList(),
+                    "newest" => product.ProductReviews.OrderByDescending(r => r.CreatedAt).ToList(),
+                    _ => product.ProductReviews.OrderByDescending(r => r.CreatedAt).ToList() // default to newest
+                };
+            }
+
+            ViewBag.ReviewSort = reviewSort ?? "newest";
             return View(product);
         }
 

@@ -1,3 +1,5 @@
+﻿using ShopEgypt.Application.Interfaces.IProductService;
+using ShopEgypt.Application.Interfaces.IReviewService;
 ﻿using ShopEgypt.Domain.Entities;
 using ShopEgypt.Infrastructure.Repositories;
 using System;
@@ -8,6 +10,10 @@ namespace ShopEgypt.Infrastructure.UnitOfWork
 {
     public interface IUnitOfWork : IDisposable
     {
+        IReviewService ReviewService { get; }
+        IProductService ProductService { get; }
+        Task<int> SaveAllAsync(CancellationToken cancellationToken = default);
+
         IGenericRepository<Address> Addresses { get; }
         IGenericRepository<ApplicationUser> ApplicationUsers { get; }
         IGenericRepository<Brand> Brands { get; }
