@@ -21,7 +21,7 @@ namespace ShopEgypt.Infrastructure.Services.ProductService
             Context = context;
         }
         public async Task<PagedResultDto<ProductListItemDto>> GetAllProductsAsync(int pageNumber,int pageSize,int? categoryId, 
-            ProductSortBy? sortBy,string? keyWord, CancellationToken cancellationToken)
+            ProductSortBy? sortBy,string? keyWord, decimal? minPrice, decimal? maxPrice, CancellationToken cancellationToken)
         {
             IQueryable<Product> query = Context.Products
                 .AsNoTracking()
@@ -55,6 +55,15 @@ namespace ShopEgypt.Infrastructure.Services.ProductService
                 keyWord = keyWord.Trim().ToLower();
                 query = query.Where(p => p.Title.ToLower().Contains(keyWord) || p.Description.ToLower().Contains(keyWord));
             }
+            if (minPrice != null && minPrice >= 0)
+            {
+                query = query.Where(p => p.Price >= minPrice);
+            }
+            if (maxPrice != null && maxPrice > 0)
+            {
+                query = query.Where(p => p.Price <= maxPrice);
+            }
+
             var totalCount = await query.CountAsync(cancellationToken);
 
             var products = await query

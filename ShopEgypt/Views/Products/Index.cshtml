@@ -11,75 +11,133 @@
     var keyword = (string)ViewBag.KeyWord;
     var sortItems = Html.GetEnumSelectList<ProductSortBy>().ToList();
     var selectedSortValue = sortBy.HasValue ? ((int)sortBy.Value).ToString() : string.Empty;
+    var returnUrl = $"{Context.Request.Path}{Context.Request.QueryString}";
+    var minPrice = ViewBag.MinPrice as decimal?;
+    var maxPrice = ViewBag.MaxPrice as decimal?;
+    var minPriceValue = minPrice?.ToString("0.##") ?? string.Empty;
+    var maxPriceValue = maxPrice?.ToString("0.##") ?? string.Empty;
     foreach (var item in sortItems)
     {
         item.Selected = item.Value == selectedSortValue;
     }
 }
 
-<h1>Products</h1>
+<section class="product-hero">
+    <div class="container product-hero-inner">
+        <div>
+            <h1>The full edit.</h1>
+            <p>@Model.TotalCount products from Egypt's most thoughtful makers.</p>
+        </div>
+    </div>
+</section>
 
-<p>Total: @Model.TotalCount</p>
+<section class="product-catalog">
+    <div class="container product-catalog-grid">
+        <aside class="product-filters">
+            <div class="filter-block">
+                <h3>Category</h3>
+                <div class="filter-list">
+                    <a asp-action="Index"
+                       asp-controller="Products"
+                       asp-route-categoryId=""
+                       asp-route-sortBy="@selectedSortValue"
+                       asp-route-keyWord="@keyword"
+                       asp-route-minPrice="@minPriceValue"
+                       asp-route-maxPrice="@maxPriceValue"
+                       class="@(selectedCategoryId.HasValue ? string.Empty : "is-active")">
+                        All
+                    </a>
+                    @foreach (var category in categories)
+                    {
+                        <a asp-action="Index"
+                           asp-controller="Products"
+                           asp-route-categoryId="@category.Value"
+                           asp-route-sortBy="@selectedSortValue"
+                           asp-route-keyWord="@keyword"
+                           asp-route-minPrice="@minPriceValue"
+                           asp-route-maxPrice="@maxPriceValue"
+                           class="@(selectedCategoryId.HasValue && selectedCategoryId.Value.ToString() == category.Value ? "is-active" : string.Empty)">
+                            @category.Text
+                        </a>
+                    }
+                </div>
+            </div>
 
-<form method="get" action="/products" class="mb-3">
-    <label>Category</label>
-    <select name="categoryId" class="form-select" asp-items="categories">
-        <option value="">All</option>
-    </select>
+            <div class="filter-block">
+                <h3>Price</h3>
+                <div class="price-fields">
+                    <input type="number" name="minPrice" min="0" step="1" placeholder="Min" value="@minPriceValue" form="productFilterForm" />
+                    <span>to</span>
+                    <input type="number" name="maxPrice" min="0" step="1" placeholder="Max" value="@maxPriceValue" form="productFilterForm" />
+                </div>
+            </div>
+        </aside>
 
-    <label class="mt-2">Sort</label>
-    <select name="sortBy" class="form-select" asp-items="sortItems">
-        <option value="" selected="@(string.IsNullOrEmpty(selectedSortValue) ? "selected" : null)">All</option>
-    </select>
+        <div class="product-main">
+            <form method="get" asp-action="Index" asp-controller="Products" class="product-toolbar product-filter-form" data-auto-submit="true" id="productFilterForm">
+                <label class="product-search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" name="keyWord" value="@keyword" placeholder="Search products" />
+                </label>
 
-    <label class="mt-2">Search</label>
-    <input type="text" name="keyWord" class="form-control" value="@keyword" />
+                <div class="product-results">@Model.TotalCount results</div>
 
-    <button type="submit" class="btn btn-primary mt-2">Apply</button>
-</form>
+                <select name="sortBy" class="product-sort" asp-items="sortItems">
+                    <option value="" selected="@(string.IsNullOrEmpty(selectedSortValue) ? "selected" : null)">Featured</option>
+                </select>
 
+                <input type="hidden" name="categoryId" value="@selectedCategoryId" />
+                <button type="submit" class="product-apply">Apply</button>
+            </form>
 
-<p>
-    <a href="/products/create">Create New</a>
-</p>
+            <div class="product-grid">
+                @foreach (var item in Model.Items)
+                {
+                    var hasDiscount = item.DiscountPrice.HasValue && item.DiscountPrice.Value > 0;
+                    var finalPrice = hasDiscount ? item.Price - item.DiscountPrice!.Value : item.Price;
+                    var badge = item.AverageRating >= 4.5 ? "Bestseller" : (hasDiscount ? "Sale" : "New");
+                    <article class="product-card">
+                        <div class="product-media">
+                            <a asp-action="Details" asp-route-id="@item.Id" class="product-media-link">
+                                <img src="@(item.ThumbnailUrl ?? "/images/placeholder.png")" alt="@item.Title" />
+                            </a>
+                            <span class="product-badge">@badge</span>
+                            <button type="button" class="wishlist-btn" aria-label="Add to wishlist">
+                                <i class="fa-regular fa-heart"></i>
+                            </button>
 
+                            <form asp-controller="Cart" asp-action="Add" method="post" class="product-add">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="productId" value="@item.Id" />
+                                <input type="hidden" name="qty" value="1" />
+                                <input type="hidden" name="returnUrl" value="@returnUrl" />
+                                <button type="submit">Add to bag</button>
+                            </form>
+                        </div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Id</th>
-            <th>Title</th>
-            <th>Price</th>
-            <th>Discount</th>
-            <th>Final Price</th>
-            <th>Stock</th>
-            <th>Rating</th>
-            <th>Is Active</th>
-            <th>Thumbnail</th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Model.Items)
-    {
-        <tr>
-            <td>@item.Id</td>
-            <td>@item.Title</td>
-            <td>@item.Price</td>
-            <td>@item.DiscountPrice</td>
-            <td>@(item.Price - item.DiscountPrice)</td>
-            <td>@item.Stock</td>
-            <td>@item.AverageRating</td>
-            <td>@item.IsActive</td>
-            <td><img src="@item.ThumbnailUrl" alt="Thumbnail" style="max-width: 100px;" /></td>
-
-            <td>
-                <a href="/products/details/@item.Id">Details</a>
-                |
-                <a href="/products/edit/@item.Id">Edit</a>
-                |
-                <a href="/products/delete/@item.Id">Delete</a>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
+                        <div class="product-info">
+                            <div class="product-meta">
+                                <span>@item.ReviewCount reviews</span>
+                                <span class="product-rating">
+                                    <i class="fa-solid fa-star"></i>
+                                    @item.AverageRating.ToString("0.0")
+                                </span>
+                            </div>
+                            <div class="product-brand">@item.Brand</div>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="product-title">
+                                @item.Title
+                            </a>
+                            <div class="product-price">
+                                <span>@finalPrice.ToString("N0") EGP</span>
+                                @if (hasDiscount)
+                                {
+                                    <span class="product-price-old">@item.Price.ToString("N0") EGP</span>
+                                }
+                            </div>
+                        </div>
+                    </article>
+                }
+            </div>
+        </div>
+    </div>
+</section>

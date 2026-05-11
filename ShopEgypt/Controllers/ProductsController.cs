@@ -33,14 +33,16 @@ namespace ShopEgypt.Controllers
         // GET: Products
         [HttpGet]
         [Route("")]
-        public async Task<IActionResult> Index(int page = 1, int pageSize = 12, int? categoryId = null, ProductSortBy? sortBy = null, string? keyWord = null, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 12, int? categoryId = null, ProductSortBy? sortBy = null, string? keyWord = null, decimal? minPrice = null, decimal? maxPrice = null, CancellationToken cancellationToken = default)
         {
-            var result = await _productService.GetAllProductsAsync(page, pageSize, categoryId, sortBy, keyWord, cancellationToken);
+            var result = await _productService.GetAllProductsAsync(page, pageSize, categoryId, sortBy, keyWord, minPrice, maxPrice, cancellationToken);
             var categories = await _categoryService.GetAllCategoriesAsync(cancellationToken);
             ViewBag.Categories = new SelectList(categories, "Id", "Name", categoryId);
             ViewBag.SelectedCategoryId = categoryId;
             ViewBag.SortBy = sortBy;
             ViewBag.KeyWord = keyWord;
+            ViewBag.MinPrice = minPrice;
+            ViewBag.MaxPrice = maxPrice;
             return View(result);
         }
 

@@ -9,7 +9,7 @@ namespace ShopEgypt.Application.Interfaces.IProductService
     public interface IProductService
     {
         Task<PagedResultDto<ProductListItemDto>> GetAllProductsAsync(int pageNumber, int pageSize,int? categoryId ,
-            ProductSortBy? sortBy,string? keyWord, CancellationToken cancellationToken);
+            ProductSortBy? sortBy,string? keyWord, decimal? minPrice, decimal? maxPrice, CancellationToken cancellationToken);
         Task<ProductDetailDto?> GetProductByIdAsync(int id, CancellationToken cancellationToken);
         Task<Product?> GetProductEntityByIdAsync(int id, CancellationToken cancellationToken);
 
