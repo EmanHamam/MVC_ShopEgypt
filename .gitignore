@@ -30,3 +30,11 @@ bld/
 # Visual Studio 2015/2017/2019/2022 cache/options directory
 .vs/
 appsettings.json
+appsettings.Development.json
+appsettings.*.json
+
+# Secrets and local environment files
+.secrets
+*.env
+*.env.local
+.env.*.local

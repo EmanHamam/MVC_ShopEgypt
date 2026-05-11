@@ -18,7 +18,7 @@ public partial class ApplicationUser : IdentityUser
 
     public string? ProfilePicUrl { get; set; }
 
-    public bool IsActive { get; set; }
+    public bool? IsActive { get; set; }
 
 
     public DateTime? CreatedAt { get; set; }
