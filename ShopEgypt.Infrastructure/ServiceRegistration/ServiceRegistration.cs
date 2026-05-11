@@ -68,15 +68,12 @@ namespace ShopEgypt.Infrastructure.ServiceRegistration
             services.AddScoped<IReviewService, ReviewService>();
             services.AddScoped<ICategoryService, CategoryService>();
 
-
             // Auto Mapper
             //services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfile>());
-           services.Configure<IdentityOptions>(options =>
+            services.Configure<IdentityOptions>(options =>
             {
                 options.SignIn.RequireConfirmedEmail = true;
             });
-
-
             return services;
         }
     }
