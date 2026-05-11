@@ -1,0 +1,57 @@
+﻿@using ShopEgypt.Application.DTOs.OrdersDTO
+@model OrderDTO
+
+@{
+    ViewData["Title"] = "Order Summary";
+}
+
+<h2>Order Summary</h2>
+
+<div>
+    <strong>Order Id:</strong> @Model.OrderId<br />
+    <strong>User Id:</strong> @Model.ApplicationUserId<br />
+    <strong>Status:</strong> @Model.OrderStatus<br />
+    <strong>Total Amount:</strong> @Model.TotalAmount
+</div>
+
+<h3>Shipping Address</h3>
+@if (Model.Address != null)
+{
+    <div>
+        @Model.Address.Street<br />
+        @Model.Address.City @Model.Address.State @Model.Address.ZipCode<br />
+        @Model.Address.Country
+    </div>
+}
+
+<h3>Order Items</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Description</th>
+            <th>Unit Price</th>
+            <th>Quantity</th>
+            <th>Subtotal</th>
+        </tr>
+    </thead>
+    <tbody>
+    @if (Model.OrderItems != null && Model.OrderItems.Any())
+    {
+        foreach (var item in Model.OrderItems)
+        {
+            <tr>
+                <td>@item.ProductName</td>
+                <td>@item.ProductDescription</td>
+                <td>@item.UnitPrice</td>
+                <td>@item.Quantity</td>
+                <td>@(item.UnitPrice * item.Quantity)</td>
+            </tr>
+        }
+    }
+    else
+    {
+        <tr><td colspan="5">No items</td></tr>
+    }
+    </tbody>
+</table>
