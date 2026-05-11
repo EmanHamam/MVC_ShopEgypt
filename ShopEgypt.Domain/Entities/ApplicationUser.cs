@@ -9,19 +9,17 @@ namespace ShopEgypt.Domain.Entities;
 public partial class ApplicationUser : IdentityUser
 
 {
-   
+
     [StringLength(255)]
     public string? FirstName { get; set; }
 
-
     [StringLength(255)]
     public string? LastName { get; set; }
 
     public string? ProfilePicUrl { get; set; }
-    public string? LastName { get; set; }
-    public string? ProfilePicUrl { get; set; }
 
     public bool IsActive { get; set; }
+
 
     public DateTime? CreatedAt { get; set; }
 
