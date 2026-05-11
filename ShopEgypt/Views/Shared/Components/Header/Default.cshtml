@@ -27,9 +27,9 @@
                 }
             </a>
 
-            <a asp-controller="Account" asp-action="Index" class="icon-btn" aria-label="Account">
-                <i class="fa-regular fa-user"></i>
-            </a>
+            <div class="account-section">
+                @await Html.PartialAsync("_LoginPartial")
+            </div>
 
             <a asp-controller="Cart" asp-action="Index" class="icon-btn badge-wrap" aria-label="Cart">
                 <i class="fa-solid fa-bag-shopping"></i>
