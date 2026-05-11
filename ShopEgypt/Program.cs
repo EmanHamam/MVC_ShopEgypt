@@ -12,6 +12,9 @@ namespace ShopEgypt
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");;
+
+            builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 
             // Add services to the container.
 
@@ -22,17 +25,33 @@ namespace ShopEgypt
             //builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
             //       .AddEntityFrameworkStores<ApplicationDbContext>()
             //       .AddDefaultTokenProviders();
+            builder.Services.Configure<IdentityOptions>(options =>
+            {
+                options.SignIn.RequireConfirmedEmail = true;
+            });
 
-            builder
-                .Services.AddDefaultIdentity<ApplicationUser>(options =>
-                    options.SignIn.RequireConfirmedAccount = true
-                )
+            builder.Services.AddDefaultIdentity<ApplicationUser>(options =>options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Identity/Account/Login";
+                options.LogoutPath = "/Identity/Account/Logout";
+                options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+            });
 
             builder.Services.AddInfrastructureServices(builder.Configuration);
 
             builder.Services.AddControllersWithViews();
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddDistributedMemoryCache();
 
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
             MapsterConfig.RegisterMappings();
 
             var app = builder.Build();
@@ -48,6 +67,8 @@ namespace ShopEgypt
             }
             app.UseRouting();
 
+            app.UseAuthentication();
+            app.UseSession();
             app.UseAuthorization();
 
             app.MapStaticAssets();
@@ -59,6 +80,9 @@ namespace ShopEgypt
             app.MapRazorPages().WithStaticAssets();
 
             app.Run();
+
+            
+
         }
     }
 }

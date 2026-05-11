@@ -1,58 +1,309 @@
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+using ShopEgypt.Application.DTOs;
+using ShopEgypt.Application.DTOs.CartDTO;
+using ShopEgypt.Application.Extensions;
+using ShopEgypt.Application.Interfaces;
 using ShopEgypt.Application.Interfaces.ICartService;
-using ShopEgypt.Data.Context;
-using System.Threading.Tasks;
-using System.Linq;
+using ShopEgypt.Domain.Entities;
+using ShopEgypt.Infrastructure.UnitOfWork;
+using System.Security.Claims;
 
 namespace ShopEgypt.Infrastructure.Services.CartService
 {
-    public class CartService : ICartService
+    public class CartService(IUnitOfWork _unitOfWork,IHttpContextAccessor _httpContextAccessor,UserManager<ApplicationUser> _userManager) : ICartService
     {
-        private readonly ApplicationDbContext _context;
-        private readonly IConfiguration _configuration;
+        private const string SessionCartKey = "Cart";
+        
 
-        public CartService(ApplicationDbContext context, IConfiguration configuration)
+        private HttpContext HttpContext => _httpContextAccessor.HttpContext?? throw new InvalidOperationException("No active HttpContext found.");
+
+        private ISession Session => HttpContext.Session;
+
+        private bool IsAuthenticated =>HttpContext.User?.Identity?.IsAuthenticated ?? false;
+
+        private string? UserId =>HttpContext.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        public async Task<List<CartItem>> GetCartAsync()
         {
-            _context = context;
-            _configuration = configuration;
+            if (IsAuthenticated)
+            {
+                return await GetDatabaseCartItemsAsync();
+            }
+
+            return await GetSessionCartItemsAsDbLikeModelAsync();
         }
 
-        public decimal CalculateShipping(string governorate)
+        public async Task AddToCartAsync(int productId, int qty = 1)
         {
-            if (string.IsNullOrEmpty(governorate))
-            {
-                return _configuration.GetValue<decimal>("ShippingFees:Default", 100m);
-            }
+            if (qty <= 0) qty = 1;
 
-            // Since governorates from map often come back as "Cairo Governorate", we just match partially or use the exact key if configured.
-            var feeStr = _configuration.GetSection("ShippingFees")[governorate];
-            if (decimal.TryParse(feeStr, out decimal fee))
-            {
-                return fee;
-            }
+            var product = await _unitOfWork.Products.GetByIdAsync(productId);
+            if (product == null)
+                throw new Exception("Product not found.");
 
-            return _configuration.GetValue<decimal>("ShippingFees:Default", 100m);
+            if (IsAuthenticated)
+            {
+                await AddToDatabaseCartAsync(productId, qty);
+            }
+            else
+            {
+                AddToSessionCart(productId, qty);
+            }
         }
 
-        public async Task<bool> IsCartEmptyAsync(string userId)
+        public async Task RemoveFromCartAsync(int productId)
         {
-            // Because we are currently mocking cart items later in the checkout, 
-            // for the sake of letting you test the flow, we will return false here.
-            // When you are ready to use the real database, uncomment this logic:
-            
-            /*
-            var cart = await _context.Carts
-                .Include(c => c.CartItems)
-                .FirstOrDefaultAsync(c => c.ApplicationUserId == userId);
-
-            if (cart == null || !cart.CartItems.Any())
+            if (IsAuthenticated)
             {
-                return true; 
+                await RemoveFromDatabaseCartAsync(productId);
             }
-            */
+            else
+            {
+                RemoveFromSessionCart(productId);
+            }
+        }
 
-            return false; 
+        public async Task UpdateQuantityAsync(int productId, int qty)
+        {
+            if (IsAuthenticated)
+            {
+                await UpdateDatabaseCartQuantityAsync(productId, qty);
+            }
+            else
+            {
+                UpdateSessionCartQuantity(productId, qty);
+            }
+        }
+
+        public async Task<int> GetCartCountAsync()
+        {
+            var cart = await GetCartAsync();
+            return cart.Sum(x => x.Quantity);
+        }
+
+        public async Task<decimal> GetSubtotalAsync()
+        {
+            var cart = await GetCartAsync();
+            return cart.Sum(x => x.Product.Price * x.Quantity);
+        }
+
+        public async Task<decimal> GetShippingAsync()
+        {
+            var subtotal = await GetSubtotalAsync();
+            return subtotal > 1500 ? 0 : 80;
+        }
+
+        public async Task<decimal> GetTotalAsync()
+        {
+            return await GetSubtotalAsync() + await GetShippingAsync();
+        }
+
+        public async Task ClearCartAsync()
+        {
+            if (IsAuthenticated)
+            {
+                var userCart = await GetOrCreateUserCartAsync();
+                var items = await GetUserCartItemsInternalAsync(userCart.Id);
+
+                foreach (var item in items)
+                {
+                    _unitOfWork.CartItems.Delete(item);
+                }
+
+                await _unitOfWork.SaveAsync();
+            }
+            else
+            {
+                Session.RemoveObject(SessionCartKey);
+            }
+        }
+
+        public async Task MergeSessionCartToUserCartAsync()
+        {
+            if (!IsAuthenticated || string.IsNullOrEmpty(UserId))
+                return;
+
+            var sessionItems = Session.GetObject<List<SessionCartItem>>(SessionCartKey) ?? new List<SessionCartItem>();
+            if (!sessionItems.Any())
+                return;
+
+            foreach (var item in sessionItems)
+            {
+                await AddToDatabaseCartAsync(item.ProductId, item.Qty);
+            }
+
+            Session.RemoveObject(SessionCartKey);
+        }
+
+
+        private void AddToSessionCart(int productId, int qty)
+        {
+            var cart = Session.GetObject<List<SessionCartItem>>(SessionCartKey) ?? new List<SessionCartItem>();
+
+            var existingItem = cart.FirstOrDefault(x => x.ProductId == productId);
+            if (existingItem != null)
+            {
+                existingItem.Qty += qty;
+            }
+            else
+            {
+                cart.Add(new SessionCartItem
+                {
+                    ProductId = productId,
+                    Qty = qty
+                });
+            }
+
+            Session.SetObject(SessionCartKey, cart);
+        }
+
+        private void RemoveFromSessionCart(int productId)
+        {
+            var cart = Session.GetObject<List<SessionCartItem>>(SessionCartKey) ?? new List<SessionCartItem>();
+            var item = cart.FirstOrDefault(x => x.ProductId == productId);
+
+            if (item != null)
+            {
+                cart.Remove(item);
+                Session.SetObject(SessionCartKey, cart);
+            }
+        }
+
+        private void UpdateSessionCartQuantity(int productId, int qty)
+        {
+            var cart = Session.GetObject<List<SessionCartItem>>(SessionCartKey) ?? new List<SessionCartItem>();
+            var item = cart.FirstOrDefault(x => x.ProductId == productId);
+
+            if (item == null)
+                return;
+
+            if (qty <= 0)
+                cart.Remove(item);
+            else
+                item.Qty = qty;
+
+            Session.SetObject(SessionCartKey, cart);
+        }
+
+        private async Task<List<CartItem>> GetSessionCartItemsAsDbLikeModelAsync()
+        {
+            var sessionItems = Session.GetObject<List<SessionCartItem>>(SessionCartKey) ?? new List<SessionCartItem>();
+            var result = new List<CartItem>();
+
+            foreach (var item in sessionItems)
+            {
+                var product = await _unitOfWork.Products.GetByIdAsync(item.ProductId);
+                if (product == null)
+                    continue;
+
+                result.Add(new CartItem
+                {
+                    ProductId = item.ProductId,
+                    Quantity = item.Qty,
+                    //UnitPrice = product.Price,
+                    Product = product
+                });
+            }
+
+            return result;
+        }
+
+        private async Task AddToDatabaseCartAsync(int productId, int qty)
+        {
+            var userCart = await GetOrCreateUserCartAsync();
+            var items = await GetUserCartItemsInternalAsync(userCart.Id);
+
+            var existingItem = items.FirstOrDefault(x => x.ProductId == productId);
+            if (existingItem != null)
+            {
+                existingItem.Quantity += qty;
+                _unitOfWork.CartItems.Update(existingItem);
+            }
+            else
+            {
+                await _unitOfWork.CartItems.AddAsync(new CartItem
+                {
+                    CartId = userCart.Id,
+                    ProductId = productId,
+                    Quantity = qty
+                });
+            }
+
+            await _unitOfWork.SaveAsync();
+        }
+
+        private async Task RemoveFromDatabaseCartAsync(int productId)
+        {
+            var userCart = await GetOrCreateUserCartAsync();
+            var items = await GetUserCartItemsInternalAsync(userCart.Id);
+            var item = items.FirstOrDefault(x => x.ProductId == productId);
+
+            if (item == null)
+                return;
+
+            _unitOfWork.CartItems.Delete(item);
+            await _unitOfWork.SaveAsync();
+        }
+
+        private async Task UpdateDatabaseCartQuantityAsync(int productId, int qty)
+        {
+            var userCart = await GetOrCreateUserCartAsync();
+            var items = await GetUserCartItemsInternalAsync(userCart.Id);
+            var item = items.FirstOrDefault(x => x.ProductId == productId);
+
+            if (item == null)
+                return;
+
+            if (qty <= 0)
+            {
+                _unitOfWork.CartItems.Delete(item);
+            }
+            else
+            {
+                item.Quantity = qty;
+                _unitOfWork.CartItems.Update(item);
+            }
+
+            await _unitOfWork.SaveAsync();
+        }
+
+        private async Task<Cart> GetOrCreateUserCartAsync()
+        {
+            if (string.IsNullOrEmpty(UserId))
+                throw new Exception("User is not authenticated.");
+
+            var carts = await _unitOfWork.Carts.GetAllAsync();
+            var userCart = carts.FirstOrDefault(x => x.ApplicationUserId == UserId);
+
+            if (userCart != null)
+                return userCart;
+
+            userCart = new Cart
+            {
+                ApplicationUserId = UserId
+            };
+
+            await _unitOfWork.Carts.AddAsync(userCart);
+            await _unitOfWork.SaveAsync();
+
+            return userCart;
+        }
+
+        private async Task<List<CartItem>> GetDatabaseCartItemsAsync()
+        {
+            var userCart = await GetOrCreateUserCartAsync();
+            var items = await GetUserCartItemsInternalAsync(userCart.Id);
+            return items.ToList();
+        }
+
+        private async Task<List<CartItem>> GetUserCartItemsInternalAsync(int cartId)
+        {
+            var allItems = await _unitOfWork.CartItems.GetAllAsync();
+            return allItems
+                .Where(x => x.CartId == cartId)
+                .ToList();
         }
     }
 }
