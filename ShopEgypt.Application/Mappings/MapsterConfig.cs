@@ -31,6 +31,7 @@ namespace ShopEgypt.Application.Mappings
                 )
                 .Map(dest => dest.ReviewCount, src => src.Reviews.Count)
                 .Map(dest => dest.IsOutOfStock, src => src.Stock <= 0);
+                
 
             TypeAdapterConfig<Product, ProductDetailDto>.NewConfig()
                 .Map(dest => dest.CategoryName, src => src.Category != null ? src.Category.Name : null)
