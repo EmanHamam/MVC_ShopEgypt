@@ -43,7 +43,15 @@ namespace ShopEgypt
             builder.Services.AddInfrastructureServices(builder.Configuration);
 
             builder.Services.AddControllersWithViews();
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddDistributedMemoryCache();
 
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
             MapsterConfig.RegisterMappings();
 
             var app = builder.Build();
@@ -60,6 +68,7 @@ namespace ShopEgypt
             app.UseRouting();
 
             app.UseAuthentication();
+            app.UseSession();
             app.UseAuthorization();
 
             app.MapStaticAssets();
@@ -71,6 +80,9 @@ namespace ShopEgypt
             app.MapRazorPages().WithStaticAssets();
 
             app.Run();
+
+            
+
         }
     }
 }
