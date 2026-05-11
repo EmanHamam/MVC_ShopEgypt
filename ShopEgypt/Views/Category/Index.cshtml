@@ -1,0 +1,35 @@
+@using ShopEgypt.Domain.Entities
+@model IReadOnlyList<Category>
+
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<section class="category-hero">
+    <div class="container">
+        <span class="category-hero-label">Categories</span>
+        <h1>Browse by collection.</h1>
+    </div>
+</section>
+
+<section class="category-grid-section">
+    <div class="container">
+        <div class="category-grid">
+            @foreach (var category in Model)
+            {
+                <article class="category-card">
+                    <a asp-controller="Products" asp-action="Index" asp-route-categoryId="@category.Id" class="category-card-link">
+                        <img src="@(string.IsNullOrWhiteSpace(category.ImageUrl) ? "/images/placeholder.png" : category.ImageUrl)" alt="@category.Name" />
+                        <div class="category-card-content">
+                            <span class="category-count">@category.Products?.Count products</span>
+                            <h3>@category.Name</h3>
+                            <p>@(string.IsNullOrWhiteSpace(category.Description) ? "Crafted essentials from Egypt's most thoughtful makers." : category.Description)</p>
+                            <span class="category-cta">Shop -></span>
+                        </div>
+                        <div class="category-card-overlay"></div>
+                    </a>
+                </article>
+            }
+        </div>
+    </div>
+</section>

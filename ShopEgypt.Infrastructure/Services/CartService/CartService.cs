@@ -86,7 +86,7 @@ namespace ShopEgypt.Infrastructure.Services.CartService
         public async Task<decimal> GetSubtotalAsync()
         {
             var cart = await GetCartAsync();
-            return cart.Sum(x => x.Product.Price * x.Quantity);
+            return cart.Sum(x => (x.Product?.Price ?? 0) * x.Quantity);
         }
 
         public async Task<decimal> GetShippingAsync()
@@ -295,6 +295,13 @@ namespace ShopEgypt.Infrastructure.Services.CartService
         {
             var userCart = await GetOrCreateUserCartAsync();
             var items = await GetUserCartItemsInternalAsync(userCart.Id);
+            foreach (var item in items)
+            {
+                if (item.Product == null)
+                {
+                    item.Product = await _unitOfWork.Products.GetByIdAsync(item.ProductId);
+                }
+            }
             return items.ToList();
         }
 
