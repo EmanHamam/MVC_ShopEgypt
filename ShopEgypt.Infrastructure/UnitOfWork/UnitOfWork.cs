@@ -16,23 +16,8 @@ namespace ShopEgypt.Infrastructure.UnitOfWork
     {
         private readonly ApplicationDbContext _context;
 
-
-        // Add your services and 
         public IReviewService ReviewService { get; }
         public IProductService ProductService { get; }
-
-        public UnitOfWork(ApplicationDbContext context)
-        {
-            _context = context;
-            ProductService = new ProductService(_context);
-            ReviewService = new ReviewService(_context);
-        }
-
-        public async Task<int> SaveAllAsync(CancellationToken ct = default)
-        {
-            return await _context.SaveChangesAsync(ct);
-        }
-
         public IGenericRepository<Address> Addresses { get; private set; }
         public IGenericRepository<ApplicationUser> ApplicationUsers { get; private set; }
         public IGenericRepository<Brand> Brands { get; private set; }
@@ -64,15 +49,21 @@ namespace ShopEgypt.Infrastructure.UnitOfWork
             Reviews = new GenericRepository<Review>(_context);
             WishLists = new GenericRepository<Wishlist>(_context);
             WishlistItems = new GenericRepository<WishlistItem>(_context);
+            ProductService = new ProductService(_context);
+            ReviewService = new ReviewService(_context);
         }
         public async Task<int> SaveAsync()
         {
             return await _context.SaveChangesAsync();
         }
-
+        public async Task<int> SaveAllAsync(CancellationToken ct = default)
+        {
+            return await _context.SaveChangesAsync(ct);
+        }
         public void Dispose()
         {
             _context.Dispose();
         }
+
     }
 }
