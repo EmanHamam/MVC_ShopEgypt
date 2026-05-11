@@ -8,6 +8,7 @@ using ShopEgypt.Application.Interfaces.ICartService;
 using ShopEgypt.Application.Interfaces.ICategoryService;
 using ShopEgypt.Application.Interfaces.IImageStorageService;
 using ShopEgypt.Application.Interfaces.IProductService;
+using ShopEgypt.Application.Interfaces.IReviewService;
 using ShopEgypt.Data.Context;
 using ShopEgypt.Domain.Entities;
 using ShopEgypt.Infrastructure.ExternalServices.SendGridEmailSender;
@@ -15,6 +16,7 @@ using ShopEgypt.Infrastructure.Services.CartService;
 using ShopEgypt.Infrastructure.Services.CategoryService;
 using ShopEgypt.Infrastructure.Services.CloudinaryService;
 using ShopEgypt.Infrastructure.Services.ProductService;
+using ShopEgypt.Infrastructure.Services.ReviewService;
 using ShopEgypt.Infrastructure.UnitOfWork;
 using System;
 using System.Collections.Generic;
@@ -63,14 +65,15 @@ namespace ShopEgypt.Infrastructure.ServiceRegistration
             services.AddScoped<ICartService, CartService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IReviewService, ReviewService>();
             services.AddScoped<ICategoryService, CategoryService>();
 
-
-           services.Configure<IdentityOptions>(options =>
+            // Auto Mapper
+            //services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfile>());
+            services.Configure<IdentityOptions>(options =>
             {
                 options.SignIn.RequireConfirmedEmail = true;
             });
-
             return services;
         }
     }

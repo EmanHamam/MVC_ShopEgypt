@@ -26,7 +26,8 @@ namespace ShopEgypt.Infrastructure.Services.ProductService
             IQueryable<Product> query = Context.Products
                 .AsNoTracking()
                 .Include(p => p.ProductImages)
-                .Include(p => p.Reviews);
+                .Include(p => p.Reviews)
+                    .ThenInclude(r => r.ApplicationUser);
 
             if (categoryId.HasValue)
             {
@@ -76,6 +77,7 @@ namespace ShopEgypt.Infrastructure.Services.ProductService
                 .Include(p => p.Category)
                 .Include(p => p.ProductImages)
                 .Include(p => p.Reviews)
+                    .ThenInclude(r => r.ApplicationUser)
                 .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
             return product?.Adapt<ProductDetailDto>();
         }
