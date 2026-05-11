@@ -3,6 +3,7 @@ namespace ShopEgypt.Application.DTOs
     public class ProductListItemDto
     {
         public int Id { get; set; }
+        public string Brand { get; set; }
         public string Title { get; set; } = string.Empty;
         public decimal Price { get; set; }
         public decimal? DiscountPrice { get; set; }
