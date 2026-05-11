@@ -1,3 +1,8 @@
+﻿using ShopEgypt.Application.Interfaces.IProductService;
+using ShopEgypt.Application.Interfaces.IReviewService;
+using ShopEgypt.Data.Context;
+using ShopEgypt.Infrastructure.Services.ProductService;
+using ShopEgypt.Infrastructure.Services.ReviewService;
 ﻿using ShopEgypt.Data.Context;
 using ShopEgypt.Domain.Entities;
 using ShopEgypt.Infrastructure.Repositories;
@@ -7,9 +12,12 @@ using System.Text;
 
 namespace ShopEgypt.Infrastructure.UnitOfWork
 {
-    public class UnitOfWork:IUnitOfWork
+    public class UnitOfWork: IUnitOfWork
     {
         private readonly ApplicationDbContext _context;
+
+        public IReviewService ReviewService { get; }
+        public IProductService ProductService { get; }
         public IGenericRepository<Address> Addresses { get; private set; }
         public IGenericRepository<ApplicationUser> ApplicationUsers { get; private set; }
         public IGenericRepository<Brand> Brands { get; private set; }
@@ -41,12 +49,17 @@ namespace ShopEgypt.Infrastructure.UnitOfWork
             Reviews = new GenericRepository<Review>(_context);
             WishLists = new GenericRepository<Wishlist>(_context);
             WishlistItems = new GenericRepository<WishlistItem>(_context);
+            ProductService = new ProductService(_context);
+            ReviewService = new ReviewService(_context);
         }
         public async Task<int> SaveAsync()
         {
             return await _context.SaveChangesAsync();
         }
-
+        public async Task<int> SaveAllAsync(CancellationToken ct = default)
+        {
+            return await _context.SaveChangesAsync(ct);
+        }
         public void Dispose()
         {
             _context.Dispose();

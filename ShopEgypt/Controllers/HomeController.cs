@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 //using ShopEgypt.Models;
 using System.Diagnostics;
 
 namespace ShopEgypt.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         public IActionResult Index()
