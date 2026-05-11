@@ -1,3 +1,4 @@
+using ShopEgypt.Application.DTOs.ReviewDtos;
 using System.Collections.Generic;
 
 namespace ShopEgypt.Application.DTOs
@@ -16,5 +17,8 @@ namespace ShopEgypt.Application.DTOs
         public double AverageRating { get; set; }
         public int ReviewCount { get; set; }
         public IReadOnlyList<ProductImageDto> Images { get; set; } = new List<ProductImageDto>();
+
+        public List<ReviewDto> ProductReviews { get; set; } = new List<ReviewDto>();
+        public CreateReviewDto CreateReview { get; set; } = new();
     }
 }

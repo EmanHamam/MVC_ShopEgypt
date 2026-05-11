@@ -6,6 +6,7 @@ namespace ShopEgypt.Application.DTOs.ReviewDtos
 {
     public class UpdateReviewDto
     {
+        public int Id { get; set; }
         public int ProductId { get; set; }
 
         public string ApplicationUserId { get; set; }

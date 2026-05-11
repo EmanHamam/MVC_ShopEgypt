@@ -1,4 +1,5 @@
 using System;
+using System.Data;
 using System.Linq;
 using Mapster;
 using ShopEgypt.Application.DTOs;
@@ -42,20 +43,39 @@ namespace ShopEgypt.Application.Mappings
                 .Map(dest => dest.ReviewCount, src => src.Reviews.Count)
                 .Map(dest => dest.Images, src => src.ProductImages
                     .OrderBy(i => i.DisplayOrder)
-                    .ToList());
+                    .ToList())
+                .Map(dest => dest.ProductReviews, src => src.Reviews);
 
 
             TypeAdapterConfig<Review, ReviewDto>
                 .NewConfig()
-                .Map(dest => dest.ProductName, src => src.Product.Title)
-                .Map(dest => dest.ApplicationUserId, src => "267824f8-683c-4812-afc8-1e1dbdafe519")  // testing 
-                .Map(dest => dest.UserName, src => "mega03326@gmail.com")  // testing
-                //.Map(dest => dest.UserName, src => src.ApplicationUser.UserName);
-                .Map(dest => dest.CreatedAt, src => DateTime.UtcNow);
+                .Map(dest => dest.ProductName, src => src.Product != null ? src.Product.Title : null) // null-safe
+                .Ignore(dest => dest.ApplicationUser)
+                .Map(dest => dest.ApplicationUserId, src => src.ApplicationUserId)
+                .Map(dest => dest.UserName, src => src.ApplicationUser.UserName)
+                .Map(dest => dest.CreatedAt, src => src.CreatedAt);
 
 
             // Create ReviewDto Mapping, no need to mapping as share the same properties
-            
+            TypeAdapterConfig<Review, CreateReviewDto>
+                .NewConfig()
+                .Map(dest => dest.ApplicationUserId, src => src.ApplicationUserId)
+                .Map(dest => dest.ProductId, src => src.ProductId);
+
+            TypeAdapterConfig<ReviewDto, UpdateReviewDto>
+                .NewConfig()
+                .Map(dest => dest.Id, src => src.Id)
+                .Map(dest => dest.ProductId, src => src.ProductId)
+                .Map(dest => dest.ApplicationUserId, src => src.ApplicationUserId)
+                .Map(dest => dest.Rating, src => src.Rating)
+                .Map(dest => dest.Comment, src => src.Comment);
+            // TypeAdapterConfig<Review, UpdateReviewDto>
+            //     .NewConfig()
+            //     .Map(dest => dest.Id, src => src.Id)
+            //     .Map(dest => dest.ProductId, src => src.ProductId)
+            //     .Map(dest => dest.ApplicationUserId, src => src.ApplicationUserId)
+            //     .Map(dest => dest.Rating, src => src.Rating)
+            //     .Map(dest => dest.Comment, src => src.Comment);
 
             TypeAdapterConfig<Category, CategoryDto>.NewConfig();
         }

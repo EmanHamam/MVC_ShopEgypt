@@ -47,10 +47,9 @@ namespace ShopEgypt.Infrastructure.Services.ReviewService
         //    return created.Adapt<ReviewDto>();
         //}
 
-        public async Task<ReviewDto> CreateReviewAsync(CreateReviewDto dto, CancellationToken ct = default)
+        public async Task<bool> CreateReviewAsync(CreateReviewDto dto, CancellationToken ct = default)
         {
             var review = dto.Adapt<Review>();
-            review.ApplicationUserId = "267824f8-683c-4812-afc8-1e1dbdafe519";
             review.CreatedAt = DateTime.UtcNow;
 
             var entry = await _context.Reviews.AddAsync(review, ct);
@@ -63,9 +62,36 @@ namespace ShopEgypt.Infrastructure.Services.ReviewService
                 .FirstOrDefaultAsync(r => r.Id == entry.Entity.Id, ct);
 
             if (created is null)
-                throw new Exception($"Review with Id {entry.Entity.Id} not found after save.");
+                //throw new Exception($"Review with Id {entry.Entity.Id} not found after save.");
+                return false;
+ 
 
-            return created.Adapt<ReviewDto>();
+            return true;
+        }
+
+        public async Task<ReviewDto?> GetReviewByIdAsync(int id, CancellationToken ct = default)
+        {
+            var review = await _context.Reviews
+                .Include(r => r.Product)
+                .Include(r => r.ApplicationUser)
+                .FirstOrDefaultAsync(r => r.Id == id, ct);
+
+            return review?.Adapt<ReviewDto>();
+        }
+
+        public async Task<bool> UpdateReviewAsync(UpdateReviewDto dto, CancellationToken ct = default)
+        {
+            var review = await _context.Reviews.FindAsync(new object[] { dto.Id }, ct);
+            if (review == null || review.ApplicationUserId != dto.ApplicationUserId)
+            {
+                return false;
+            }
+
+            review.Rating = dto.Rating;
+            review.Comment = dto.Comment;
+
+            await _context.SaveChangesAsync(ct);
+            return true;
         }
 
     }

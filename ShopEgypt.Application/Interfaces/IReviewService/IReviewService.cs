@@ -10,8 +10,9 @@ namespace ShopEgypt.Application.Interfaces.IReviewService
         Task<IEnumerable<ReviewDto>> GetByProductReviewsAsync(int productId, CancellationToken ct = default);
         //Task<double> GetAverageRatingAsync(int productId, CancellationToken ct = default);
 
-        Task<ReviewDto> CreateReviewAsync(CreateReviewDto dto, CancellationToken ct = default);
-        //Task<ReviewDto> UpdateAsync(UpdateReviewDto dto, CancellationToken ct = default);
+        Task<bool> CreateReviewAsync(CreateReviewDto dto, CancellationToken ct = default);
+        Task<ReviewDto?> GetReviewByIdAsync(int id, CancellationToken ct = default);
+        Task<bool> UpdateReviewAsync(UpdateReviewDto dto, CancellationToken ct = default);
         //Task DeleteAsync(int id, string requestingUserId, CancellationToken ct = default);
 
     }
