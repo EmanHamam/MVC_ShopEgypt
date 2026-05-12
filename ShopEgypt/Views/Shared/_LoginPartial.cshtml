@@ -1,81 +1,18 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using ShopEgypt.Domain.Entities
+@using ShopEgypt.ViewModels.Header
+@model HeaderViewModel
 @inject SignInManager<ApplicationUser> SignInManager
-@inject UserManager<ApplicationUser> UserManager
-
-<style>
-    .auth-links {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
-
-    .auth-links a, .auth-links button {
-        text-decoration: none;
-        font-size: 0.9rem;
-        padding: 0.5rem 1rem;
-        border-radius: 4px;
-        transition: all 0.3s ease;
-    }
-
-    .auth-links a {
-        color: #333;
-        border: 1px solid #ddd;
-    }
-
-    .auth-links a:hover {
-        background-color: #f5f5f5;
-        border-color: #999;
-    }
-
-    .auth-links .login-btn {
-        background-color: #333;
-        color: white;
-        border: 1px solid #333;
-    }
-
-    .auth-links .login-btn:hover {
-        background-color: #555;
-        color: white;
-    }
-
-    .user-greeting {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        padding: 0.5rem 1rem;
-        background-color: #f9f9f9;
-        border-radius: 4px;
-    }
-
-    .user-greeting span {
-        color: #333;
-        font-weight: 500;
-    }
-
-    .logout-btn {
-        background-color: #dc3545;
-        color: white;
-        border: 1px solid #dc3545;
-        padding: 0.5rem 1rem;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-
-    .logout-btn:hover {
-        background-color: #c82333;
-        border-color: #c82333;
-        color: white;
-    }
-</style>
 
 @if (SignInManager.IsSignedIn(User))
 {
+    var displayName = !string.IsNullOrWhiteSpace(Model?.UserGreetingName)
+        ? Model.UserGreetingName
+        : User.Identity?.Name;
     <div class="user-greeting">
-        <i class="fa-solid fa-user-circle"></i>
-        <span>Hello, @User.Identity?.Name!</span>
-        <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" style="margin: 0;">
+        <i class="fa-solid fa-user-circle" aria-hidden="true"></i>
+        <span>Hello  @displayName</span>
+        <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" class="user-greeting-logout">
             <button type="submit" class="logout-btn">Logout</button>
         </form>
     </div>
