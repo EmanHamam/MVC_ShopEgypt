@@ -21,7 +21,6 @@
                     <a asp-controller="Products" asp-action="Index" asp-route-categoryId="@category.Id" class="category-card-link">
                         <img src="@(string.IsNullOrWhiteSpace(category.ImageUrl) ? "/images/placeholder.png" : category.ImageUrl)" alt="@category.Name" />
                         <div class="category-card-content">
-                            <span class="category-count">@category.Products?.Count products</span>
                             <h3>@category.Name</h3>
                             <p>@(string.IsNullOrWhiteSpace(category.Description) ? "Crafted essentials from Egypt's most thoughtful makers." : category.Description)</p>
                             <span class="category-cta">Shop -></span>
