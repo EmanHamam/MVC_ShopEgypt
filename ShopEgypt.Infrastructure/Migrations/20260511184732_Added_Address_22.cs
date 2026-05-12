@@ -5,7 +5,7 @@
 namespace ShopEgypt.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class hendyMig2 : Migration
+    public partial class Added_Address_22 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -45,6 +45,8 @@ namespace ShopEgypt.Areas.Identity.Pages.Account
         /// </summary>
         public string EmailConfirmationUrl { get; set; }
 
+        public string ReturnUrl { get; set; }
+
         public async Task<IActionResult> OnGetAsync(string email, string returnUrl = null)
         {
             if (email == null)
@@ -52,6 +54,7 @@ namespace ShopEgypt.Areas.Identity.Pages.Account
                 return RedirectToPage("/Index");
             }
             returnUrl = returnUrl ?? Url.Content("~/");
+            ReturnUrl = returnUrl;
 
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)

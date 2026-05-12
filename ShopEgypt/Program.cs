@@ -1,15 +1,16 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using ShopEgypt.Data.Context;
 using ShopEgypt.Application.Mappings;
-using ShopEgypt.Infrastructure.ServiceRegistration;
+using ShopEgypt.Areas.Identity;
+using ShopEgypt.Data.Context;
 using ShopEgypt.Domain.Entities;
+using ShopEgypt.Infrastructure.ServiceRegistration;
 
 namespace ShopEgypt
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");;
@@ -30,8 +31,12 @@ namespace ShopEgypt
                 options.SignIn.RequireConfirmedEmail = true;
             });
 
-            builder.Services.AddDefaultIdentity<ApplicationUser>(options =>options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                options.SignIn.RequireConfirmedAccount = true;
+            })
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
 
             builder.Services.ConfigureApplicationCookie(options =>
             {
@@ -43,6 +48,7 @@ namespace ShopEgypt
             builder.Services.AddInfrastructureServices(builder.Configuration);
 
             builder.Services.AddControllersWithViews();
+            builder.Services.AddRazorPages();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddDistributedMemoryCache();
 
@@ -55,6 +61,13 @@ namespace ShopEgypt
             MapsterConfig.RegisterMappings();
 
             var app = builder.Build();
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+                var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+                await ApplicationDbContextSeeder.SeedAsync(userManager, roleManager);
+            }
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

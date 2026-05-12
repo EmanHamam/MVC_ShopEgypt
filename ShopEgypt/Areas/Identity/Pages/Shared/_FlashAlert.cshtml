@@ -1,0 +1,15 @@
+@model (string Message, string AlertType)
+@if (!string.IsNullOrEmpty(Model.Message))
+{
+    var css = Model.AlertType?.ToLowerInvariant() switch
+    {
+        "danger" => "danger",
+        "warning" => "warning",
+        "info" => "info",
+        _ => "success"
+    };
+    <div class="alert alert-@css alert-dismissible fade show" role="alert">
+        @Model.Message
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}

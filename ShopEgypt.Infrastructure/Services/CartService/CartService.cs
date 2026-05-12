@@ -8,6 +8,7 @@ using ShopEgypt.Application.Interfaces;
 using ShopEgypt.Application.Interfaces.ICartService;
 using ShopEgypt.Domain.Entities;
 using ShopEgypt.Infrastructure.UnitOfWork;
+using System.Linq;
 using System.Security.Claims;
 
 namespace ShopEgypt.Infrastructure.Services.CartService
@@ -198,6 +199,13 @@ namespace ShopEgypt.Infrastructure.Services.CartService
                 if (product == null)
                     continue;
 
+                // Load product images explicitly (GenericRepository.Find doesn't include navigation properties)
+                var allImages = await _unitOfWork.ProductImages.GetAllAsync();
+                var imagesForProduct = allImages.Where(pi => pi.ProductId == product.Id)
+                                                .OrderBy(pi => pi.DisplayOrder)
+                                                .ToList();
+                product.ProductImages = imagesForProduct;
+
                 result.Add(new CartItem
                 {
                     ProductId = item.ProductId,
@@ -294,8 +302,27 @@ namespace ShopEgypt.Infrastructure.Services.CartService
         private async Task<List<CartItem>> GetDatabaseCartItemsAsync()
         {
             var userCart = await GetOrCreateUserCartAsync();
-            var items = await GetUserCartItemsInternalAsync(userCart.Id);
-            return items.ToList();
+            var items    = await GetUserCartItemsInternalAsync(userCart.Id);
+
+            foreach (var item in items)
+            {
+                if (item.Product == null)
+                {
+                    var product = await _unitOfWork.Products.GetByIdAsync(item.ProductId);
+                    if (product != null)
+                    {
+                        var allImages = await _unitOfWork.ProductImages.GetAllAsync();
+                        product.ProductImages = allImages.Where(pi => pi.ProductId == product.Id)
+                                                         .OrderBy(pi => pi.DisplayOrder)
+                                                         .ToList();
+                    }
+                    item.Product = product;
+                }
+                
+                
+            }
+
+            return items;
         }
 
         private async Task<List<CartItem>> GetUserCartItemsInternalAsync(int cartId)

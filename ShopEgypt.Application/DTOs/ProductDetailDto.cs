@@ -6,12 +6,15 @@ namespace ShopEgypt.Application.DTOs
     public class ProductDetailDto
     {
         public int Id { get; set; }
+        public string Brand { get; set; }
         public string Title { get; set; } = string.Empty;
         public string? Description { get; set; }
         public decimal Price { get; set; }
         public decimal? DiscountPrice { get; set; }
         public int Stock { get; set; }
         public bool IsActive { get; set; }
+        public string? Color { get; set; }
+        public string? Size { get; set; }
         public int CategoryId { get; set; }
         public string? CategoryName { get; set; }
         public double AverageRating { get; set; }
