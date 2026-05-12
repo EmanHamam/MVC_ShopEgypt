@@ -379,7 +379,7 @@
         <form asp-controller="Reviews" asp-action="Create" method="post">
             @Html.AntiForgeryToken()
             <input type="hidden" name="ProductId" value="@Model.Id" />
-
+            <input type="hidden" name="ApplicationUserId" value="@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value" />
             <div class="form-group">
                 <label class="form-label">Your Rating</label>
                 <div class="star-rating-input">

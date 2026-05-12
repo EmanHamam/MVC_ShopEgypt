@@ -12,7 +12,6 @@ namespace ShopEgypt.Infrastructure.UnitOfWork
     {
         IReviewService ReviewService { get; }
         IProductService ProductService { get; }
-        Task<int> SaveAllAsync(CancellationToken cancellationToken = default);
 
         IGenericRepository<Address> Addresses { get; }
         IGenericRepository<ApplicationUser> ApplicationUsers { get; }

@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ShopEgypt.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
     <link rel="shortcut icon" href="~/logo (1).png" type="image/x-icon" />
 
     @RenderSection("Styles", required: false)
@@ -26,6 +27,41 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+    $(document).ready(function () {
+
+        @if (TempData["Success"] != null)
+        {
+            <text>
+                toastr.success("@TempData["Success"]");
+            </text>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <text>
+                toastr.error("@TempData["Error"]");
+            </text>
+        }
+
+        @if (TempData["Info"] != null)
+        {
+            <text>
+                toastr.info("@TempData["Info"]");
+            </text>
+        }
+
+        @if (TempData["Warning"] != null)
+        {
+            <text>
+                toastr.warning("@TempData["Warning"]");
+            </text>
+        }
+
+        });
+    </script>
 </body>
 </html>

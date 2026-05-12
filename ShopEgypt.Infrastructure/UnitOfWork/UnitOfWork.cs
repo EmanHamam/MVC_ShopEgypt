@@ -56,10 +56,7 @@ namespace ShopEgypt.Infrastructure.UnitOfWork
         {
             return await _context.SaveChangesAsync();
         }
-        public async Task<int> SaveAllAsync(CancellationToken ct = default)
-        {
-            return await _context.SaveChangesAsync(ct);
-        }
+        
         public void Dispose()
         {
             _context.Dispose();
