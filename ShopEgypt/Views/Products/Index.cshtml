@@ -16,6 +16,9 @@
     var maxPrice = ViewBag.MaxPrice as decimal?;
     var minPriceValue = minPrice?.ToString("0.##") ?? string.Empty;
     var maxPriceValue = maxPrice?.ToString("0.##") ?? string.Empty;
+    var currentPage = ViewBag.Page as int? ?? 1;
+    var pageSize = ViewBag.PageSize as int? ?? 12;
+    var totalPages = (int)Math.Ceiling(Model.TotalCount / (double)pageSize);
     foreach (var item in sortItems)
     {
         item.Selected = item.Value == selectedSortValue;
@@ -94,7 +97,6 @@
                 @foreach (var item in Model.Items)
                 {
                     var hasDiscount = item.DiscountPrice.HasValue && item.DiscountPrice.Value > 0;
-                    var finalPrice = hasDiscount ? item.Price - item.DiscountPrice!.Value : item.Price;
                     var badge = item.AverageRating >= 4.5 ? "Bestseller" : (hasDiscount ? "Sale" : "New");
                     <article class="product-card">
                         <div class="product-media">
@@ -128,8 +130,8 @@
                                 @item.Title
                             </a>
                             <div class="product-price">
-                                <span>@finalPrice.ToString("N0") EGP</span>
-                                @if (hasDiscount)
+                                <span>@item.DiscountPrice?.ToString("N0") EGP</span>
+                                @if (hasDiscount && item.DiscountPrice != item.Price)
                                 {
                                     <span class="product-price-old">@item.Price.ToString("N0") EGP</span>
                                 }
@@ -138,6 +140,49 @@
                     </article>
                 }
             </div>
+
+            @if (totalPages > 1)
+            {
+                <div class="product-pagination">
+                    @if (currentPage > 1)
+                    {
+                        <a class="page-btn" asp-action="Index" asp-controller="Products"
+                           asp-route-page="@(currentPage - 1)"
+                           asp-route-pageSize="@pageSize"
+                           asp-route-categoryId="@selectedCategoryId"
+                           asp-route-sortBy="@selectedSortValue"
+                           asp-route-keyWord="@keyword"
+                           asp-route-minPrice="@minPriceValue"
+                           asp-route-maxPrice="@maxPriceValue">
+                            Previous
+                        </a>
+                    }
+                    else
+                    {
+                        <span class="page-btn is-disabled">Previous</span>
+                    }
+
+                    <span class="page-status">Page @currentPage of @totalPages</span>
+
+                    @if (currentPage < totalPages)
+                    {
+                        <a class="page-btn" asp-action="Index" asp-controller="Products"
+                           asp-route-page="@(currentPage + 1)"
+                           asp-route-pageSize="@pageSize"
+                           asp-route-categoryId="@selectedCategoryId"
+                           asp-route-sortBy="@selectedSortValue"
+                           asp-route-keyWord="@keyword"
+                           asp-route-minPrice="@minPriceValue"
+                           asp-route-maxPrice="@maxPriceValue">
+                            Next
+                        </a>
+                    }
+                    else
+                    {
+                        <span class="page-btn is-disabled">Next</span>
+                    }
+                </div>
+            }
         </div>
     </div>
 </section>
