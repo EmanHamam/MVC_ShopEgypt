@@ -1,379 +1,75 @@
 @using ShopEgypt.Application.DTOs
 @model ProductDetailDto
 
-@section Styles {
-<style>
-    /* ── Page Base ───────────────────────────────────────────── */
-    .product-detail-wrap {
-        max-width: 900px;
-        margin: 2.5rem auto;
-        padding: 0 1.5rem 4rem;
-        font-family: 'Georgia', 'Times New Roman', serif;
-    }
+@{
+    var hasDiscount = Model.DiscountPrice.HasValue && Model.DiscountPrice.Value > 0;
+    var finalPrice = hasDiscount ? Model.Price - Model.DiscountPrice!.Value : Model.Price;
+    var heroImage = Model.Images?.FirstOrDefault()?.ImageUrl ?? "/images/placeholder.png";
+    var returnUrl = $"{Context.Request.Path}{Context.Request.QueryString}";
+    var rating = Model.AverageRating.ToString("0.0");
+    var reviews = Model.ReviewCount;
+    var colors = Model.Color;
+    var sizes = Model.Size;
 
-    /* ── Product Info ─────────────────────────────────────────── */
-    .product-info-card {
-        background: #faf8f5;
-        border: 1px solid #ede7dc;
-        border-radius: 12px;
-        padding: 2rem;
-        margin-bottom: 2rem;
-    }
-
-    .product-info-card h1 {
-        font-size: 1.6rem;
-        font-weight: 400;
-        color: #1a1a1a;
-        margin: 0 0 1.5rem;
-        letter-spacing: 0.02em;
-    }
-
-    .product-meta {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-        gap: 1rem;
-        margin-bottom: 1.25rem;
-    }
-
-    .meta-item label {
-        display: block;
-        font-family: 'Helvetica Neue', Arial, sans-serif;
-        font-size: 0.72rem;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        color: #9a9085;
-        margin-bottom: 0.25rem;
-    }
-
-    .meta-item span {
-        font-size: 0.97rem;
-        color: #2d2822;
-    }
-
-    .meta-item .price-val {
-        font-size: 1.15rem;
-        font-weight: 600;
-        color: #4a4a2e;
-    }
-
-    .meta-item .discount-val {
-        color: #c8a84b;
-        font-size: 1rem;
-    }
-
-    .product-description {
-        font-size: 0.97rem;
-        color: #4a4540;
-        line-height: 1.7;
-        margin-bottom: 1.25rem;
-        border-top: 1px solid #ede7dc;
-        padding-top: 1.25rem;
-    }
-
-    .product-actions {
-        display: flex;
-        gap: 1rem;
-        font-family: 'Helvetica Neue', Arial, sans-serif;
-        font-size: 0.83rem;
-    }
-
-    .product-actions a {
-        color: #7a7060;
-        text-decoration: none;
-        letter-spacing: 0.04em;
-        border-bottom: 1px solid #d0c8bc;
-        padding-bottom: 1px;
-        transition: color 0.15s, border-color 0.15s;
-    }
-
-    .product-actions a:hover {
-        color: #4a4a2e;
-        border-color: #4a4a2e;
-    }
-
-    /* ── Product Images ───────────────────────────────────────── */
-    .product-images {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.75rem;
-        margin-bottom: 2rem;
-    }
-
-    .product-images img {
-        width: 130px;
-        height: 130px;
-        object-fit: cover;
-        border-radius: 8px;
-        border: 1px solid #ede7dc;
-    }
-
-    /* ── Section Heading ──────────────────────────────────────── */
-    .section-heading {
-        font-size: 1.5rem;
-        font-weight: 400;
-        letter-spacing: 0.02em;
-        color: #1a1a1a;
-        margin-bottom: 1.5rem;
-        padding-bottom: 0.85rem;
-        border-bottom: 1px solid #e8e2d9;
-    }
-
-    /* ── Review Form Card ─────────────────────────────────────── */
-    .review-form-card {
-        background: #faf8f5;
-        border: 1px solid #ede7dc;
-        border-radius: 12px;
-        padding: 2rem;
-        margin-bottom: 2.5rem;
-    }
-
-    /* Star Rating */
-    .star-rating-input {
-        display: flex;
-        flex-direction: row-reverse;
-        gap: 4px;
-        margin-bottom: 0.25rem;
-    }
-
-    .star-rating-input input[type="radio"] { display: none; }
-
-    .star-rating-input label {
-        font-size: 2rem;
-        color: #d9d0c4;
-        cursor: pointer;
-        transition: color 0.15s ease, transform 0.1s ease;
-        line-height: 1;
-    }
-
-    .star-rating-input label:hover,
-    .star-rating-input label:hover ~ label,
-    .star-rating-input input[type="radio"]:checked ~ label {
-        color: #c8a84b;
-    }
-
-    .star-rating-input label:hover { transform: scale(1.15); }
-
-    /* Form fields */
-    .review-form-card .form-label {
-        display: block;
-        font-family: 'Helvetica Neue', Arial, sans-serif;
-        font-size: 0.72rem;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        color: #9a9085;
-        margin-bottom: 0.4rem;
-    }
-
-    .review-form-card .form-control {
-        width: 100%;
-        background: #f0ece5;
-        border: 1px solid #e0d8cd;
-        border-radius: 8px;
-        padding: 0.7rem 1rem;
-        font-size: 0.95rem;
-        font-family: 'Helvetica Neue', Arial, sans-serif;
-        color: #2d2822;
-        outline: none;
-        transition: border-color 0.2s, background 0.2s;
-        box-sizing: border-box;
-    }
-
-    .review-form-card .form-control:focus {
-        border-color: #c8a84b;
-        background: #fff;
-    }
-
-    .review-form-card textarea.form-control {
-        resize: vertical;
-        min-height: 110px;
-    }
-
-    .review-form-card .form-group { margin-bottom: 1rem; }
-
-    .btn-submit-review {
-        margin-top: 0.5rem;
-        padding: 0.75rem 2.2rem;
-        background: #4a4a2e;
-        color: #f5f0e8;
-        border: none;
-        border-radius: 8px;
-        font-family: 'Helvetica Neue', Arial, sans-serif;
-        font-size: 0.85rem;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        cursor: pointer;
-        transition: background 0.2s, transform 0.1s;
-    }
-
-    .btn-submit-review:hover { background: #3a3a22; transform: translateY(-1px); }
-    .btn-submit-review:active { transform: translateY(0); }
-
-    /* ── Existing Reviews ─────────────────────────────────────── */
-    .reviews-list {
-        display: flex;
-        flex-direction: column;
-        gap: 1.25rem;
-    }
-
-    .review-card {
-        background: #faf8f5;
-        border: 1px solid #ede7dc;
-        border-radius: 12px;
-        padding: 1.5rem 1.75rem;
-    }
-
-    .review-card-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 0.4rem;
-        margin-bottom: 0.5rem;
-    }
-
-    .review-author {
-        font-family: 'Helvetica Neue', Arial, sans-serif;
-        font-size: 0.9rem;
-        font-weight: 600;
-        color: #2d2822;
-    }
-
-    .review-date {
-        font-family: 'Helvetica Neue', Arial, sans-serif;
-        font-size: 0.78rem;
-        color: #a09890;
-    }
-
-    .review-stars {
-        color: #c8a84b;
-        font-size: 1rem;
-        letter-spacing: 1px;
-        margin-bottom: 0.5rem;
-    }
-
-    .review-comment {
-        font-size: 0.95rem;
-        color: #4a4540;
-        line-height: 1.65;
-        margin: 0;
-    }
-
-    /* ── Hidden Reviews ─────────────────────────────────────── */
-    .hidden-review { display: none; }
-
-    /* ── Read More Button ───────────────────────────────────── */
-    #readMoreBtn {
-        margin-top: 1rem;
-        padding: 0.75rem 2.2rem;
-        background: #4a4a2e;
-        color: #f5f0e8;
-        border: none;
-        border-radius: 8px;
-        font-family: 'Helvetica Neue', Arial, sans-serif;
-        font-size: 0.85rem;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        cursor: pointer;
-        transition: background 0.2s, transform 0.1s;
-    }
-
-    #readMoreBtn:hover { background: #3a3a22; transform: translateY(-1px); }
-    #readMoreBtn:active { transform: translateY(0); }
-
-    @@media (max-width: 600px) {
-        .product-meta { grid-template-columns: 1fr 1fr; }
-        .product-images img { width: 100px; height: 100px; }
-    }
-</style>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const readMoreBtn = document.getElementById('readMoreBtn');
-        if (readMoreBtn) {
-            readMoreBtn.addEventListener('click', function() {
-                const hiddenReviews = document.querySelectorAll('.hidden-review');
-                const isExpanded = readMoreBtn.textContent === 'Show Less';
-
-                hiddenReviews.forEach(review => {
-                    review.style.display = isExpanded ? 'none' : 'block';
-                });
-
-                readMoreBtn.textContent = isExpanded ? 'Read More Reviews' : 'Show Less';
-            });
-        }
-    });
-</script>
 }
 
-<div class="product-detail-wrap">
+<section class="product-detail">
+    <div class="container product-detail-grid">
+        <div class="product-gallery">
+            <nav class="product-breadcrumb">
+                <a asp-controller="Home" asp-action="Index">Home</a>
+                <span>/</span>
+                <a asp-controller="Products" asp-action="Index">Shop</a>
+                <span>/</span>
+                <span>@Model.Title</span>
+            </nav>
 
-    <div class="product-info-card">
-        <h1>@Model.Title</h1>
+            <div class="product-hero-image">
+                <img src="@heroImage" alt="@Model.Title" />
+            </div>
 
-        <div class="product-meta">
-            <div class="meta-item">
-                <label>Price</label>
-                <span class="price-val">$@Model.Price</span>
-            </div>
-            @if (Model.DiscountPrice.HasValue)
-            {
-            <div class="meta-item">
-                <label>Discount Price</label>
-                <span class="discount-val">$@Model.DiscountPrice</span>
-            </div>
-            }
-            <div class="meta-item">
-                <label>Stock</label>
-                <span>@Model.Stock units</span>
-            </div>
-            <div class="meta-item">
-                <label>Category</label>
-                <span>@Model.CategoryName</span>
-            </div>
-            <div class="meta-item">
-                <label>Avg. Rating</label>
-                <span>
-                    @for (int i = 1; i <= 5; i++)
+            <div class="product-thumbs">
+                @if (Model.Images != null && Model.Images.Count > 0)
+                {
+                    foreach (var img in Model.Images)
                     {
-                        <span style="color:#c8a84b;">@(i <= Math.Round(Model.AverageRating) ? "★" : "☆")</span>
+                        <button type="button" class="product-thumb" data-image="@img.ImageUrl">
+                            <img src="@img.ImageUrl" alt="@Model.Title" />
+                        </button>
                     }
-                    <small style="color:#9a9085; font-family:sans-serif; font-size:0.78rem;"> (@Model.AverageRating.ToString("0.0"))</small>
-                </span>
+                }
             </div>
         </div>
 
-        <p class="product-description">@Model.Description</p>
+        <div class="product-detail-info">
+            <span class="product-brand">@Model.Brand</span>
+            <h1>@Model.Title</h1>
 
-        <div class="product-actions">
-            <a href="/products/edit/@Model.Id">Edit</a>
-            <span style="color:#d0c8bc;">|</span>
-            <a href="/products/delete/@Model.Id">Delete</a>
-            <span style="color:#d0c8bc;">|</span>
-            <a href="/products">Back to Products</a>
-        </div>
-    </div>
+            <div class="product-rating-row">
+                <span class="stars" aria-hidden="true">★★★★★</span>
+                <span>@rating • @reviews reviews</span>
+            </div>
 
-    @if (Model.Images != null && Model.Images.Count > 0)
-    {
-        <div class="product-images">
-            @foreach (var img in Model.Images)
-            {
-                <img src="@img.ImageUrl" alt="Product image" />
-            }
-        </div>
-    }
+            <div class="product-detail-price">
+                <span class="price">@finalPrice.ToString("N0") EGP</span>
+                @if (hasDiscount)
+                {
+                    <span class="price-old">@Model.Price.ToString("N0")</span>
+                }
+            </div>
 
-    <h2 class="section-heading">Customer Reviews</h2>
+            <p class="product-description">
+                @(string.IsNullOrWhiteSpace(Model.Description)
+                    ? "A refined everyday staple crafted by Egypt's thoughtful makers."
+                    : Model.Description)
+            </p>
 
-    <!-- Review Sort Dropdown -->
-    <div style="margin-bottom: 1rem;">
-        <label for="reviewSort" style="font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 0.85rem; color: #9a9085; margin-right: 0.5rem;">Sort Reviews:</label>
-        <select id="reviewSort" onchange="window.location.href = '?reviewSort=' + this.value" style="padding: 0.5rem; border: 1px solid #e0d8cd; border-radius: 8px; background: #f0ece5; font-size: 0.85rem;">
-            <option value="newest" selected="@(ViewBag.ReviewSort == "newest")">Newest</option>
-            <option value="highest" selected="@(ViewBag.ReviewSort == "highest")">Highest Rating</option>
-            <option value="lowest" selected="@(ViewBag.ReviewSort == "lowest")">Lowest Rating</option>
-        </select>
-    </div>
+            <div class="product-option">
+                <h4>Color</h4>
+                <div class="color-dots">
+                    <span class="colors">@colors</span>
+                </div>
+            </div>
 
     <div class="review-form-card">
         <form asp-controller="Reviews" asp-action="Create" method="post">
@@ -391,51 +87,33 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <label class="form-label" for="reviewComment">Share Your Experience</label>
-                <textarea id="reviewComment" name="Comment"  class="form-control"
-                          placeholder="Tell others what you think about this product..."></textarea>
+            <div class="product-cta">
+                <form asp-controller="Cart" asp-action="Add" method="post" class="add-to-bag">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="productId" value="@Model.Id" />
+                    <input type="hidden" name="returnUrl" value="@returnUrl" />
+                    <input type="hidden" name="qty" value="1" />
+                    <button type="submit">Add to bag</button>
+                </form>
+                <button type="button" class="wishlist-circle" aria-label="Add to wishlist">
+                    <i class="fa-regular fa-heart"></i>
+                </button>
             </div>
 
-            <button type="submit" class="btn-submit-review">Submit Review</button>
-        </form>
+            <div class="product-meta-row">
+                <span><i class="fa-regular fa-circle-check"></i> Free shipping</span>
+                <span><i class="fa-regular fa-clock"></i> 30-day returns</span>
+                <span><i class="fa-regular fa-gem"></i> Authentic</span>
+            </div>
+        </div>
     </div>
+</section>
 
-    @if (Model.ProductReviews != null && Model.ProductReviews.Any())
-    {
-        <div class="reviews-list">
-            @foreach (var review in Model.ProductReviews)
-            {
-                <div class="review-card">
-                    <div class="review-card-header">
-                        @* <span class="review-author">@review.ApplicationUser?.FirstName</span> *@
-                        <strong>@review.UserName</strong>
-                        <span class="review-date">@review.CreatedAt?.ToString("MMM d, yyyy")</span>
-                        @if (User.Identity?.IsAuthenticated == true &&
-                             User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value == review.ApplicationUserId)
-                        {
-                            <a href="/reviews/edit/@review.Id" style="margin-left: 1rem; color: #7a7060; text-decoration: none;">Edit</a>
-                        }
-                    </div>
-                    <div class="review-stars">
-                        @for (int i = 1; i <= 5; i++)
-                        {
-                            <span>@(i <= review.Rating ? "★" : "☆")</span>
-                        }
-                    </div>
-                    @if (!string.IsNullOrEmpty(review.Comment))
-                    {
-                        <p class="review-comment">@review.Comment</p>
-                    }
-                </div>
-            }
+<section class="product-reviews">
+    <div class="container">
+        <div class="reviews-header">
+            <h2>Customer reviews</h2>
+            <button type="button" class="review-btn">Write a review</button>
         </div>
-    } 
-    else
-    {
-        <div class="reviews-empty">
-            No reviews yet. Be the first to share your thoughts.
-        </div>
-    }
-
-</div>
+    </div>
+</section>

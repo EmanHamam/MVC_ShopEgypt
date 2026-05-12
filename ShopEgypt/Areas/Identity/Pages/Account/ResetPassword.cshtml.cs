@@ -98,14 +98,16 @@ namespace ShopEgypt.Areas.Identity.Pages.Account
             var user = await _userManager.FindByEmailAsync(Input.Email);
             if (user == null)
             {
-                // Don't reveal that the user does not exist
-                return RedirectToPage("./ResetPasswordConfirmation");
+                // Do not reveal whether the email exists; send user to login with no success flash.
+                return RedirectToPage("./Login");
             }
 
             var result = await _userManager.ResetPasswordAsync(user, Input.Code, Input.Password);
             if (result.Succeeded)
             {
-                return RedirectToPage("./ResetPasswordConfirmation");
+                TempData["StatusMessage"] = "Your password has been reset. Please sign in with your new password.";
+                TempData["StatusAlertType"] = "success";
+                return RedirectToPage("./Login");
             }
 
             foreach (var error in result.Errors)

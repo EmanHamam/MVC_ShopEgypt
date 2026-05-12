@@ -4,5 +4,8 @@
     {
         public int CartCount { get; set; }
         public int WishlistCount { get; set; }
+
+        /// <summary>First name (or email) for signed-in greeting.</summary>
+        public string? UserGreetingName { get; set; }
     }
 }
