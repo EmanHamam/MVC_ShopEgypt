@@ -34,6 +34,16 @@ namespace ShopEgypt.Controllers
             _stripeService = stripeService;
             _config        = config;
         }
+        // ════════════════════════════════════════════════════
+        // View All order to specific user
+        // ════════════════════════════════════════════════════
+
+        public async Task<IActionResult> MyOrders()
+        {
+            var userId = _userManager.GetUserId(User);
+            var orders = await _orderService.GetOrdersByUserIdAsync(userId!);
+            return View(orders);
+        }
 
         // ════════════════════════════════════════════════════
         // STEP 1 — ADDRESS
