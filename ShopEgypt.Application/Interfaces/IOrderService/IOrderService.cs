@@ -37,5 +37,11 @@ namespace ShopEgypt.Application.Interfaces.IOrderService
         /// Sets Payment.Status = Succeeded, PaidAt = UtcNow, Order.Status = Processing.
         /// </summary>
         Task ConfirmPaymentAsync(int orderId);
+
+        /// <summary>
+        ///     
+        /// Retrieves all orders for a given user, including their OrderItems and Product navigations.
+
+        Task<List<Order>> GetOrdersByUserIdAsync(string userId);
     }
 }
