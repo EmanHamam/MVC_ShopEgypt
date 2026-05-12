@@ -14,6 +14,7 @@ namespace ShopEgypt.Application.Interfaces.IReviewService
         Task<ReviewDto?> GetReviewByIdAsync(int id, CancellationToken ct = default);
         Task<bool> UpdateReviewAsync(UpdateReviewDto dto, CancellationToken ct = default);
         //Task DeleteAsync(int id, string requestingUserId, CancellationToken ct = default);
+        Task<bool> CheckExistingReviewAsync(int productId, string userId, CancellationToken ct = default);
 
     }
 }

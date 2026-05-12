@@ -30,9 +30,12 @@ namespace ShopEgypt.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateReviewDto dto, CancellationToken ct)
         {
+            
             var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            Console.WriteLine(currentUserId);
             if (string.IsNullOrEmpty(currentUserId))
             {
+                
                 return Challenge();
             }
 
@@ -40,10 +43,35 @@ namespace ShopEgypt.Controllers
 
             if (!ModelState.IsValid)
             {
+                foreach (var key in Request.Form.Keys)
+                {
+                    Console.WriteLine($"{key} = {Request.Form[key]}");
+                }
+                foreach (var state in ModelState)
+                {
+                    foreach (var error in state.Value.Errors)
+                    {
+                        Console.WriteLine($"Field: {state.Key}");
+                        Console.WriteLine($"Error: {error.ErrorMessage}");
+                    }
+                }
+
                 var product = await _uow.ProductService.GetProductByIdAsync(dto.ProductId, ct);
 
                 product.CreateReview = dto;
 
+                return View("~/Views/Products/Details.cshtml", product);
+            }
+
+            // if user alredy has review for this product, redirect to details page with error message
+            var existinReview = await _uow.ReviewService.CheckExistingReviewAsync(dto.ProductId, currentUserId, ct);
+            if (existinReview)
+            {
+                // Add error message to ModelState
+                ModelState.AddModelError("", "You have already reviewed this product.");
+                TempData["Error"] = "You Already submitted a review for this product.";
+                var product = await _uow.ProductService.GetProductByIdAsync(dto.ProductId, ct);
+                product.CreateReview = dto;
                 return View("~/Views/Products/Details.cshtml", product);
             }
 
@@ -81,7 +109,7 @@ namespace ShopEgypt.Controllers
 
         // POST /Reviews/Edit/5
         [HttpPost]
-        [Route("edit/{id}")]
+        [Route("reviews/edit/{id}")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, UpdateReviewDto dto, CancellationToken ct)
         {
@@ -89,6 +117,7 @@ namespace ShopEgypt.Controllers
 
             if (!ModelState.IsValid)
             {
+                
                 return View(dto);
             }
 

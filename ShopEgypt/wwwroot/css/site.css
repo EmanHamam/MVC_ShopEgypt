@@ -1380,6 +1380,191 @@ main {
     }
 }
 
+/* REVIEW SECTION STYLES */
+
+/* Review Form */
+.review-form-card {
+    background: white;
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    padding: 32px;
+    margin-bottom: 40px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.review-form-card form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.form-label {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--charcoal);
+}
+
+/* Star Rating Input */
+.star-rating-input {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-direction: row-reverse;
+    width: fit-content;
+}
+
+.star-rating-input input[type="radio"] {
+    display: none;
+}
+
+.star-rating-input label {
+    font-size: 32px;
+    color: #ddd;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    user-select: none;
+    font-weight: normal;
+}
+
+.star-rating-input label:hover,
+.star-rating-input label:hover ~ label,
+.star-rating-input input[type="radio"]:checked ~ label {
+    color: #ffc107;
+}
+
+.star-rating-input input[type="radio"]:checked ~ label {
+    color: #ffc107;
+}
+
+/* Textarea */
+.form-control {
+    padding: 12px 16px;
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: var(--charcoal);
+    background: #fafaf8;
+    min-height: 120px;
+    resize: vertical;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--olive);
+    background: white;
+    box-shadow: 0 0 0 3px rgba(141, 151, 48, 0.1);
+}
+
+.form-control::placeholder {
+    color: var(--muted-text);
+}
+
+/* Submit Button */
+.btn-submit-review {
+    align-self: flex-start;
+    padding: 12px 32px;
+    background: var(--olive-deep);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-submit-review:hover {
+    background: var(--olive);
+    transform: translateY(-2px);
+}
+
+.btn-submit-review:active {
+    transform: translateY(0);
+}
+
+/* Reviews List */
+.reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.reviews-empty {
+    text-align: center;
+    padding: 48px 24px;
+    background: white;
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    color: var(--muted-text);
+    font-size: 16px;
+}
+
+/* Review Card */
+.review-card {
+    background: white;
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: box-shadow 0.3s ease;
+}
+
+.review-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.review-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.review-card-header strong {
+    font-family: var(--font-display);
+    font-size: 15px;
+    color: var(--charcoal);
+    font-weight: 600;
+}
+
+.review-date {
+    color: var(--muted-text);
+    font-size: 13px;
+    margin-left: auto;
+}
+
+.review-stars {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 12px;
+    font-size: 16px;
+}
+
+.review-stars span {
+    color: #ffc107;
+}
+
+.review-comment {
+    color: var(--charcoal);
+    line-height: 1.6;
+    margin: 12px 0 0 0;
+    font-size: 15px;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
     .product-detail-info h1 {
         font-size: 32px;
@@ -1492,5 +1677,16 @@ main {
 
     .category-card-link img {
         height: 260px;
+
+    .review-form-card {
+        padding: 20px;
+    }
+
+    .review-card {
+        padding: 16px;
+    }
+
+    .star-rating-input label {
+        font-size: 28px;
     }
 }
