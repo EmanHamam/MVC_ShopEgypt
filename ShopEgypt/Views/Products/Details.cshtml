@@ -88,6 +88,22 @@
                 </div>
             </div>
 
+    <div class="review-form-card">
+        <form asp-controller="Reviews" asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="ProductId" value="@Model.Id" />
+            <input type="hidden" name="ApplicationUserId" value="@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value" />
+            <div class="form-group">
+                <label class="form-label">Your Rating</label>
+                <div class="star-rating-input">
+                    @for (int i = 5; i >= 1; i--)
+                    {
+                        <input type="radio" id="star@(i)" name="Rating" value="@i" required />
+                        <label for="star@(i)" title="@i stars">&#9733;</label>
+                    }
+                </div>
+            </div>
+
             <div class="product-cta">
                 <form asp-controller="Cart" asp-action="Add" method="post" class="add-to-bag">
                     @Html.AntiForgeryToken()
