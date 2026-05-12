@@ -43,6 +43,8 @@ namespace ShopEgypt.Controllers
             ViewBag.KeyWord = keyWord;
             ViewBag.MinPrice = minPrice;
             ViewBag.MaxPrice = maxPrice;
+            ViewBag.Page = page;
+            ViewBag.PageSize = pageSize;
             return View(result);
         }
 

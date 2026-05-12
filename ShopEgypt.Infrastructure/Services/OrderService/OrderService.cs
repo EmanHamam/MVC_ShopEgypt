@@ -18,11 +18,11 @@ namespace ShopEgypt.Infrastructure.Services.OrderService
             // 1. Persist shipping address — let IDENTITY generate the Id
             var address = new Address
             {
-                Street    = addressDto.Street,
-                City      = addressDto.City,
-                State     = addressDto.State,
-                ZipCode   = addressDto.ZipCode,
-                Country   = addressDto.Country,
+                Street = addressDto.Street,
+                City = addressDto.City,
+                State = addressDto.State,
+                ZipCode = addressDto.ZipCode,
+                Country = addressDto.Country,
                 AppUserId = userId
             };
             await _unitOfWork.Addresses.AddAsync(address);
@@ -34,10 +34,10 @@ namespace ShopEgypt.Infrastructure.Services.OrderService
             var order = new Order
             {
                 ApplicationUserId = userId,
-                Status            = OrderStatus.Pending,
-                OrderDate         = DateTime.UtcNow,
-                TotalAmount       = 0,
-                ShippingAddress   = address   // ← EF sets ShippingAddressId automatically
+                Status = OrderStatus.Pending,
+                OrderDate = DateTime.UtcNow,
+                TotalAmount = 0,
+                ShippingAddress = address   // ← EF sets ShippingAddressId automatically
             };
             await _unitOfWork.Orders.AddAsync(order);
             await _unitOfWork.SaveAsync(); // order.Id is now set by EF
@@ -57,16 +57,16 @@ namespace ShopEgypt.Infrastructure.Services.OrderService
             decimal total = 0;
             foreach (var cartItem in cartItems)
             {
-                var product   = cartItem.Product
+                var product = cartItem.Product
                                 ?? await _unitOfWork.Products.GetByIdAsync(cartItem.ProductId);
                 var unitPrice = product?.Price ?? 0;
 
                 // Let IDENTITY generate OrderItem.Id — only set FK OrderId from the saved order
                 var orderItem = new OrderItem
                 {
-                    OrderId   = order.Id,
+                    OrderId = order.Id,
                     ProductId = cartItem.ProductId,
-                    Quantity  = cartItem.Quantity,
+                    Quantity = cartItem.Quantity,
                     UnitPrice = unitPrice
                 };
                 await _unitOfWork.OrderItems.AddAsync(orderItem);
@@ -107,13 +107,13 @@ namespace ShopEgypt.Infrastructure.Services.OrderService
 
                 itemDtos.Add(new OrderItemDTO
                 {
-                    OrderItemId        = item.Id.ToString(),
-                    OrderId            = order.Id.ToString(),
-                    ProductId          = item.ProductId,
-                    ProductName        = product?.Title       ?? $"Product #{item.ProductId}",
+                    OrderItemId = item.Id.ToString(),
+                    OrderId = order.Id.ToString(),
+                    ProductId = item.ProductId,
+                    ProductName = product?.Title ?? $"Product #{item.ProductId}",
                     ProductDescription = product?.Description ?? string.Empty,
-                    Quantity           = item.Quantity,
-                    UnitPrice          = item.UnitPrice   // already persisted correctly from CreatePendingOrderAsync
+                    Quantity = item.Quantity,
+                    UnitPrice = item.UnitPrice   // already persisted correctly from CreatePendingOrderAsync
                 });
             }
 
@@ -121,7 +121,7 @@ namespace ShopEgypt.Infrastructure.Services.OrderService
             if (addressDto == null && !string.IsNullOrEmpty(order.ApplicationUserId))
             {
                 var addresses = await _unitOfWork.Addresses.GetAllAsync();
-                var saved     = addresses
+                var saved = addresses
                     .Where(a => a.AppUserId == order.ApplicationUserId)
                     .OrderByDescending(a => a.Id)
                     .FirstOrDefault();
@@ -130,9 +130,9 @@ namespace ShopEgypt.Infrastructure.Services.OrderService
                 {
                     addressDto = new AddressDTO
                     {
-                        Street  = saved.Street,
-                        City    = saved.City,
-                        State   = saved.State,
+                        Street = saved.Street,
+                        City = saved.City,
+                        State = saved.State,
                         ZipCode = saved.ZipCode,
                         Country = saved.Country
                     };
@@ -141,12 +141,12 @@ namespace ShopEgypt.Infrastructure.Services.OrderService
 
             return new OrderDTO
             {
-                OrderId           = order.Id.ToString(),
+                OrderId = order.Id.ToString(),
                 ApplicationUserId = order.ApplicationUserId,
-                OrderStatus       = order.Status,
-                TotalAmount       = order.TotalAmount,
-                Address           = addressDto ?? new AddressDTO(),
-                OrderItems        = itemDtos
+                OrderStatus = order.Status,
+                TotalAmount = order.TotalAmount,
+                Address = addressDto ?? new AddressDTO(),
+                OrderItems = itemDtos
             };
         }
 
@@ -166,10 +166,10 @@ namespace ShopEgypt.Infrastructure.Services.OrderService
             // Let IDENTITY generate Payment.Id
             var payment = new Payment
             {
-                OrderId               = orderId,
+                OrderId = orderId,
                 StripePaymentIntentId = paymentIntentId,
-                Amount                = amount,
-                Status                = PaymentStatus.Pending
+                Amount = amount,
+                Status = PaymentStatus.Pending
             };
 
             await _unitOfWork.Payments.AddAsync(payment);
@@ -182,12 +182,12 @@ namespace ShopEgypt.Infrastructure.Services.OrderService
         {
             // Update payment row
             var payments = await _unitOfWork.Payments.GetAllAsync();
-            var payment  = payments.FirstOrDefault(p => p.OrderId == orderId);
+            var payment = payments.FirstOrDefault(p => p.OrderId == orderId);
 
             if (payment != null)
             {
-                payment.Status  = PaymentStatus.Succeeded;
-                payment.PaidAt  = DateTime.UtcNow;
+                payment.Status = PaymentStatus.Succeeded;
+                payment.PaidAt = DateTime.UtcNow;
                 await _unitOfWork.Payments.Update(payment);
             }
 
@@ -196,6 +196,12 @@ namespace ShopEgypt.Infrastructure.Services.OrderService
 
             // Clear the cart only after successful payment
             await _cartService.ClearCartAsync();
+        }
+
+        public async Task<List<Order>> GetOrdersByUserIdAsync(string userId)
+        {
+            var orders = await _unitOfWork.Orders.GetAllAsync();
+            return orders.Where(o => o.ApplicationUserId == userId).ToList();
         }
     }
 }
