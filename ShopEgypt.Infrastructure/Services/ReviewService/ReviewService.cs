@@ -94,5 +94,11 @@ namespace ShopEgypt.Infrastructure.Services.ReviewService
             return true;
         }
 
+
+        public async Task<bool> CheckExistingReviewAsync(int productId, string userId, CancellationToken ct = default)
+        {
+            return await _context.Reviews.AnyAsync(r => r.ProductId == productId && r.ApplicationUserId == userId, ct);
+        }
+
     }
 }

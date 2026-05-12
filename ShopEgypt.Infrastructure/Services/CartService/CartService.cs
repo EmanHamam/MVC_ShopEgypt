@@ -87,7 +87,7 @@ namespace ShopEgypt.Infrastructure.Services.CartService
         public async Task<decimal> GetSubtotalAsync()
         {
             var cart = await GetCartAsync();
-            return cart.Sum(x => x.Product.Price * x.Quantity);
+            return cart.Sum(x => (x.Product?.Price ?? 0) * x.Quantity);
         }
 
         public async Task<decimal> GetShippingAsync()

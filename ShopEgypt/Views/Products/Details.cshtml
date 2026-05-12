@@ -64,6 +64,7 @@
                     : Model.Description)
             </p>
 
+  
             <div class="product-option">
                 <h4>Color</h4>
                 <div class="color-dots">
@@ -87,6 +88,7 @@
                 </div>
             </div>
 
+    <div class="review-form-card">
             <div class="product-cta">
                 <form asp-controller="Cart" asp-action="Add" method="post" class="add-to-bag">
                     @Html.AntiForgeryToken()
@@ -113,7 +115,81 @@
     <div class="container">
         <div class="reviews-header">
             <h2>Customer reviews</h2>
-            <button type="button" class="review-btn">Write a review</button>
         </div>
+    </div>
+    <div class="container">
+      <!-- Review Sort Dropdown -->
+      <div style="margin-bottom: 1rem;">
+        <label for="reviewSort" style="font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 0.85rem; color: #9a9085; margin-right: 0.5rem;">Sort Reviews:</label>
+        <select id="reviewSort" onchange="window.location.href = '?reviewSort=' + this.value" style="padding: 0.5rem; border: 1px solid #e0d8cd; border-radius: 8px; background: #f0ece5; font-size: 0.85rem;">
+            <option value="newest" selected="@(ViewBag.ReviewSort == "newest")">Newest</option>
+            <option value="highest" selected="@(ViewBag.ReviewSort == "highest")">Highest Rating</option>
+            <option value="lowest" selected="@(ViewBag.ReviewSort == "lowest")">Lowest Rating</option>
+        </select>
+      </div>
+
+      <div class="review-form-card">
+        <form asp-controller="Reviews" asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="ProductId" value="@Model.Id" />
+            <input type="hidden" name=ApplicationUserId value="@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value" />
+
+            <div class="form-group">
+                <label class="form-label">Your Rating</label>
+                <div class="star-rating-input">
+                    @for (int i = 5; i >= 1; i--)
+                    {
+                        <input type="radio" id="star@(i)" name="Rating" value="@i" required />
+                        <label for="star@(i)" title="@i stars">&#9733;</label>
+                    }
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="reviewComment">Share Your Experience</label>
+                <textarea id="reviewComment" name="Comment"  class="form-control"
+                          placeholder="Tell others what you think about this product..."></textarea>
+            </div>
+
+            <button type="submit" class="btn-submit-review">Submit Review</button>
+        </form>
+    </div>
+
+    @if (Model.ProductReviews != null && Model.ProductReviews.Any())
+    {
+        <div class="reviews-list">
+            @foreach (var review in Model.ProductReviews)
+            {
+                <div class="review-card">
+                    <div class="review-card-header">
+                        @* <span class="review-author">@review.ApplicationUser?.FirstName</span> *@
+                        <strong>@review.UserName</strong>
+                        <span class="review-date">@review.CreatedAt?.ToString("MMM d, yyyy")</span>
+                        @if (User.Identity?.IsAuthenticated == true &&
+                             User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value == review.ApplicationUserId)
+                        {
+                            <a href="/reviews/edit/@review.Id" style="margin-left: 1rem; color: #7a7060; text-decoration: none;">Edit</a>
+                        }
+                    </div>
+                    <div class="review-stars">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            <span>@(i <= review.Rating ? "★" : "☆")</span>
+                        }
+                    </div>
+                    @if (!string.IsNullOrEmpty(review.Comment))
+                    {
+                        <p class="review-comment">@review.Comment</p>
+                    }
+                </div>
+            }
+        </div>
+    } 
+    else
+    {
+        <div class="reviews-empty">
+            No reviews yet. Be the first to share your thoughts.
+        </div>
+    }
     </div>
 </section>
