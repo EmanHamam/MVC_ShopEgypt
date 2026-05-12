@@ -1,17 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace ShopEgypt.Application.DTOs.OrdersDTO
 {
     public class AddressDTO
     {
-        [Key]
-        public string? Street { get; set; }
-        public string? City { get; set; }
+        [Required(ErrorMessage = "Street is required.")]
+        [Display(Name = "Street Address")]
+        public string Street { get; set; }
+
+        [Required(ErrorMessage = "City is required.")]
+        public string City { get; set; }
+
+        [Display(Name = "State / Governorate")]
         public string? State { get; set; }
+
+        [Display(Name = "ZIP / Postal Code")]
         public string? ZipCode { get; set; }
-        public string? Country { get; set; }
+
+        [Required(ErrorMessage = "Country is required.")]
+        public string Country { get; set; }
     }
 }

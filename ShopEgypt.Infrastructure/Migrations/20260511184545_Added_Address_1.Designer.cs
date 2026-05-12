@@ -12,8 +12,8 @@ using ShopEgypt.Data.Context;
 namespace ShopEgypt.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260510223015_AllowNullableAppUser")]
-    partial class AllowNullableAppUser
+    [Migration("20260511184545_Added_Address_1")]
+    partial class Added_Address_1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -221,7 +221,6 @@ namespace ShopEgypt.Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("FirstName")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
@@ -231,7 +230,6 @@ namespace ShopEgypt.Infrastructure.Migrations
                         .HasDefaultValue(true);
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
