@@ -89,21 +89,6 @@
             </div>
 
     <div class="review-form-card">
-        <form asp-controller="Reviews" asp-action="Create" method="post">
-            @Html.AntiForgeryToken()
-            <input type="hidden" name="ProductId" value="@Model.Id" />
-            <input type="hidden" name="ApplicationUserId" value="@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value" />
-            <div class="form-group">
-                <label class="form-label">Your Rating</label>
-                <div class="star-rating-input">
-                    @for (int i = 5; i >= 1; i--)
-                    {
-                        <input type="radio" id="star@(i)" name="Rating" value="@i" required />
-                        <label for="star@(i)" title="@i stars">&#9733;</label>
-                    }
-                </div>
-            </div>
-
             <div class="product-cta">
                 <form asp-controller="Cart" asp-action="Add" method="post" class="add-to-bag">
                     @Html.AntiForgeryToken()
@@ -130,23 +115,24 @@
     <div class="container">
         <div class="reviews-header">
             <h2>Customer reviews</h2>
-            <button type="button" class="review-btn">Write a review</button>
         </div>
     </div>
+    <div class="container">
       <!-- Review Sort Dropdown -->
-    <div style="margin-bottom: 1rem;">
+      <div style="margin-bottom: 1rem;">
         <label for="reviewSort" style="font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 0.85rem; color: #9a9085; margin-right: 0.5rem;">Sort Reviews:</label>
         <select id="reviewSort" onchange="window.location.href = '?reviewSort=' + this.value" style="padding: 0.5rem; border: 1px solid #e0d8cd; border-radius: 8px; background: #f0ece5; font-size: 0.85rem;">
             <option value="newest" selected="@(ViewBag.ReviewSort == "newest")">Newest</option>
             <option value="highest" selected="@(ViewBag.ReviewSort == "highest")">Highest Rating</option>
             <option value="lowest" selected="@(ViewBag.ReviewSort == "lowest")">Lowest Rating</option>
         </select>
-    </div>
+      </div>
 
-    < <div class="review-form-card">
+      <div class="review-form-card">
         <form asp-controller="Reviews" asp-action="Create" method="post">
             @Html.AntiForgeryToken()
             <input type="hidden" name="ProductId" value="@Model.Id" />
+            <input type="hidden" name=ApplicationUserId value="@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value" />
 
             <div class="form-group">
                 <label class="form-label">Your Rating</label>
@@ -205,6 +191,5 @@
             No reviews yet. Be the first to share your thoughts.
         </div>
     }
-
-</div>
+    </div>
 </section>

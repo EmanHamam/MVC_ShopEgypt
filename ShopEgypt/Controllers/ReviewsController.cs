@@ -30,6 +30,7 @@ namespace ShopEgypt.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateReviewDto dto, CancellationToken ct)
         {
+            
             var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             Console.WriteLine(currentUserId);
             if (string.IsNullOrEmpty(currentUserId))
@@ -42,13 +43,19 @@ namespace ShopEgypt.Controllers
 
             if (!ModelState.IsValid)
             {
-                foreach (var state in ModelState.Values)
+                foreach (var key in Request.Form.Keys)
                 {
-                    foreach (var error in state.Errors)
+                    Console.WriteLine($"{key} = {Request.Form[key]}");
+                }
+                foreach (var state in ModelState)
+                {
+                    foreach (var error in state.Value.Errors)
                     {
-                        Console.WriteLine(error.ErrorMessage);
+                        Console.WriteLine($"Field: {state.Key}");
+                        Console.WriteLine($"Error: {error.ErrorMessage}");
                     }
                 }
+
                 var product = await _uow.ProductService.GetProductByIdAsync(dto.ProductId, ct);
 
                 product.CreateReview = dto;
@@ -102,7 +109,7 @@ namespace ShopEgypt.Controllers
 
         // POST /Reviews/Edit/5
         [HttpPost]
-        [Route("edit/{id}")]
+        [Route("reviews/edit/{id}")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, UpdateReviewDto dto, CancellationToken ct)
         {
@@ -110,6 +117,7 @@ namespace ShopEgypt.Controllers
 
             if (!ModelState.IsValid)
             {
+                
                 return View(dto);
             }
 
