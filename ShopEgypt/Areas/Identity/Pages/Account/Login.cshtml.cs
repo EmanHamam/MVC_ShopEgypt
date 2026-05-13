@@ -2,19 +2,20 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using ShopEgypt.Application.Interfaces.ICartService;
 using ShopEgypt.Domain.Entities;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ShopEgypt.Areas.Identity.Pages.Account
 {
@@ -23,15 +24,18 @@ namespace ShopEgypt.Areas.Identity.Pages.Account
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly ICartService _cartService;
 
         public LoginModel(
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
-            ILogger<LoginModel> logger)
+            ILogger<LoginModel> logger,
+            ICartService cartService)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _logger = logger;
+            _cartService = cartService;
         }
 
         /// <summary>
@@ -142,6 +146,10 @@ namespace ShopEgypt.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
+
+
+                    //await _cartService.MergeSessionCartToUserCartAsync(user.Id);
+
                     return LocalRedirect(returnUrl);
                 }
 
