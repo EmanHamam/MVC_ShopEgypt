@@ -10,7 +10,9 @@ namespace ShopEgypt.Infrastructure.Repositories
         Task<T> GetByIdAsync(int id);
         Task<T> GetByIdAsync(string id);
         
-        Task<IEnumerable<T>> GetAllAsync();
+        Task<T> GetByUserIdAsync (string userId);
+
+        Task <IEnumerable<T>> GetAllAsync();
         Task SaveChangesAsync();
         Task<T> AddAsync(T entity);
         Task Update(T entity);

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using ShopEgypt.Application.DTOs.OrdersDTO;
+using ShopEgypt.Application.Interfaces.IAddressService;
 using ShopEgypt.Application.Interfaces.ICartService;
 using ShopEgypt.Application.Interfaces.IOrderService;
 using ShopEgypt.Application.Interfaces.IStripeService;
@@ -20,19 +21,22 @@ namespace ShopEgypt.Controllers
         private readonly IOrderService                _orderService;
         private readonly IStripeService               _stripeService;
         private readonly IConfiguration               _config;
+        private readonly IAddressService              _addressService;  
 
         public OrdersController(
             UserManager<ApplicationUser> userManager,
             ICartService                 cartService,
             IOrderService                orderService,
             IStripeService               stripeService,
-            IConfiguration               config)
+            IConfiguration               config,
+            IAddressService              addressService)
         {
             _userManager   = userManager;
             _cartService   = cartService;
             _orderService  = orderService;
             _stripeService = stripeService;
             _config        = config;
+            _addressService = addressService;
         }
         // ════════════════════════════════════════════════════
         // View All order to specific user
@@ -55,7 +59,7 @@ namespace ShopEgypt.Controllers
             var userId = _userManager.GetUserId(User);
 
             // Pre-fill form with latest saved address for this user (if any)
-            var prefilled = await TryGetSavedAddressAsync(userId!);
+            var prefilled = await _addressService.TryGetSavedAddressAsync(userId!);
             return View(prefilled ?? new AddressDTO());
         }
 
@@ -68,13 +72,14 @@ namespace ShopEgypt.Controllers
 
             var userId = _userManager.GetUserId(User)!;
 
-            // Create Order (Pending) + Address + OrderItems in one call
+            // Create Order (Pending) in MEMORY + Address + OrderItems
+            // NOTE: Nothing is saved to the database yet — data is kept in TempData
             var order = await _orderService.CreatePendingOrderAsync(userId, addressDto);
 
-            // Persist data needed for the next steps
-            TempData["OrderId"]  = order.Id.ToString();
+            // Persist data in TempData for the next steps
+            TempData["OrderId"]  = Guid.NewGuid().ToString();  // Temporary session ID
             TempData["Address"]  = JsonSerializer.Serialize(addressDto);
-
+            TempData["Order"]    = JsonSerializer.Serialize(order);
             return RedirectToAction(nameof(ViewSummary));
         }
 
@@ -85,21 +90,37 @@ namespace ShopEgypt.Controllers
         [HttpGet]
         public async Task<IActionResult> ViewSummary()
         {
-            if (!TryGetTempOrderId(out int orderId))
-                return RedirectToAction(nameof(Address));
-
-            var order = await _orderService.GetOrderByIdAsync(orderId);
-            if (order == null)
+            if (!TryGetTempOrder(out Order? order) || order == null)
                 return RedirectToAction(nameof(Address));
 
             var addressDto = TryDeserializeAddress();
+            if (addressDto == null)
+                return RedirectToAction(nameof(Address));
 
-            var orderDto = await _orderService.BuildOrderDTOAsync(order, addressDto);
+            // Build OrderDTO from the in-memory order
+            var orderDto = new OrderDTO
+            {
+                OrderId = "pending",  // Not yet saved to DB
+                ApplicationUserId = order.ApplicationUserId,
+                OrderStatus = order.Status,
+                TotalAmount = order.TotalAmount,
+                Address = addressDto,
+                OrderItems = order.OrderItems?.Select(oi => new OrderItemDTO
+                {
+                    OrderItemId = "pending",
+                    OrderId = "pending",
+                    ProductId = oi.ProductId,
+                    ProductName = "Loading...",
+                    ProductDescription = string.Empty,
+                    Quantity = oi.Quantity,
+                    UnitPrice = oi.UnitPrice
+                }).ToList() ?? new List<OrderItemDTO>()
+            };
 
             // Keep TempData alive for the next step (ConfirmOrder POST)
             TempData.Keep("OrderId");
             TempData.Keep("Address");
-
+            TempData.Keep("Order");
             return View(orderDto);
         }
 
@@ -111,33 +132,34 @@ namespace ShopEgypt.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmOrder(string orderId)
         {
-            if (!int.TryParse(orderId, out int orderIdInt))
+            if (!TryGetTempOrder(out Order? order) || order == null)
                 return RedirectToAction(nameof(Address));
 
-            var order = await _orderService.GetOrderByIdAsync(orderIdInt);
-            if (order == null)
+            var addressDto = TryDeserializeAddress();
+            if (addressDto == null)
                 return RedirectToAction(nameof(Address));
 
-            // Calculate shipping from the persisted order subtotal — same rule as CartService
-            // (avoids calling GetShippingAsync which requires CartItem.Product navigation loaded)
+            // Calculate shipping from the pending order subtotal
             decimal shippingFee = order.TotalAmount > 1500 ? 0 : 80;
             decimal grandTotal  = order.TotalAmount + shippingFee;
 
-            // Move order to Processing
-            await _orderService.UpdateOrderStatusAsync(orderIdInt, OrderStatus.Processing);
-
-            // Create Stripe PaymentIntent
+            // Create Stripe PaymentIntent BEFORE saving order to DB
+            // Use a temporary session identifier for payment intent metadata
+            string tempOrderRef = $"temp_{DateTime.UtcNow.Ticks}";
             var (paymentIntentId, clientSecret) =
-                await _stripeService.CreatePaymentIntentAsync(grandTotal, orderId);
-
-            // Attach Payment row (Pending) to the order
-            await _orderService.AttachPaymentIntentAsync(orderIdInt, paymentIntentId, grandTotal);
+                await _stripeService.CreatePaymentIntentAsync(grandTotal, tempOrderRef);
 
             // Pass payment data to Payment view via TempData
-            TempData["OrderId"]        = orderId;
+            TempData["OrderId"]        = tempOrderRef;
+            TempData["PaymentIntentId"] = paymentIntentId;
             TempData["ClientSecret"]   = clientSecret;
             TempData["PublishableKey"] = _config["Stripe:PublishableKey"];
             TempData["TotalAmount"]    = grandTotal.ToString("F2");
+            TempData["ShippingFee"]    = shippingFee.ToString("F2");
+
+            // Keep Order and Address for final save in PaymentSuccess
+            TempData.Keep("Order");
+            TempData.Keep("Address");
 
             return RedirectToAction(nameof(Payment));
         }
@@ -162,6 +184,13 @@ namespace ShopEgypt.Controllers
             ViewBag.TotalAmount    = totalAmount;
             ViewBag.OrderId        = orderId;
 
+            // Keep data for PaymentSuccess
+            TempData.Keep("Order");
+            TempData.Keep("Address");
+            TempData.Keep("PaymentIntentId");
+            TempData.Keep("ShippingFee");
+            TempData.Keep("TotalAmount");
+
             return View();
         }
 
@@ -169,13 +198,32 @@ namespace ShopEgypt.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> PaymentSuccess(string orderId)
         {
-            if (!int.TryParse(orderId, out int orderIdInt))
+            // Deserialize the pending order and address from TempData
+            if (!TryGetTempOrder(out Order? order) || order == null)
                 return RedirectToAction(nameof(Address));
 
-            // Mark payment as succeeded and order as Processing
-            await _orderService.ConfirmPaymentAsync(orderIdInt);
+            var addressDto = TryDeserializeAddress();
+            if (addressDto == null)
+                return RedirectToAction(nameof(Address));
 
-            return RedirectToAction(nameof(OrderConfirmation), new { orderId });
+            string paymentIntentId = TempData["PaymentIntentId"] as string ?? "";
+            var totalAmountStr = TempData["TotalAmount"] as string ?? "0";
+            // NOW save the order to the database for the first time
+            await _orderService.SavePendingOrderAsync(order, addressDto , decimal.Parse(totalAmountStr));
+
+            // Create Payment record after order is saved (now we have order.Id)
+            //string? shippingFeeStr = TempData["ShippingFee"] as string;
+            //decimal shippingFee = string.IsNullOrEmpty(shippingFeeStr) ? 0 : decimal.Parse(shippingFeeStr);
+            //decimal grandTotal = order.TotalAmount + shippingFee;
+            
+            var grandTotal = order.TotalAmount;
+
+            await _orderService.AttachPaymentIntentAsync(order.Id, paymentIntentId, grandTotal);
+
+            // Mark payment as succeeded and order as Processing, clear cart
+            await _orderService.ConfirmPaymentAsync(order.Id, order, addressDto);
+
+            return RedirectToAction(nameof(OrderConfirmation), new { orderId = order.Id });
         }
 
         // ════════════════════════════════════════════════════
@@ -183,12 +231,9 @@ namespace ShopEgypt.Controllers
         // ════════════════════════════════════════════════════
 
         [HttpGet]
-        public async Task<IActionResult> OrderConfirmation(string orderId)
+        public async Task<IActionResult> OrderConfirmation(int orderId)
         {
-            if (!int.TryParse(orderId, out int orderIdInt))
-                return RedirectToAction(nameof(Address));
-
-            var order = await _orderService.GetOrderByIdAsync(orderIdInt);
+            var order = await _orderService.GetOrderByIdAsync(orderId);
             if (order == null)
                 return RedirectToAction(nameof(Address));
 
@@ -212,6 +257,19 @@ namespace ShopEgypt.Controllers
             return !string.IsNullOrEmpty(raw) && int.TryParse(raw, out orderId);
         }
 
+        private bool TryGetTempOrder(out Order? order)
+        {
+            order = null;
+            var json = TempData["Order"] as string;
+            if (string.IsNullOrEmpty(json)) return false;
+            try 
+            { 
+                order = JsonSerializer.Deserialize<Order>(json);
+                return order != null;
+            }
+            catch { return false; }
+        }
+
         private AddressDTO? TryDeserializeAddress()
         {
             var json = TempData["Address"] as string;
@@ -220,14 +278,14 @@ namespace ShopEgypt.Controllers
             catch { return null; }
         }
 
-        private async Task<AddressDTO?> TryGetSavedAddressAsync(string userId)
-        {
-            var cartItems = await _cartService.GetCartAsync();
-            // Use cart just to confirm user is legit; load address separately via OrderService
-            // We borrow the address load logic from OrderService's BuildOrderDTOAsync
-            // by calling GetOrderByIdAsync with a dummy and returning null if nothing found
-            // — actually just do a direct check in the controller for simplicity:
-            return null; // OrderService will load it when building OrderDTO
-        }
+        //private async Task<AddressDTO?> TryGetSavedAddressAsync(string userId)
+        //{
+        //    var cartItems = await _cartService.GetCartAsync();
+        //    // Use cart just to confirm user is legit; load address separately via OrderService
+        //    // We borrow the address load logic from OrderService's BuildOrderDTOAsync
+        //    // by calling GetOrderByIdAsync with a dummy and returning null if nothing found
+        //    // — actually just do a direct check in the controller for simplicity:
+        //    return null; // OrderService will load it when building OrderDTO
+        //}
     }
 }

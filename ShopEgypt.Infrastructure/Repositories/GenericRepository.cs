@@ -44,7 +44,12 @@ namespace ShopEgypt.Infrastructure.Repositories
         {
             return await _dbSet.FindAsync(id);
         }
-        
+
+        public virtual async Task<T> GetByUserIdAsync(string userId)
+        {
+            return await _dbSet.FirstOrDefaultAsync(e => EF.Property<string>(e, "AppUserId") == userId);
+        }
+
         public async Task SaveChangesAsync()
         {
             await _dbContext.SaveChangesAsync();

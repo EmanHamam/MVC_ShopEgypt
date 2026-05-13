@@ -28,6 +28,8 @@ using StripeConfig = Stripe.StripeConfiguration;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ShopEgypt.Application.Interfaces.IAddressService;
+using ShopEgypt.Infrastructure.Services.AddressService;
 
 namespace ShopEgypt.Infrastructure.ServiceRegistration
 {
@@ -79,6 +81,7 @@ namespace ShopEgypt.Infrastructure.ServiceRegistration
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IReviewService, ReviewService>();
+            services.AddScoped<IAddressService, AddressService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IStripeService, StripeService>();
             services.AddScoped<IWishlistItemService, WishlistItemService>();

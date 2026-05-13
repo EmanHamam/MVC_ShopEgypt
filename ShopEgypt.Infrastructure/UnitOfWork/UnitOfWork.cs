@@ -38,7 +38,7 @@ namespace ShopEgypt.Infrastructure.UnitOfWork
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
-            Addresses = new GenericRepository<Address>(context);
+            Addresses = new GenericRepository<Address>(_context);
             ApplicationUsers = new GenericRepository<ApplicationUser>(context);
             Brands = new GenericRepository<Brand>(_context);
             Categories = new GenericRepository<Category>(_context);
