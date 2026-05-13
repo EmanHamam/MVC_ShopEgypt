@@ -51,7 +51,7 @@
             </div>
 
             <div class="product-detail-price">
-                <span class="price">@finalPrice.ToString("N0") EGP</span>
+                <span class="price">@Model.DiscountPrice?.ToString("N0")  EGP</span>
                 @if (hasDiscount)
                 {
                     <span class="price-old">@Model.Price.ToString("N0")</span>
