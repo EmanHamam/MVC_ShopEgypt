@@ -46,7 +46,23 @@
             <h1>@Model.Title</h1>
 
             <div class="product-rating-row">
-                <span class="stars" aria-hidden="true">★★★★★</span>
+                <span class="stars" aria-hidden="true">
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        if (i <= Math.Floor(Model.AverageRating))
+                        {
+                            @:★
+                        }
+                        else if (i == Math.Ceiling(Model.AverageRating) && Model.AverageRating % 1 >= 0.5)
+                        {
+                            @:★
+                        }
+                        else
+                        {
+                            @:☆
+                        }
+                    }
+                </span>
                 <span>@rating • @reviews reviews</span>
             </div>
 
