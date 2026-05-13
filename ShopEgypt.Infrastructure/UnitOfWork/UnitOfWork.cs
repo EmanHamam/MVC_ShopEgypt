@@ -3,12 +3,14 @@ using ShopEgypt.Application.Interfaces.IReviewService;
 using ShopEgypt.Data.Context;
 using ShopEgypt.Infrastructure.Services.ProductService;
 using ShopEgypt.Infrastructure.Services.ReviewService;
+using ShopEgypt.Infrastructure.Services.WishlistItemService;
 ﻿using ShopEgypt.Data.Context;
 using ShopEgypt.Domain.Entities;
 using ShopEgypt.Infrastructure.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ShopEgypt.Application.Interfaces.IWishlistItemService;
 
 namespace ShopEgypt.Infrastructure.UnitOfWork
 {
@@ -17,6 +19,7 @@ namespace ShopEgypt.Infrastructure.UnitOfWork
         private readonly ApplicationDbContext _context;
 
         public IReviewService ReviewService { get; }
+        public IWishlistItemService WishlistItemService { get; }
         public IProductService ProductService { get; }
         public IGenericRepository<Address> Addresses { get; private set; }
         public IGenericRepository<ApplicationUser> ApplicationUsers { get; private set; }
@@ -51,6 +54,7 @@ namespace ShopEgypt.Infrastructure.UnitOfWork
             WishlistItems = new GenericRepository<WishlistItem>(_context);
             ProductService = new ProductService(_context);
             ReviewService = new ReviewService(_context);
+            WishlistItemService = new WishlistItemService(_context);
         }
         public async Task<int> SaveAsync()
         {

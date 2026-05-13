@@ -113,9 +113,14 @@
                     <input type="hidden" name="qty" value="1" />
                     <button type="submit">Add to bag</button>
                 </form>
-                <button type="button" class="wishlist-circle" aria-label="Add to wishlist">
-                    <i class="fa-regular fa-heart"></i>
-                </button>
+                <form asp-controller="WishListItems" asp-action="Add" method="post" style="display: inline;">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="productId" value="@Model.Id" />
+                    <input type="hidden" name="returnUrl" value="@returnUrl" />
+                    <button type="submit" class="wishlist-circle" aria-label="Add to wishlist">
+                        <i class="fa-regular fa-heart"></i>
+                    </button>
+                </form>
             </div>
 
             <div class="product-meta-row">

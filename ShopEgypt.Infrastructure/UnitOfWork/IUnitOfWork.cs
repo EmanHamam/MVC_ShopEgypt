@@ -1,6 +1,7 @@
 ﻿using ShopEgypt.Application.Interfaces.IProductService;
 using ShopEgypt.Application.Interfaces.IReviewService;
-﻿using ShopEgypt.Domain.Entities;
+using ShopEgypt.Application.Interfaces.IWishlistItemService;
+using ShopEgypt.Domain.Entities;
 using ShopEgypt.Infrastructure.Repositories;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,8 @@ namespace ShopEgypt.Infrastructure.UnitOfWork
     {
         IReviewService ReviewService { get; }
         IProductService ProductService { get; }
+        IWishlistItemService WishlistItemService { get; }
+       
 
         IGenericRepository<Address> Addresses { get; }
         IGenericRepository<ApplicationUser> ApplicationUsers { get; }

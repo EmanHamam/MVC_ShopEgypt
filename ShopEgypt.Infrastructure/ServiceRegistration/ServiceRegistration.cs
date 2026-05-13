@@ -11,6 +11,7 @@ using ShopEgypt.Application.Interfaces.IOrderService;
 using ShopEgypt.Application.Interfaces.IProductService;
 using ShopEgypt.Application.Interfaces.IReviewService;
 using ShopEgypt.Application.Interfaces.IStripeService;
+using ShopEgypt.Application.Interfaces.IWishlistItemService;
 using ShopEgypt.Data.Context;
 using ShopEgypt.Domain.Entities;
 using ShopEgypt.Infrastructure.ExternalServices.SendGridEmailSender;
@@ -21,6 +22,7 @@ using ShopEgypt.Infrastructure.Services.CloudinaryService;
 using ShopEgypt.Infrastructure.Services.OrderService;
 using ShopEgypt.Infrastructure.Services.ProductService;
 using ShopEgypt.Infrastructure.Services.ReviewService;
+using ShopEgypt.Infrastructure.Services.WishlistItemService;
 using ShopEgypt.Infrastructure.UnitOfWork;
 using StripeConfig = Stripe.StripeConfiguration;
 using System;
@@ -79,6 +81,7 @@ namespace ShopEgypt.Infrastructure.ServiceRegistration
             services.AddScoped<IReviewService, ReviewService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IStripeService, StripeService>();
+            services.AddScoped<IWishlistItemService, WishlistItemService>();
 
             // Auto Mapper
             //services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfile>());
