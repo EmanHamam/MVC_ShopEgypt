@@ -12,6 +12,7 @@ namespace ShopEgypt.Controllers.Cart
         public CartController(ICartService cartService)
         {
             _cartService = cartService;
+
         }
 
         [HttpGet]
@@ -29,7 +30,11 @@ namespace ShopEgypt.Controllers.Cart
                     ProductId = x.ProductId,
                     ProductName = x.Product?.Title ?? "Product",
                     ImageUrl = x.Product?.ProductImages?.FirstOrDefault()?.ImageUrl ?? "/images/placeholder.png",
-                    UnitPrice = x.Product?.Price ?? 0,
+                    UnitPrice = x.Product != null
+                        ? (x.Product.DiscountPrice.HasValue && x.Product.DiscountPrice.Value > 0
+                            ? x.Product.DiscountPrice.Value
+                            : x.Product.Price)
+                        : 0,
                     Quantity = x.Quantity
                 }).ToList(),
                 Subtotal = subtotal,

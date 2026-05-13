@@ -3,7 +3,7 @@
 
 @{
     var hasDiscount = Model.DiscountPrice.HasValue && Model.DiscountPrice.Value > 0;
-    var finalPrice = hasDiscount ? Model.Price - Model.DiscountPrice!.Value : Model.Price;
+    var finalPrice = hasDiscount ? Model.DiscountPrice!.Value : Model.Price;
     var heroImage = Model.Images?.FirstOrDefault()?.ImageUrl ?? "/images/placeholder.png";
     var returnUrl = $"{Context.Request.Path}{Context.Request.QueryString}";
     var rating = Model.AverageRating.ToString("0.0");

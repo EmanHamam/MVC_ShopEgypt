@@ -13,18 +13,18 @@ using System.Security.Claims;
 
 namespace ShopEgypt.Infrastructure.Services.CartService
 {
-    public class CartService(IUnitOfWork _unitOfWork,IHttpContextAccessor _httpContextAccessor,UserManager<ApplicationUser> _userManager) : ICartService
+    public class CartService(IUnitOfWork _unitOfWork, IHttpContextAccessor _httpContextAccessor, UserManager<ApplicationUser> _userManager) : ICartService
     {
         private const string SessionCartKey = "Cart";
-        
 
-        private HttpContext HttpContext => _httpContextAccessor.HttpContext?? throw new InvalidOperationException("No active HttpContext found.");
+
+        private HttpContext HttpContext => _httpContextAccessor.HttpContext ?? throw new InvalidOperationException("No active HttpContext found.");
 
         private ISession Session => HttpContext.Session;
 
-        private bool IsAuthenticated =>HttpContext.User?.Identity?.IsAuthenticated ?? false;
+        private bool IsAuthenticated => HttpContext.User?.Identity?.IsAuthenticated ?? false;
 
-        private string? UserId =>HttpContext.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+        private string? UserId => HttpContext.User?.FindFirstValue(ClaimTypes.NameIdentifier);
 
         public async Task<List<CartItem>> GetCartAsync()
         {
@@ -87,7 +87,7 @@ namespace ShopEgypt.Infrastructure.Services.CartService
         public async Task<decimal> GetSubtotalAsync()
         {
             var cart = await GetCartAsync();
-            return cart.Sum(x => (x.Product?.Price ?? 0) * x.Quantity);
+            return cart.Sum(x => GetEffectiveUnitPrice(x.Product) * x.Quantity);
         }
 
         public async Task<decimal> GetShippingAsync()
@@ -302,7 +302,7 @@ namespace ShopEgypt.Infrastructure.Services.CartService
         private async Task<List<CartItem>> GetDatabaseCartItemsAsync()
         {
             var userCart = await GetOrCreateUserCartAsync();
-            var items    = await GetUserCartItemsInternalAsync(userCart.Id);
+            var items = await GetUserCartItemsInternalAsync(userCart.Id);
 
             foreach (var item in items)
             {
@@ -318,8 +318,8 @@ namespace ShopEgypt.Infrastructure.Services.CartService
                     }
                     item.Product = product;
                 }
-                
-                
+
+
             }
 
             return items;
@@ -331,6 +331,15 @@ namespace ShopEgypt.Infrastructure.Services.CartService
             return allItems
                 .Where(x => x.CartId == cartId)
                 .ToList();
+        }
+        private decimal GetEffectiveUnitPrice(Product? product)
+        {
+            if (product == null)
+                return 0;
+
+            return product.DiscountPrice.HasValue && product.DiscountPrice.Value > 0
+                ? product.DiscountPrice.Value
+                : product.Price;
         }
     }
 }
