@@ -3,7 +3,7 @@
 
 @{
     var hasDiscount = Model.DiscountPrice.HasValue && Model.DiscountPrice.Value > 0;
-    var finalPrice = hasDiscount ? Model.Price - Model.DiscountPrice!.Value : Model.Price;
+    var finalPrice = hasDiscount ? Model.DiscountPrice!.Value : Model.Price;
     var heroImage = Model.Images?.FirstOrDefault()?.ImageUrl ?? "/images/placeholder.png";
     var returnUrl = $"{Context.Request.Path}{Context.Request.QueryString}";
     var rating = Model.AverageRating.ToString("0.0");
@@ -46,7 +46,23 @@
             <h1>@Model.Title</h1>
 
             <div class="product-rating-row">
-                <span class="stars" aria-hidden="true">★★★★★</span>
+                <span class="stars" aria-hidden="true">
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        if (i <= Math.Floor(Model.AverageRating))
+                        {
+                            @:★
+                        }
+                        else if (i == Math.Ceiling(Model.AverageRating) && Model.AverageRating % 1 >= 0.5)
+                        {
+                            @:★
+                        }
+                        else
+                        {
+                            @:☆
+                        }
+                    }
+                </span>
                 <span>@rating • @reviews reviews</span>
             </div>
 
