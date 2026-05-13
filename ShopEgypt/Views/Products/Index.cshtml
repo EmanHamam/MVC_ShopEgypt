@@ -104,10 +104,16 @@
                                 <img src="@(item.ThumbnailUrl ?? "/images/placeholder.png")" alt="@item.Title" />
                             </a>
                             <span class="product-badge">@badge</span>
-                            <button type="button" class="wishlist-btn" aria-label="Add to wishlist">
-                                <i class="fa-regular fa-heart"></i>
-                            </button>
+                            <form asp-controller="WishListItems" asp-action="Add" method="post" style="display: inline;">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="productId" value="@item.Id" />
+                                <input type="hidden" name="returnUrl" value="@returnUrl" />
+                                <button type="submit" class="wishlist-btn" aria-label="Add to wishlist">
+                                    <i class="fa-regular fa-heart"></i>
+                                </button>
+                            </form>
 
+                            
                             <form asp-controller="Cart" asp-action="Add" method="post" class="product-add">
                                 @Html.AntiForgeryToken()
                                 <input type="hidden" name="productId" value="@item.Id" />
