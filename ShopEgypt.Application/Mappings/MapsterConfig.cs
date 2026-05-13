@@ -4,6 +4,8 @@ using System.Linq;
 using Mapster;
 using ShopEgypt.Application.DTOs;
 using ShopEgypt.Application.DTOs.ReviewDtos;
+using ShopEgypt.Application.DTOs.WishlistDTOs;
+using ShopEgypt.Application.DTOs.WishlistItemsDTOs;
 using ShopEgypt.Domain.Entities;
 
 namespace ShopEgypt.Application.Mappings
@@ -57,7 +59,7 @@ namespace ShopEgypt.Application.Mappings
                 .Map(dest => dest.CreatedAt, src => src.CreatedAt);
 
 
-            // Create ReviewDto Mapping, no need to mapping as share the same properties
+            //REVIEWS
             TypeAdapterConfig<Review, CreateReviewDto>
                 .NewConfig()
                 .Map(dest => dest.ApplicationUserId, src => src.ApplicationUserId)
@@ -70,15 +72,36 @@ namespace ShopEgypt.Application.Mappings
                 .Map(dest => dest.ApplicationUserId, src => src.ApplicationUserId)
                 .Map(dest => dest.Rating, src => src.Rating)
                 .Map(dest => dest.Comment, src => src.Comment);
-            // TypeAdapterConfig<Review, UpdateReviewDto>
-            //     .NewConfig()
-            //     .Map(dest => dest.Id, src => src.Id)
-            //     .Map(dest => dest.ProductId, src => src.ProductId)
-            //     .Map(dest => dest.ApplicationUserId, src => src.ApplicationUserId)
-            //     .Map(dest => dest.Rating, src => src.Rating)
-            //     .Map(dest => dest.Comment, src => src.Comment);
+         
 
             TypeAdapterConfig<Category, CategoryDto>.NewConfig();
+
+
+            //WishLists
+            TypeAdapterConfig<WishlistItem, WishlistItemsDto>
+                .NewConfig()
+                .Map(dest => dest.Id, src => src.Id)
+                .Map(dest => dest.WishlistId, src => src.WishlistID)
+                .Map(dest => dest.ProductId, src => src.ProductId)
+                .Map(dest => dest.ProductName, src => src.Product.Title)
+                .Map(dest => dest.ProductImage, src => src.Product.ProductImages
+                    .OrderBy(i => i.DisplayOrder)
+                    .Select(i => i.ImageUrl)
+                    .FirstOrDefault());
+              
+            TypeAdapterConfig<WishlistItem, DeleteWishItemDto>
+                .NewConfig()
+                .Map(dest => dest.ProductId, src => src.ProductId)
+                .Map(dest => dest.WishlistId, src => src.WishlistID);
+
+            TypeAdapterConfig<AddWishlistItemDto, WishlistItem>
+                .NewConfig()
+                .Map(dest => dest.ProductId, src => src.ProductId)
+                .Map(dest => dest.WishlistID, src => 0) // Will be set in service
+                .Ignore(dest => dest.Id)
+                .Ignore(dest => dest.Wishlist)
+                .Ignore(dest => dest.Product);
         }
+
     }
 }
