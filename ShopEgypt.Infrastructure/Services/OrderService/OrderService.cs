@@ -1,4 +1,5 @@
 using ShopEgypt.Application.DTOs.OrdersDTO;
+using ShopEgypt.Application.Interfaces.IAddressService;
 using ShopEgypt.Application.Interfaces.ICartService;
 using ShopEgypt.Application.Interfaces.IOrderService;
 using ShopEgypt.Domain.Entities;
@@ -7,7 +8,7 @@ using ShopEgypt.Infrastructure.UnitOfWork;
 
 namespace ShopEgypt.Infrastructure.Services.OrderService
 {
-    public class OrderService(IUnitOfWork _unitOfWork, ICartService _cartService) : IOrderService
+    public class OrderService(IUnitOfWork _unitOfWork, ICartService _cartService , IAddressService _addressService) : IOrderService
     {
         // ──────────────────────────────────────────────────────────────────────────
         // PUBLIC API
@@ -25,7 +26,7 @@ namespace ShopEgypt.Infrastructure.Services.OrderService
                 Country = addressDto.Country,
                 AppUserId = userId
             };
-            await _unitOfWork.Addresses.AddAsync(address);
+            await _addressService.TrySaveAddAddressAsync(userId, addressDto);
             await _unitOfWork.SaveAsync(); // address.Id is now set by EF
 
             // 2. Create Order header (Pending) — let IDENTITY generate the Id.
@@ -120,23 +121,7 @@ namespace ShopEgypt.Infrastructure.Services.OrderService
             // If no addressDto passed, try to load from Address table by AppUserId
             if (addressDto == null && !string.IsNullOrEmpty(order.ApplicationUserId))
             {
-                var addresses = await _unitOfWork.Addresses.GetAllAsync();
-                var saved = addresses
-                    .Where(a => a.AppUserId == order.ApplicationUserId)
-                    .OrderByDescending(a => a.Id)
-                    .FirstOrDefault();
-
-                if (saved != null)
-                {
-                    addressDto = new AddressDTO
-                    {
-                        Street = saved.Street,
-                        City = saved.City,
-                        State = saved.State,
-                        ZipCode = saved.ZipCode,
-                        Country = saved.Country
-                    };
-                }
+                addressDto = await _addressService.GetFirstAddressAsync(order.ApplicationUserId);
             }
 
             return new OrderDTO

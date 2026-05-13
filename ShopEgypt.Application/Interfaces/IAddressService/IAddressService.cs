@@ -10,5 +10,8 @@ namespace ShopEgypt.Application.Interfaces.IAddressService
     {
         public Task<AddressDTO> TryGetSavedAddressAsync(string userId);
         public Task TrySaveAddAddressAsync(string userId, AddressDTO AddressDTO);
+
+        public Task<AddressDTO> GetFirstAddressAsync(string userId);
+
     }
 }

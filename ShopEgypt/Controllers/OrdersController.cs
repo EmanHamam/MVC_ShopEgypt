@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using ShopEgypt.Application.DTOs.OrdersDTO;
+using ShopEgypt.Application.Interfaces.IAddressService;
 using ShopEgypt.Application.Interfaces.ICartService;
 using ShopEgypt.Application.Interfaces.IOrderService;
 using ShopEgypt.Application.Interfaces.IStripeService;
@@ -20,19 +21,22 @@ namespace ShopEgypt.Controllers
         private readonly IOrderService                _orderService;
         private readonly IStripeService               _stripeService;
         private readonly IConfiguration               _config;
+        private readonly IAddressService              _addressService;  
 
         public OrdersController(
             UserManager<ApplicationUser> userManager,
             ICartService                 cartService,
             IOrderService                orderService,
             IStripeService               stripeService,
-            IConfiguration               config)
+            IConfiguration               config,
+            IAddressService              addressService)
         {
             _userManager   = userManager;
             _cartService   = cartService;
             _orderService  = orderService;
             _stripeService = stripeService;
             _config        = config;
+            _addressService = addressService;
         }
         // ════════════════════════════════════════════════════
         // View All order to specific user
@@ -55,7 +59,7 @@ namespace ShopEgypt.Controllers
             var userId = _userManager.GetUserId(User);
 
             // Pre-fill form with latest saved address for this user (if any)
-            var prefilled = await TryGetSavedAddressAsync(userId!);
+            var prefilled = await _addressService.TryGetSavedAddressAsync(userId!);
             return View(prefilled ?? new AddressDTO());
         }
 
@@ -220,14 +224,14 @@ namespace ShopEgypt.Controllers
             catch { return null; }
         }
 
-        private async Task<AddressDTO?> TryGetSavedAddressAsync(string userId)
-        {
-            var cartItems = await _cartService.GetCartAsync();
-            // Use cart just to confirm user is legit; load address separately via OrderService
-            // We borrow the address load logic from OrderService's BuildOrderDTOAsync
-            // by calling GetOrderByIdAsync with a dummy and returning null if nothing found
-            // — actually just do a direct check in the controller for simplicity:
-            return null; // OrderService will load it when building OrderDTO
-        }
+        //private async Task<AddressDTO?> TryGetSavedAddressAsync(string userId)
+        //{
+        //    var cartItems = await _cartService.GetCartAsync();
+        //    // Use cart just to confirm user is legit; load address separately via OrderService
+        //    // We borrow the address load logic from OrderService's BuildOrderDTOAsync
+        //    // by calling GetOrderByIdAsync with a dummy and returning null if nothing found
+        //    // — actually just do a direct check in the controller for simplicity:
+        //    return null; // OrderService will load it when building OrderDTO
+        //}
     }
 }
