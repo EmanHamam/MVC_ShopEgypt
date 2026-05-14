@@ -1,4 +1,4 @@
-﻿using ShopEgypt.Application.Interfaces.IProductService;
+using ShopEgypt.Application.Interfaces.IProductService;
 using ShopEgypt.Application.Interfaces.IReviewService;
 using ShopEgypt.Application.Interfaces.IWishlistItemService;
 using ShopEgypt.Domain.Entities;

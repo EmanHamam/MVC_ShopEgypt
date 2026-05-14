@@ -42,11 +42,120 @@ namespace ShopEgypt.Controllers
         // View All order to specific user
         // ════════════════════════════════════════════════════
 
-        public async Task<IActionResult> MyOrders()
+        public async Task<IActionResult> MyOrders(int page = 1)
         {
             var userId = _userManager.GetUserId(User);
             var orders = await _orderService.GetOrdersByUserIdAsync(userId!);
-            return View(orders);
+
+            int pageSize = 10;
+            var totalOrders = orders.Count;
+            var totalPages = (int)Math.Ceiling(totalOrders / (double)pageSize);
+            
+            var paginatedOrders = orders.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            
+            var orderDtos = new List<OrderDTO>();
+            foreach(var order in paginatedOrders)
+            {
+                orderDtos.Add(await _orderService.BuildOrderDTOAsync(order));
+            }
+
+            var viewModel = new OrderListViewModel
+            {
+                Orders = orderDtos,
+                CurrentPage = page,
+                TotalPages = totalPages,
+                TotalOrders = totalOrders
+            };
+
+            return View(viewModel);
+        }
+
+        // ════════════════════════════════════════════════════
+        // View Details of specific order
+        // ════════════════════════════════════════════════════
+
+        [HttpGet]
+        public async Task<IActionResult> Detail(int orderId)
+        {
+            var order = await _orderService.GetOrderByIdAsync(orderId);
+            if (order == null)
+                return NotFound();
+
+            var userId = _userManager.GetUserId(User);
+            if (order.ApplicationUserId != userId)
+                return Forbid();
+
+            var orderDto = await _orderService.BuildOrderDTOAsync(order);
+
+            var viewModel = new OrderDetailViewModel
+            {
+                Order = orderDto
+            };
+
+            return View(viewModel);
+        }
+
+        // ════════════════════════════════════════════════════
+        // Cancel Order
+        // ════════════════════════════════════════════════════
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CancelOrder(int orderId)
+        {
+            var order = await _orderService.GetOrderByIdAsync(orderId);
+            if (order == null)
+                return NotFound();
+
+            var userId = _userManager.GetUserId(User);
+            if (order.ApplicationUserId != userId)
+                return Forbid();
+
+            if (order.Status == OrderStatus.Pending || order.Status == OrderStatus.Confirmed)
+            {
+                await _orderService.UpdateOrderStatusAsync(orderId, OrderStatus.Cancelled);
+                TempData["SuccessMessage"] = "Order cancelled successfully.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Order cannot be cancelled at this stage.";
+            }
+
+            return RedirectToAction(nameof(Detail), new { orderId = orderId });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PayPendingOrder(int orderId)
+        {
+            var order = await _orderService.GetOrderByIdAsync(orderId);
+            if (order == null)
+                return NotFound();
+
+            var userId = _userManager.GetUserId(User);
+            if (order.ApplicationUserId != userId)
+                return Forbid();
+
+            if (order.Status != OrderStatus.Pending)
+            {
+                TempData["ErrorMessage"] = "Only pending orders can be paid.";
+                return RedirectToAction(nameof(Detail), new { orderId = orderId });
+            }
+
+            decimal grandTotal = order.TotalAmount;
+
+            // Create Stripe PaymentIntent using the REAL order.Id
+            var (paymentIntentId, clientSecret) =
+                await _stripeService.CreatePaymentIntentAsync(grandTotal, order.Id.ToString());
+
+            // Pass payment data to Payment view via TempData
+            TempData["OrderId"]        = order.Id.ToString();
+            TempData["PaymentIntentId"] = paymentIntentId;
+            TempData["ClientSecret"]   = clientSecret;
+            TempData["PublishableKey"] = _config["Stripe:PublishableKey"];
+            TempData["TotalAmount"]    = grandTotal.ToString("F2");
+
+            return RedirectToAction(nameof(Payment));
         }
 
         // ════════════════════════════════════════════════════
@@ -97,25 +206,10 @@ namespace ShopEgypt.Controllers
             if (addressDto == null)
                 return RedirectToAction(nameof(Address));
 
-            // Build OrderDTO from the in-memory order
-            var orderDto = new OrderDTO
-            {
-                OrderId = "pending",  // Not yet saved to DB
-                ApplicationUserId = order.ApplicationUserId,
-                OrderStatus = order.Status,
-                TotalAmount = order.TotalAmount,
-                Address = addressDto,
-                OrderItems = order.OrderItems?.Select(oi => new OrderItemDTO
-                {
-                    OrderItemId = "pending",
-                    OrderId = "pending",
-                    ProductId = oi.ProductId,
-                    ProductName = "Loading...",
-                    ProductDescription = string.Empty,
-                    Quantity = oi.Quantity,
-                    UnitPrice = oi.UnitPrice
-                }).ToList() ?? new List<OrderItemDTO>()
-            };
+            var orderDto = await _orderService.BuildOrderDTOAsync(order, addressDto);
+            
+            // Override ID for pending orders to avoid confusing the view
+            if (order.Id == 0) orderDto.OrderId = "pending";
 
             // Keep TempData alive for the next step (ConfirmOrder POST)
             TempData.Keep("OrderId");
@@ -143,23 +237,19 @@ namespace ShopEgypt.Controllers
             decimal shippingFee = order.TotalAmount > 1500 ? 0 : 80;
             decimal grandTotal  = order.TotalAmount + shippingFee;
 
-            // Create Stripe PaymentIntent BEFORE saving order to DB
-            // Use a temporary session identifier for payment intent metadata
-            string tempOrderRef = $"temp_{DateTime.UtcNow.Ticks}";
+            // NOW save the order to the database FIRST
+            await _orderService.SavePendingOrderAsync(order, addressDto, grandTotal);
+
+            // Create Stripe PaymentIntent using the REAL order.Id
             var (paymentIntentId, clientSecret) =
-                await _stripeService.CreatePaymentIntentAsync(grandTotal, tempOrderRef);
+                await _stripeService.CreatePaymentIntentAsync(grandTotal, order.Id.ToString());
 
             // Pass payment data to Payment view via TempData
-            TempData["OrderId"]        = tempOrderRef;
+            TempData["OrderId"]        = order.Id.ToString();
             TempData["PaymentIntentId"] = paymentIntentId;
             TempData["ClientSecret"]   = clientSecret;
             TempData["PublishableKey"] = _config["Stripe:PublishableKey"];
             TempData["TotalAmount"]    = grandTotal.ToString("F2");
-            TempData["ShippingFee"]    = shippingFee.ToString("F2");
-
-            // Keep Order and Address for final save in PaymentSuccess
-            TempData.Keep("Order");
-            TempData.Keep("Address");
 
             return RedirectToAction(nameof(Payment));
         }
@@ -185,10 +275,8 @@ namespace ShopEgypt.Controllers
             ViewBag.OrderId        = orderId;
 
             // Keep data for PaymentSuccess
-            TempData.Keep("Order");
-            TempData.Keep("Address");
+            TempData.Keep("OrderId");
             TempData.Keep("PaymentIntentId");
-            TempData.Keep("ShippingFee");
             TempData.Keep("TotalAmount");
 
             return View();
@@ -198,30 +286,20 @@ namespace ShopEgypt.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> PaymentSuccess(string orderId)
         {
-            // Deserialize the pending order and address from TempData
-            if (!TryGetTempOrder(out Order? order) || order == null)
+            if (!int.TryParse(orderId, out int orderIdInt))
                 return RedirectToAction(nameof(Address));
 
-            var addressDto = TryDeserializeAddress();
-            if (addressDto == null)
+            var order = await _orderService.GetOrderByIdAsync(orderIdInt);
+            if (order == null)
                 return RedirectToAction(nameof(Address));
 
             string paymentIntentId = TempData["PaymentIntentId"] as string ?? "";
-            var totalAmountStr = TempData["TotalAmount"] as string ?? "0";
-            // NOW save the order to the database for the first time
-            await _orderService.SavePendingOrderAsync(order, addressDto , decimal.Parse(totalAmountStr));
-
-            // Create Payment record after order is saved (now we have order.Id)
-            //string? shippingFeeStr = TempData["ShippingFee"] as string;
-            //decimal shippingFee = string.IsNullOrEmpty(shippingFeeStr) ? 0 : decimal.Parse(shippingFeeStr);
-            //decimal grandTotal = order.TotalAmount + shippingFee;
-            
             var grandTotal = order.TotalAmount;
 
             await _orderService.AttachPaymentIntentAsync(order.Id, paymentIntentId, grandTotal);
 
-            // Mark payment as succeeded and order as Processing, clear cart
-            await _orderService.ConfirmPaymentAsync(order.Id, order, addressDto);
+            // Mark payment as succeeded and order as Confirmed, clear cart
+            await _orderService.ConfirmPaymentAsync(order.Id);
 
             return RedirectToAction(nameof(OrderConfirmation), new { orderId = order.Id });
         }
@@ -239,9 +317,10 @@ namespace ShopEgypt.Controllers
 
             var orderDto = await _orderService.BuildOrderDTOAsync(order);
 
-            decimal shippingFee = orderDto.TotalAmount > 1500 ? 0 : 80;
+            decimal subtotal = orderDto.OrderItems.Sum(i => i.UnitPrice * i.Quantity);
+            decimal shippingFee = orderDto.TotalAmount - subtotal;
             ViewBag.ShippingFee = shippingFee;
-            ViewBag.GrandTotal  = orderDto.TotalAmount + shippingFee;
+            ViewBag.GrandTotal  = orderDto.TotalAmount;
 
             return View(orderDto);
         }

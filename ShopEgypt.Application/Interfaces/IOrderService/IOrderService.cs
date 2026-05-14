@@ -40,10 +40,10 @@ namespace ShopEgypt.Application.Interfaces.IOrderService
         Task<Payment> AttachPaymentIntentAsync(int orderId, string paymentIntentId, decimal amount);
 
         /// <summary>
-        /// Saves the pending order to DB, then marks Payment as Succeeded, updates Order to Processing,
+        /// Saves the pending order to DB, then marks Payment as Succeeded, updates Order to Confirmed,
         /// and clears the cart. Call this only after successful payment.
         /// </summary>
-        Task ConfirmPaymentAsync(int orderId, Order order, AddressDTO addressDto);
+        Task ConfirmPaymentAsync(int orderId);
 
         /// <summary>
         /// Retrieves all orders for a given user, including their OrderItems and Product navigations.

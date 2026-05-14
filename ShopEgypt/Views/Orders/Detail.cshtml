@@ -1,0 +1,245 @@
+@using ShopEgypt.Domain.Enums
+@model ShopEgypt.Application.DTOs.OrdersDTO.OrderDetailViewModel
+
+@{
+    ViewData["Title"] = "Order Details #" + Model.Order.OrderId;
+}
+
+<section class="order-detail-page py-5 bg-light">
+    <div class="container">
+        
+        <!-- Flash Messages -->
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+                <i class="fa-solid fa-circle-check me-2"></i> @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                <i class="fa-solid fa-triangle-exclamation me-2"></i> @TempData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <a asp-action="MyOrders" class="text-decoration-none text-muted mb-2 d-inline-block">
+                    <i class="fa-solid fa-arrow-left me-1"></i> Back to Orders
+                </a>
+                <h1 class="h3 fw-bold mb-1">Order #@Model.Order.OrderId</h1>
+                <p class="text-muted mb-0">Placed on @Model.Order.OrderDate.ToString("MMM dd, yyyy 'at' hh:mm tt")</p>
+            </div>
+
+            <div class="d-flex gap-2">
+                @if (Model.Order.OrderStatus == OrderStatus.Pending)
+                {
+                    <form asp-action="PayPendingOrder" method="post" class="m-0">
+                        <input type="hidden" name="orderId" value="@Model.Order.OrderId" />
+                        <button type="submit" class="btn btn-primary shadow-sm">
+                            <i class="fa-solid fa-credit-card me-1"></i> Pay Now
+                        </button>
+                    </form>
+                }
+
+                @if (Model.Order.OrderStatus == OrderStatus.Pending || Model.Order.OrderStatus == OrderStatus.Confirmed)
+                {
+                    <button type="button" class="btn btn-outline-danger shadow-sm" data-bs-toggle="modal" data-bs-target="#cancelOrderModal">
+                        <i class="fa-solid fa-ban me-1"></i> Cancel Order
+                    </button>
+                }
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Left Column: Items and Timeline -->
+            <div class="col-lg-8">
+                
+                <!-- Status Timeline -->
+                <div class="card border-0 shadow-sm rounded-4 mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-4">Order Status</h5>
+                        
+                        <div class="timeline">
+                            @{
+                                var statusClasses = new Dictionary<OrderStatus, string>
+                                {
+                                    { OrderStatus.Pending, "secondary" },
+                                    { OrderStatus.Confirmed, "primary" },
+                                    { OrderStatus.Processing, "warning" },
+                                    { OrderStatus.Shipped, "info" },
+                                    { OrderStatus.Delivered, "success" },
+                                    { OrderStatus.Cancelled, "danger" }
+                                };
+                                
+                                var timelineEvents = new List<(OrderStatus Status, DateTime Date)>();
+                                timelineEvents.Add((OrderStatus.Pending, Model.Order.OrderDate));
+                                
+                                if (Model.Order.ConfirmedAt.HasValue) timelineEvents.Add((OrderStatus.Confirmed, Model.Order.ConfirmedAt.Value));
+                                if (Model.Order.ProcessingAt.HasValue) timelineEvents.Add((OrderStatus.Processing, Model.Order.ProcessingAt.Value));
+                                if (Model.Order.ShippedAt.HasValue) timelineEvents.Add((OrderStatus.Shipped, Model.Order.ShippedAt.Value));
+                                if (Model.Order.DeliveredAt.HasValue) timelineEvents.Add((OrderStatus.Delivered, Model.Order.DeliveredAt.Value));
+                                if (Model.Order.CancelledAt.HasValue) timelineEvents.Add((OrderStatus.Cancelled, Model.Order.CancelledAt.Value));
+                                
+                                timelineEvents = timelineEvents.OrderBy(e => e.Date).ToList();
+                            }
+
+                            @foreach (var history in timelineEvents)
+                            {
+                                var colorClass = statusClasses.ContainsKey(history.Status) ? statusClasses[history.Status] : "secondary";
+                                <div class="timeline-item">
+                                    <div class="timeline-marker bg-@colorClass"></div>
+                                    <div class="timeline-content">
+                                        <h6 class="fw-bold text-@colorClass mb-1">@history.Status</h6>
+                                        <p class="text-muted small mb-0">@history.Date.ToLocalTime().ToString("MMM dd, yyyy hh:mm tt")</p>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Items -->
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-4">Items (@Model.Order.OrderItems.Count)</h5>
+                        
+                        <div class="list-group list-group-flush">
+                            @foreach (var item in Model.Order.OrderItems)
+                            {
+                                <div class="list-group-item px-0 py-3 d-flex align-items-center border-bottom">
+                                    <!-- Placeholder for product image. Since DTO lacks image, using an icon. -->
+                                    <div class="bg-light rounded-3 d-flex align-items-center justify-content-center me-3" style="width: 64px; height: 64px;">
+                                        <i class="fa-solid fa-box text-muted fs-4"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="fw-bold mb-1">@item.ProductName</h6>
+                                        <div class="text-muted small">Qty: @item.Quantity</div>
+                                    </div>
+                                    <div class="fw-bold">
+                                        @item.UnitPrice.ToString("N0") EGP
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Summary and Address -->
+            <div class="col-lg-4">
+                
+                <!-- Payment Summary -->
+                <div class="card border-0 shadow-sm rounded-4 mb-4 bg-primary text-white">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-4 text-white">Payment Summary</h5>
+                        
+                        @{
+                            // We can approximate subtotal if shipping fee is fixed, or simply show total.
+                            // Assuming 80 EGP shipping if TotalAmount <= 1500 + 80
+                            decimal total = Model.Order.TotalAmount;
+                            decimal estimatedSubtotal = Model.Order.OrderItems.Sum(i => i.UnitPrice * i.Quantity);
+                            decimal shipping = total - estimatedSubtotal;
+                            if (shipping < 0) shipping = 0;
+                        }
+
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Subtotal</span>
+                            <span>@estimatedSubtotal.ToString("N0") EGP</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-3">
+                            <span>Shipping</span>
+                            <span>@(shipping == 0 ? "Free" : shipping.ToString("N0") + " EGP")</span>
+                        </div>
+                        <hr class="border-light opacity-50">
+                        <div class="d-flex justify-content-between mb-0 align-items-center">
+                            <span class="fw-bold fs-5">Total</span>
+                            <span class="fw-bold fs-4">@total.ToString("N0") EGP</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Delivery Address -->
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-4">Delivery Details</h5>
+                        
+                        <div class="d-flex mb-3">
+                            <i class="fa-solid fa-location-dot text-primary mt-1 me-3 fs-5"></i>
+                            <div>
+                                <div class="fw-semibold mb-1">Shipping Address</div>
+                                <div class="text-muted small">
+                                    @Model.Order.Address.Street<br />
+                                    @Model.Order.Address.City, @Model.Order.Address.State @Model.Order.Address.ZipCode<br />
+                                    @Model.Order.Address.Country
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Cancel Order Modal -->
+<div class="modal fade" id="cancelOrderModal" tabindex="-1" aria-labelledby="cancelOrderModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg rounded-4">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold" id="cancelOrderModalLabel">Cancel Order</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body py-4">
+        Are you sure you want to cancel Order <strong>#@Model.Order.OrderId</strong>? This action cannot be undone.
+      </div>
+      <div class="modal-footer border-0 pt-0">
+        <button type="button" class="btn btn-light rounded-3" data-bs-dismiss="modal">Keep Order</button>
+        <form asp-action="CancelOrder" method="post">
+            <input type="hidden" name="orderId" value="@Model.Order.OrderId" />
+            <button type="submit" class="btn btn-danger rounded-3">Yes, Cancel Order</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+    /* Timeline styles */
+    .timeline {
+        position: relative;
+        padding-left: 1.5rem;
+    }
+    .timeline::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0.45rem;
+        width: 2px;
+        background-color: #e9ecef;
+    }
+    .timeline-item {
+        position: relative;
+        margin-bottom: 1.5rem;
+    }
+    .timeline-item:last-child {
+        margin-bottom: 0;
+    }
+    .timeline-marker {
+        position: absolute;
+        left: -1.45rem;
+        top: 0.25rem;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        border: 2px solid #fff;
+        box-shadow: 0 0 0 2px rgba(0,0,0,0.05);
+    }
+    .timeline-content {
+        padding-bottom: 0.5rem;
+    }
+</style>
