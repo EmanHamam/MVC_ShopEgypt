@@ -75,12 +75,12 @@
                             </tbody>
                             <tfoot class="border-top">
                                 @{
-                                    decimal shipping   = ViewBag.ShippingFee;
+                                    decimal shipping   = ViewBag.ShippingFee ?? 0;
                                     decimal grandTotal = ViewBag.GrandTotal;
                                 }
                                 <tr class="text-muted">
                                     <td colspan="3" class="text-end">Subtotal</td>
-                                    <td class="text-end">EGP @Model.TotalAmount.ToString("F2")</td>
+                                    <td class="text-end">EGP @(Model.TotalAmount-shipping)</td>
                                 </tr>
                                 <tr class="text-muted">
                                     <td colspan="3" class="text-end">Shipping</td>

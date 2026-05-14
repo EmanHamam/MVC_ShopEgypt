@@ -7,11 +7,17 @@ namespace ShopEgypt.Application.Interfaces.IOrderService
     public interface IOrderService
     {
         /// <summary>
-        /// Creates an Address row, an Order row (Status=Pending), OrderItem rows from the
-        /// current cart, updates TotalAmount, and clears the cart. Returns the saved Order.
+        /// Creates an in-memory pending order with the given address and cart items.
+        /// Does NOT save to the database — data is kept in memory for session flow.
+        /// Returns the in-memory Order object.
         /// </summary>
         Task<Order> CreatePendingOrderAsync(string userId, AddressDTO addressDto);
 
+        /// <summary>
+        /// Saves the in-memory pending order (and its items) to the database.
+        /// Call this only after payment is confirmed.
+        /// </summary>
+        Task SavePendingOrderAsync(Order order, AddressDTO addressDto, decimal totalAmount);
         /// <summary>
         /// Loads an Order entity by its int ID, including OrderItems and Product navigations.
         /// </summary>
@@ -34,14 +40,14 @@ namespace ShopEgypt.Application.Interfaces.IOrderService
         Task<Payment> AttachPaymentIntentAsync(int orderId, string paymentIntentId, decimal amount);
 
         /// <summary>
-        /// Sets Payment.Status = Succeeded, PaidAt = UtcNow, Order.Status = Processing.
+        /// Saves the pending order to DB, then marks Payment as Succeeded, updates Order to Confirmed,
+        /// and clears the cart. Call this only after successful payment.
         /// </summary>
         Task ConfirmPaymentAsync(int orderId);
 
         /// <summary>
-        ///     
         /// Retrieves all orders for a given user, including their OrderItems and Product navigations.
-
+        /// </summary>
         Task<List<Order>> GetOrdersByUserIdAsync(string userId);
     }
 }

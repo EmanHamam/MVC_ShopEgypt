@@ -1,9 +1,9 @@
-﻿@using ShopEgypt.Domain.Enums
-@model IEnumerable<ShopEgypt.Domain.Entities.Order>
+@using ShopEgypt.Domain.Enums
+@model ShopEgypt.Application.DTOs.OrdersDTO.OrderListViewModel
 
 @{
     ViewData["Title"] = "My Orders";
-    var orders = Model ?? Enumerable.Empty<ShopEgypt.Domain.Entities.Order>();
+    var orders = Model.Orders;
 }
 
 <section class="orders-page">
@@ -11,7 +11,7 @@
         <div class="orders-heading">
             <div>
                 <h1>My Orders</h1>
-                <p>@orders.Count() @(orders.Count() == 1 ? "order" : "orders") placed from your account.</p>
+                <p>@Model.TotalOrders @(Model.TotalOrders == 1 ? "order" : "orders") placed from your account.</p>
             </div>
         </div>
 
@@ -45,29 +45,32 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var order in orders.OrderByDescending(orderItem => orderItem.OrderDate))
+                                @foreach (var order in orders)
                                 {
-                                    var statusClass = order.Status switch
+                                    var statusClass = order.OrderStatus switch
                                     {
-                                        OrderStatus.Pending => "bg-warning text-dark",
-                                        OrderStatus.Processing => "bg-primary",
+                                        OrderStatus.Pending => "bg-secondary text-white",
+                                        OrderStatus.Confirmed => "bg-primary text-white",
+                                        OrderStatus.Processing => "bg-warning text-dark",
                                         OrderStatus.Shipped => "bg-info text-dark",
-                                        OrderStatus.Delivered => "bg-success",
-                                        OrderStatus.Cancelled => "bg-danger",
-                                        _ => "bg-secondary"
+                                        OrderStatus.Delivered => "bg-success text-white",
+                                        OrderStatus.Cancelled => "bg-danger text-white",
+                                        _ => "bg-secondary text-white"
                                     };
 
-                                    <tr>
+                                    <tr style="cursor: pointer;" onclick="window.location.href='@Url.Action("Detail", "Orders", new { orderId = order.OrderId })'">
                                         <td>
-                                            <div class="fw-semibold">#@order.Id</div>
-                                            <div class="text-muted small">Order reference</div>
+                                            <div class="fw-semibold">#@order.OrderId</div>
+                                            <div class="text-muted small">@order.OrderItems.Count items</div>
                                         </td>
                                         <td>
                                             <div class="fw-medium">@order.OrderDate.ToString("MMM dd, yyyy")</div>
                                             <div class="text-muted small">@order.OrderDate.ToString("hh:mm tt")</div>
                                         </td>
-                                        <td class="text-center align-middle status-column">
-                                                @order.Status.ToString()
+                                        <td class="text-center align-middle">
+                                            <span class="rounded-pill @statusClass py-1 px-2 fw-bold" style="display: inline-block; width: 100px; font-size: 0.85rem; position: static !important;">
+                                                @order.OrderStatus.ToString()
+                                            </span>
                                         </td>
                                         <td class="text-end fw-bold fs-6">
                                             @order.TotalAmount.ToString("N0") EGP
@@ -79,6 +82,27 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Pagination Controls -->
+            @if (Model.TotalPages > 1)
+            {
+                <nav aria-label="Page navigation" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
+                            <a class="page-link" asp-action="MyOrders" asp-route-page="@(Model.CurrentPage - 1)">Previous</a>
+                        </li>
+                        @for (int i = 1; i <= Model.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                                <a class="page-link" asp-action="MyOrders" asp-route-page="@i">@i</a>
+                            </li>
+                        }
+                        <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
+                            <a class="page-link" asp-action="MyOrders" asp-route-page="@(Model.CurrentPage + 1)">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            }
         }
     </div>
 </section>
@@ -115,19 +139,12 @@
         padding: 1rem 1.25rem;
         border-color: #f1f3f5;
     }
-
-    .status-badge {
-        min-width: 110px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        line-height: 1;
-        white-space: nowrap;
+    
+    .orders-table tbody tr:hover {
+        background-color: #f8f9fa;
     }
 
-    .status-column {
-        white-space: nowrap;
-    }
+
 
     .orders-empty-icon {
         width: 72px;

@@ -1,4 +1,5 @@
 using ShopEgypt.Application.DTOs.OrdersDTO;
+using ShopEgypt.Application.Interfaces.IAddressService;
 using ShopEgypt.Application.Interfaces.ICartService;
 using ShopEgypt.Application.Interfaces.IOrderService;
 using ShopEgypt.Domain.Entities;
@@ -7,7 +8,7 @@ using ShopEgypt.Infrastructure.UnitOfWork;
 
 namespace ShopEgypt.Infrastructure.Services.OrderService
 {
-    public class OrderService(IUnitOfWork _unitOfWork, ICartService _cartService) : IOrderService
+    public class OrderService(IUnitOfWork _unitOfWork, ICartService _cartService , IAddressService _addressService) : IOrderService
     {
         // ──────────────────────────────────────────────────────────────────────────
         // PUBLIC API
@@ -15,7 +16,7 @@ namespace ShopEgypt.Infrastructure.Services.OrderService
 
         public async Task<Order> CreatePendingOrderAsync(string userId, AddressDTO addressDto)
         {
-            // 1. Persist shipping address — let IDENTITY generate the Id
+            // 1. Create Address object in MEMORY (do NOT persist yet)
             var address = new Address
             {
                 Street = addressDto.Street,
@@ -25,22 +26,18 @@ namespace ShopEgypt.Infrastructure.Services.OrderService
                 Country = addressDto.Country,
                 AppUserId = userId
             };
-            await _unitOfWork.Addresses.AddAsync(address);
-            await _unitOfWork.SaveAsync(); // address.Id is now set by EF
+            // NOTE: Address is NOT saved to DB yet — will be saved in SavePendingOrderAsync()
 
-            // 2. Create Order header (Pending) — let IDENTITY generate the Id.
-            //    Assign ShippingAddress navigation so EF populates the shadow
-            //    ShippingAddressId FK column (created by the existing migration).
+            // 2. Create Order header (Pending) in MEMORY (do NOT persist yet)
             var order = new Order
             {
                 ApplicationUserId = userId,
                 Status = OrderStatus.Pending,
                 OrderDate = DateTime.UtcNow,
                 TotalAmount = 0,
-                ShippingAddress = address   // ← EF sets ShippingAddressId automatically
+                ShippingAddress = address   // ← Local reference only
             };
-            await _unitOfWork.Orders.AddAsync(order);
-            await _unitOfWork.SaveAsync(); // order.Id is now set by EF
+            // NOTE: Order is NOT saved to DB yet — will be saved in SavePendingOrderAsync()
 
             // 3. Merge any session cart into the DB cart first.
             //    This handles the case where the user added items while unauthenticated
@@ -50,10 +47,11 @@ namespace ShopEgypt.Infrastructure.Services.OrderService
             // 4. Load cart items from DB
             var cartItems = await _cartService.GetCartAsync();
 
-            // 5. Insert OrderItem rows.
+            // 5. Create OrderItem objects in MEMORY (do NOT persist yet)
             //    GenericRepository.GetAllAsync() has no .Include(), so CartItem.Product
             //    navigation may be null for DB-cart users. Explicitly load the Product
             //    by ProductId to guarantee a non-zero UnitPrice.
+            var orderItems = new List<OrderItem>();
             decimal total = 0;
             foreach (var cartItem in cartItems)
             {
@@ -61,27 +59,72 @@ namespace ShopEgypt.Infrastructure.Services.OrderService
                                 ?? await _unitOfWork.Products.GetByIdAsync(cartItem.ProductId);
                 var unitPrice = product?.Price ?? 0;
 
-                // Let IDENTITY generate OrderItem.Id — only set FK OrderId from the saved order
                 var orderItem = new OrderItem
                 {
-                    OrderId = order.Id,
                     ProductId = cartItem.ProductId,
                     Quantity = cartItem.Quantity,
                     UnitPrice = unitPrice
+                    // NOTE: OrderId will be set when order is saved
                 };
-                await _unitOfWork.OrderItems.AddAsync(orderItem);
+                orderItems.Add(orderItem);
                 total += unitPrice * cartItem.Quantity;
             }
 
-            // 6. Update total and save all order items
+            // 6. Calculate total and assign order items
             order.TotalAmount = total;
-            await _unitOfWork.Orders.Update(order);
-            await _unitOfWork.SaveAsync();
+            order.OrderItems = orderItems;  // ← Assign items to order
 
-            // NOTE: Cart is NOT cleared here — it is cleared only after
-            //       successful payment in ConfirmPaymentAsync.
+            // NOTE: No SaveAsync() call here — all data is kept in MEMORY.
+            //       The order will be persisted to the database only after
+            //       payment is confirmed in SavePendingOrderAsync().
 
             return order;
+        }
+
+        /// <summary>
+        /// Saves the pending order (and its items) to the database.
+        /// Call this only after payment is confirmed.
+        /// </summary>
+        public async Task SavePendingOrderAsync(Order order, AddressDTO addressDto, decimal totalAmount)
+        {
+            // 1. Persist shipping address
+            var address = new Address
+            {
+                Street = addressDto.Street,
+                City = addressDto.City,
+                State = addressDto.State,
+                ZipCode = addressDto.ZipCode,
+                Country = addressDto.Country,
+                AppUserId = order.ApplicationUserId
+            };
+            await _unitOfWork.Addresses.AddAsync(address);
+            await _unitOfWork.SaveAsync(); // Generate address.Id
+
+            // 2. Persist order with address reference
+            order.TotalAmount = totalAmount; // Update total amoun
+            order.ApplicationUserId = address.AppUserId;
+            order.ShippingAddress = address;  // Ensure navigation is set
+            order.Id = 0;  // ← Reset Id so EF generates a new one (avoid IDENTITY_INSERT error)
+            order.OrderDate = DateTime.UtcNow; // Set explicitly to avoid SqlDateTime overflow
+
+            // Store items temporarily before clearing (EF cascade would save them)
+            var itemsToSave = order.OrderItems?.ToList() ?? new List<OrderItem>();
+            order.OrderItems.Clear();  // ← Clear so EF doesn't auto-save duplicates
+
+            await _unitOfWork.Orders.AddAsync(order);
+            await _unitOfWork.SaveAsync(); // Generate order.Id
+
+            // 3. Persist order items explicitly (only once)
+            if (itemsToSave.Any())
+            {
+                foreach (var item in itemsToSave)
+                {
+                    item.OrderId = order.Id;
+                    item.Id = 0;  // ← Reset Id so EF generates a new one (avoid IDENTITY_INSERT error)
+                    await _unitOfWork.OrderItems.AddAsync(item);
+                    await _unitOfWork.SaveAsync();
+                }
+            }
         }
 
         public async Task<Order?> GetOrderByIdAsync(int orderId)
@@ -94,7 +137,9 @@ namespace ShopEgypt.Infrastructure.Services.OrderService
         {
             // Load order items with product navigation
             var allItems = await _unitOfWork.OrderItems.GetAllAsync();
-            var orderItems = allItems.Where(i => i.OrderId == order.Id).ToList();
+            var orderItems = order.Id == 0 
+                ? order.OrderItems?.ToList() ?? new List<OrderItem>()
+                : allItems.Where(i => i.OrderId == order.Id).ToList();
 
             // Build item DTOs.
             // OrderItems loaded via GetAllAsync() have no .Include(x => x.Product),
@@ -120,23 +165,7 @@ namespace ShopEgypt.Infrastructure.Services.OrderService
             // If no addressDto passed, try to load from Address table by AppUserId
             if (addressDto == null && !string.IsNullOrEmpty(order.ApplicationUserId))
             {
-                var addresses = await _unitOfWork.Addresses.GetAllAsync();
-                var saved = addresses
-                    .Where(a => a.AppUserId == order.ApplicationUserId)
-                    .OrderByDescending(a => a.Id)
-                    .FirstOrDefault();
-
-                if (saved != null)
-                {
-                    addressDto = new AddressDTO
-                    {
-                        Street = saved.Street,
-                        City = saved.City,
-                        State = saved.State,
-                        ZipCode = saved.ZipCode,
-                        Country = saved.Country
-                    };
-                }
+                addressDto = await _addressService.GetFirstAddressAsync(order.ApplicationUserId);
             }
 
             return new OrderDTO
@@ -144,6 +173,12 @@ namespace ShopEgypt.Infrastructure.Services.OrderService
                 OrderId = order.Id.ToString(),
                 ApplicationUserId = order.ApplicationUserId,
                 OrderStatus = order.Status,
+                OrderDate = order.OrderDate,
+                ConfirmedAt = order.ConfirmedAt,
+                ProcessingAt = order.ProcessingAt,
+                ShippedAt = order.ShippedAt,
+                DeliveredAt = order.DeliveredAt,
+                CancelledAt = order.CancelledAt,
                 TotalAmount = order.TotalAmount,
                 Address = addressDto ?? new AddressDTO(),
                 OrderItems = itemDtos
@@ -156,6 +191,18 @@ namespace ShopEgypt.Infrastructure.Services.OrderService
             if (order == null) return;
 
             order.Status = status;
+
+            // Update corresponding timestamp
+            var now = DateTime.UtcNow;
+            switch (status)
+            {
+                case OrderStatus.Confirmed: order.ConfirmedAt = now; break;
+                case OrderStatus.Processing: order.ProcessingAt = now; break;
+                case OrderStatus.Shipped: order.ShippedAt = now; break;
+                case OrderStatus.Delivered: order.DeliveredAt = now; break;
+                case OrderStatus.Cancelled: order.CancelledAt = now; break;
+            }
+
             await _unitOfWork.Orders.Update(order);
             await _unitOfWork.SaveAsync();
         }
@@ -180,7 +227,7 @@ namespace ShopEgypt.Infrastructure.Services.OrderService
 
         public async Task ConfirmPaymentAsync(int orderId)
         {
-            // Update payment row
+            // 1. Update payment row to Succeeded
             var payments = await _unitOfWork.Payments.GetAllAsync();
             var payment = payments.FirstOrDefault(p => p.OrderId == orderId);
 
@@ -189,19 +236,22 @@ namespace ShopEgypt.Infrastructure.Services.OrderService
                 payment.Status = PaymentStatus.Succeeded;
                 payment.PaidAt = DateTime.UtcNow;
                 await _unitOfWork.Payments.Update(payment);
+                await _unitOfWork.SaveAsync();
             }
 
-            // Move order to Processing
-            await UpdateOrderStatusAsync(orderId, OrderStatus.Processing);
+            // 2. Move order to Confirmed
+            await UpdateOrderStatusAsync(orderId, OrderStatus.Confirmed);
 
-            // Clear the cart only after successful payment
+            // 3. Clear the cart only after successful payment
             await _cartService.ClearCartAsync();
         }
 
         public async Task<List<Order>> GetOrdersByUserIdAsync(string userId)
         {
             var orders = await _unitOfWork.Orders.GetAllAsync();
-            return orders.Where(o => o.ApplicationUserId == userId).ToList();
+            return orders.Where(o => o.ApplicationUserId == userId)
+                         .OrderByDescending(o => o.OrderDate)
+                         .ToList();
         }
     }
 }

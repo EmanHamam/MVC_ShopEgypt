@@ -1,0 +1,177 @@
+@using ShopEgypt.Application.DTOs.WishlistDTOs
+@model IEnumerable<WishlistItemsDto>
+
+@{
+    ViewData["Title"] = "My Wishlist";
+}
+
+<section class="wishlist-section" style="padding: 3rem 0; background: #f9f7f4;">
+    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 1.5rem;">
+        <div class="wishlist-header" style="margin-bottom: 2rem;">
+            <h1 style="font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 2rem; font-weight: 300; color: #2c2416; margin-bottom: 0.5rem;">
+                My Wishlist
+            </h1>
+            <p style="font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 0.95rem; color: #7a7060;">
+                @Model.Count() item@(Model.Count() != 1 ? "s" : "") saved
+            </p>
+        </div>
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success" style="padding: 1rem; margin-bottom: 1.5rem; background: #d4edda; border: 1px solid #c3e6cb; border-radius: 8px; color: #155724;">
+                @TempData["SuccessMessage"]
+            </div>
+        }
+
+        @if (Model.Any())
+        {
+            <div class="wishlist-table-wrapper" style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden;">
+                <table class="wishlist-table" style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #f0ece5; border-bottom: 2px solid #e0d8cd;">
+                            <th style="padding: 1rem; text-align: left; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 0.85rem; font-weight: 600; color: #7a7060; text-transform: uppercase; letter-spacing: 0.5px;">
+                                Product
+                            </th>
+                            <th style="padding: 1rem; text-align: center; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 0.85rem; font-weight: 600; color: #7a7060; text-transform: uppercase; letter-spacing: 0.5px;">
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                 
+                            var productImage = item.ProductImage ?? "/images/placeholder.png";
+
+                            <tr style="border-bottom: 1px solid #f0ece5; transition: background 0.2s ease;">
+                                <td style="padding: 1.25rem 1rem;">
+                                    <div style="display: flex; align-items: center; gap: 1rem;">
+                                        <div style="width: 80px; height: 80px; border-radius: 8px; overflow: hidden; flex-shrink: 0; background: #f9f7f4;">
+                                            <img src="@productImage" 
+                                                 alt="@item.ProductName" 
+                                                 style="width: 100%; height: 100%; object-fit: cover;" />
+                                        </div>
+                                        <div>
+                                            <h3 style="font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1rem; font-weight: 500; color: #2c2416; margin: 0 0 0.25rem 0;">
+                                                @item.ProductName
+                                            </h3>
+                                        </div>
+                                    </div>
+                                </td>
+                                
+                                <td style="padding: 1.25rem 1rem;">
+                                    <div style="display: flex; gap: 0.75rem; justify-content: center; align-items: center;">
+                                        <a asp-controller="Products" 
+                                           asp-action="Details" 
+                                           asp-route-id="@item.ProductId"
+                                           style="padding: 0.5rem 1rem; background: #2c2416; color: white; text-decoration: none; border-radius: 6px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 0.85rem; font-weight: 500; transition: background 0.2s ease; display: inline-block;"
+                                           onmouseover="this.style.background='#3d3320'"
+                                           onmouseout="this.style.background='#2c2416'">
+                                            View Product
+                                        </a>
+                                        <form asp-controller="WishListItems" 
+                                              asp-action="Remove" 
+                                              method="post" 
+                                              style="display: inline-block; margin: 0;"
+                                              onsubmit="return confirm('Are you sure you want to remove this item from your wishlist?');">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="productId" value="@item.ProductId" />
+                                            <input type="hidden" name="wishlistId" value="@item.WishlistId" />
+                                            <button type="submit" 
+                                                    style="padding: 0.5rem 1rem; background: #dc3545; color: white; border: none; border-radius: 6px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: background 0.2s ease;"
+                                                    onmouseover="this.style.background='#c82333'"
+                                                    onmouseout="this.style.background='#dc3545'">
+                                                Remove
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="wishlist-empty" style="text-align: center; padding: 4rem 2rem; background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                <div style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.3;">
+                    <i class="fa-regular fa-heart"></i>
+                </div>
+                <h2 style="font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.5rem; font-weight: 300; color: #2c2416; margin-bottom: 0.75rem;">
+                    Your wishlist is empty
+                </h2>
+                <p style="font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1rem; color: #7a7060; margin-bottom: 2rem;">
+                    Start adding items you love to your wishlist
+                </p>
+                <a asp-controller="Products" 
+                   asp-action="Index" 
+                   style="display: inline-block; padding: 0.75rem 2rem; background: #2c2416; color: white; text-decoration: none; border-radius: 8px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1rem; font-weight: 500; transition: background 0.2s ease;"
+                   onmouseover="this.style.background='#3d3320'"
+                   onmouseout="this.style.background='#2c2416'">
+                    Browse Products
+                </a>
+            </div>
+        }
+    </div>
+</section>
+
+<style>
+    .wishlist-table tbody tr:hover {
+        background: #fafaf8;
+    }
+
+    .alert {
+        animation: slideDown 0.3s ease;
+    }
+
+    @@keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .wishlist-table {
+            display: block;
+            overflow-x: auto;
+        }
+
+        .wishlist-table thead {
+            display: none;
+        }
+
+        .wishlist-table tbody tr {
+            display: block;
+            margin-bottom: 1rem;
+            border: 1px solid #e0d8cd;
+            border-radius: 8px;
+        }
+
+        .wishlist-table tbody td {
+            display: block;
+            text-align: left !important;
+            padding: 0.75rem 1rem !important;
+            border-bottom: 1px solid #f0ece5;
+        }
+
+        .wishlist-table tbody td:last-child {
+            border-bottom: none;
+        }
+
+        .wishlist-table tbody td:before {
+            content: attr(data-label);
+            font-weight: 600;
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #7a7060;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+    }
+</style>

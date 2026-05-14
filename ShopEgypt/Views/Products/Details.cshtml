@@ -46,12 +46,28 @@
             <h1>@Model.Title</h1>
 
             <div class="product-rating-row">
-                <span class="stars" aria-hidden="true">★★★★★</span>
+                <span class="stars" aria-hidden="true">
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        if (i <= Math.Floor(Model.AverageRating))
+                        {
+                            @:★
+                        }
+                        else if (i == Math.Ceiling(Model.AverageRating) && Model.AverageRating % 1 >= 0.5)
+                        {
+                            @:★
+                        }
+                        else
+                        {
+                            @:☆
+                        }
+                    }
+                </span>
                 <span>@rating • @reviews reviews</span>
             </div>
 
             <div class="product-detail-price">
-                <span class="price">@finalPrice.ToString("N0") EGP</span>
+                <span class="price">@Model.DiscountPrice?.ToString("N0")  EGP</span>
                 @if (hasDiscount)
                 {
                     <span class="price-old">@Model.Price.ToString("N0")</span>
@@ -97,9 +113,14 @@
                     <input type="hidden" name="qty" value="1" />
                     <button type="submit">Add to bag</button>
                 </form>
-                <button type="button" class="wishlist-circle" aria-label="Add to wishlist">
-                    <i class="fa-regular fa-heart"></i>
-                </button>
+                <form asp-controller="WishListItems" asp-action="Add" method="post" style="display: inline;">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="productId" value="@Model.Id" />
+                    <input type="hidden" name="returnUrl" value="@returnUrl" />
+                    <button type="submit" class="wishlist-circle" aria-label="Add to wishlist">
+                        <i class="fa-regular fa-heart"></i>
+                    </button>
+                </form>
             </div>
 
             <div class="product-meta-row">

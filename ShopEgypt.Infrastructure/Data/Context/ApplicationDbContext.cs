@@ -13,6 +13,8 @@ namespace ShopEgypt.Data.Context
 
         public virtual DbSet<Cart> Carts { get; set; }
 
+        public virtual DbSet<Brand> Brand { get; set; }
+
         public virtual DbSet<Address> Address { get; set; }
 
         public virtual DbSet<CartItem> CartItems { get; set; }
@@ -30,6 +32,8 @@ namespace ShopEgypt.Data.Context
         public virtual DbSet<ProductImage> ProductImages { get; set; }
 
         public virtual DbSet<Review> Reviews { get; set; }
+
+        public virtual DbSet<Wishlist> Wishlists {get; set;}
 
         public virtual DbSet<WishlistItem> WishlistItems { get; set; }
 
@@ -145,9 +149,9 @@ namespace ShopEgypt.Data.Context
             {
                 entity.HasKey(e => e.Id).HasName("PK__Wishlist__3214EC07359C2F88");
 
-                entity.HasOne(d => d.ApplicationUser).WithMany(p => p.WishlistItems)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_WishlistItem_ApplicationUser");
+                //entity.HasOne(d => d.ApplicationUser).WithMany(p => p.WishlistItems)
+                //    .OnDelete(DeleteBehavior.ClientSetNull)
+                //    .HasConstraintName("FK_WishlistItem_ApplicationUser");
 
                 entity.HasOne(d => d.Product).WithMany(p => p.WishlistItems).HasConstraintName("FK_WishlistItem_Product");
             });
