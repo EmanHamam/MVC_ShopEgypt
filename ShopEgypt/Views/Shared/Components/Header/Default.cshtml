@@ -1,4 +1,4 @@
-﻿@model ShopEgypt.ViewModels.Header.HeaderViewModel
+@model ShopEgypt.ViewModels.Header.HeaderViewModel
 
 <header class="site-header">
     <div class="container header-container">
@@ -10,6 +10,7 @@
         <nav class="main-nav" id="mainNav">
             <a asp-controller="Products" asp-action="Index">Shop</a>
             <a asp-controller="Category" asp-action="Index">Categories</a>
+            <a asp-controller="Orders" asp-action="MyOrders">My Orders</a>
             <a asp-controller="Home" asp-action="About">About</a>
             <a asp-controller="Home" asp-action="Contact">Contact</a>
         </nav>

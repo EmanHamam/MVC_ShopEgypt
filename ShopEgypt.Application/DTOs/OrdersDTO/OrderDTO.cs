@@ -10,6 +10,13 @@ namespace ShopEgypt.Application.DTOs.OrdersDTO
         public string ApplicationUserId { get; set; }
 
         public OrderStatus OrderStatus { get; set; }
+        
+        public DateTime OrderDate { get; set; }
+        public DateTime? ConfirmedAt { get; set; }
+        public DateTime? ProcessingAt { get; set; }
+        public DateTime? ShippedAt { get; set; }
+        public DateTime? DeliveredAt { get; set; }
+        public DateTime? CancelledAt { get; set; }
 
         /// <summary>Decimal to match the DB decimal(18,2) column.</summary>
         public decimal TotalAmount { get; set; }

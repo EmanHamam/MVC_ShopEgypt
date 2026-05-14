@@ -36,4 +36,10 @@ public partial class Order
 
     [InverseProperty("Order")]
     public virtual Payment Payment { get; set; }
+
+    public DateTime? ConfirmedAt { get; set; }
+    public DateTime? ProcessingAt { get; set; }
+    public DateTime? ShippedAt { get; set; }
+    public DateTime? DeliveredAt { get; set; }
+    public DateTime? CancelledAt { get; set; }
 }

@@ -105,11 +105,12 @@ namespace ShopEgypt.Infrastructure.Services.OrderService
             order.ApplicationUserId = address.AppUserId;
             order.ShippingAddress = address;  // Ensure navigation is set
             order.Id = 0;  // ← Reset Id so EF generates a new one (avoid IDENTITY_INSERT error)
-            
+            order.OrderDate = DateTime.UtcNow; // Set explicitly to avoid SqlDateTime overflow
+
             // Store items temporarily before clearing (EF cascade would save them)
             var itemsToSave = order.OrderItems?.ToList() ?? new List<OrderItem>();
             order.OrderItems.Clear();  // ← Clear so EF doesn't auto-save duplicates
-            
+
             await _unitOfWork.Orders.AddAsync(order);
             await _unitOfWork.SaveAsync(); // Generate order.Id
 
@@ -121,8 +122,8 @@ namespace ShopEgypt.Infrastructure.Services.OrderService
                     item.OrderId = order.Id;
                     item.Id = 0;  // ← Reset Id so EF generates a new one (avoid IDENTITY_INSERT error)
                     await _unitOfWork.OrderItems.AddAsync(item);
+                    await _unitOfWork.SaveAsync();
                 }
-                await _unitOfWork.SaveAsync();
             }
         }
 
@@ -136,7 +137,9 @@ namespace ShopEgypt.Infrastructure.Services.OrderService
         {
             // Load order items with product navigation
             var allItems = await _unitOfWork.OrderItems.GetAllAsync();
-            var orderItems = allItems.Where(i => i.OrderId == order.Id).ToList();
+            var orderItems = order.Id == 0 
+                ? order.OrderItems?.ToList() ?? new List<OrderItem>()
+                : allItems.Where(i => i.OrderId == order.Id).ToList();
 
             // Build item DTOs.
             // OrderItems loaded via GetAllAsync() have no .Include(x => x.Product),
@@ -170,6 +173,12 @@ namespace ShopEgypt.Infrastructure.Services.OrderService
                 OrderId = order.Id.ToString(),
                 ApplicationUserId = order.ApplicationUserId,
                 OrderStatus = order.Status,
+                OrderDate = order.OrderDate,
+                ConfirmedAt = order.ConfirmedAt,
+                ProcessingAt = order.ProcessingAt,
+                ShippedAt = order.ShippedAt,
+                DeliveredAt = order.DeliveredAt,
+                CancelledAt = order.CancelledAt,
                 TotalAmount = order.TotalAmount,
                 Address = addressDto ?? new AddressDTO(),
                 OrderItems = itemDtos
@@ -182,6 +191,18 @@ namespace ShopEgypt.Infrastructure.Services.OrderService
             if (order == null) return;
 
             order.Status = status;
+
+            // Update corresponding timestamp
+            var now = DateTime.UtcNow;
+            switch (status)
+            {
+                case OrderStatus.Confirmed: order.ConfirmedAt = now; break;
+                case OrderStatus.Processing: order.ProcessingAt = now; break;
+                case OrderStatus.Shipped: order.ShippedAt = now; break;
+                case OrderStatus.Delivered: order.DeliveredAt = now; break;
+                case OrderStatus.Cancelled: order.CancelledAt = now; break;
+            }
+
             await _unitOfWork.Orders.Update(order);
             await _unitOfWork.SaveAsync();
         }
@@ -204,11 +225,8 @@ namespace ShopEgypt.Infrastructure.Services.OrderService
             return payment;
         }
 
-        public async Task ConfirmPaymentAsync(int orderId, Order order, AddressDTO addressDto)
+        public async Task ConfirmPaymentAsync(int orderId)
         {
-            // NOTE: Order is already saved to DB by PaymentSuccess before this method is called
-            // Here we only update the payment status and clear the cart
-
             // 1. Update payment row to Succeeded
             var payments = await _unitOfWork.Payments.GetAllAsync();
             var payment = payments.FirstOrDefault(p => p.OrderId == orderId);
@@ -221,8 +239,8 @@ namespace ShopEgypt.Infrastructure.Services.OrderService
                 await _unitOfWork.SaveAsync();
             }
 
-            // 2. Move order to Processing
-            await UpdateOrderStatusAsync(orderId, OrderStatus.Processing);
+            // 2. Move order to Confirmed
+            await UpdateOrderStatusAsync(orderId, OrderStatus.Confirmed);
 
             // 3. Clear the cart only after successful payment
             await _cartService.ClearCartAsync();
@@ -231,7 +249,9 @@ namespace ShopEgypt.Infrastructure.Services.OrderService
         public async Task<List<Order>> GetOrdersByUserIdAsync(string userId)
         {
             var orders = await _unitOfWork.Orders.GetAllAsync();
-            return orders.Where(o => o.ApplicationUserId == userId).ToList();
+            return orders.Where(o => o.ApplicationUserId == userId)
+                         .OrderByDescending(o => o.OrderDate)
+                         .ToList();
         }
     }
 }
