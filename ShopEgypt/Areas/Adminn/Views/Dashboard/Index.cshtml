@@ -1,0 +1,160 @@
+﻿@model ShopEgypt.Areas.Adminn.Models.Dashboard.DashboardIndexViewModel
+
+@{
+    ViewData["Title"] = "Overview";
+}
+
+<section class="dashboard-page">
+    <div class="dashboard-topbar">
+        <div>
+            <h1 class="dashboard-title">Overview</h1>
+            <p class="dashboard-subtitle">Welcome back. Here's what's happening today.</p>
+        </div>
+
+        <div class="dashboard-actions">
+            <select class="dashboard-select">
+                <option>Last 30 days</option>
+                <option>Last 7 days</option>
+            </select>
+
+            <button class="dashboard-export-btn" type="button">Export</button>
+        </div>
+    </div>
+
+    <div class="dashboard-stats-grid">
+        @foreach (var stat in Model.Stats)
+        {
+            <div class="dashboard-stat-card">
+                <div class="dashboard-stat-top">
+                    <div class="dashboard-stat-icon">
+                        <i class="@stat.IconClass"></i>
+                    </div>
+
+                    <span class="dashboard-stat-delta @(stat.IsUp ? "up" : "down")">
+                        @(stat.IsUp ? "↗" : "↘") @stat.Delta
+                    </span>
+                </div>
+
+                <p class="dashboard-stat-label">@stat.Label</p>
+                <p class="dashboard-stat-value">@stat.Value</p>
+            </div>
+        }
+    </div>
+
+    <div class="dashboard-middle-grid">
+        <div class="dashboard-card dashboard-chart-card">
+            <div class="dashboard-card-head">
+                <h2>Sales overview</h2>
+                <div class="dashboard-chart-legend">
+                    <span><i class="dot revenue"></i> Revenue</span>
+                    <span><i class="dot orders"></i> Orders</span>
+                </div>
+            </div>
+
+            <div class="dashboard-chart-wrap">
+                <svg viewBox="0 0 600 230" class="dashboard-chart-svg">
+                    <defs>
+                        <linearGradient id="salesGradient" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="rgba(73,83,4,0.28)" />
+                            <stop offset="100%" stop-color="rgba(73,83,4,0)" />
+                        </linearGradient>
+                    </defs>
+
+                    <path d="M 40 160 L 85 140 L 130 150 L 175 120 L 220 130 L 265 100 L 310 110 L 355 90 L 400 95 L 445 70 L 490 80 L 535 50 L 535 190 L 40 190 Z"
+                          fill="url(#salesGradient)" />
+
+                    <path d="M 40 160 L 85 140 L 130 150 L 175 120 L 220 130 L 265 100 L 310 110 L 355 90 L 400 95 L 445 70 L 490 80 L 535 50"
+                          fill="none"
+                          stroke="#495304"
+                          stroke-width="2.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round" />
+
+                    <circle cx="40" cy="160" r="3" fill="#c7be61" />
+                    <circle cx="85" cy="140" r="3" fill="#c7be61" />
+                    <circle cx="130" cy="150" r="3" fill="#c7be61" />
+                    <circle cx="175" cy="120" r="3" fill="#c7be61" />
+                    <circle cx="220" cy="130" r="3" fill="#c7be61" />
+                    <circle cx="265" cy="100" r="3" fill="#c7be61" />
+                    <circle cx="310" cy="110" r="3" fill="#c7be61" />
+                    <circle cx="355" cy="90" r="3" fill="#c7be61" />
+                    <circle cx="400" cy="95" r="3" fill="#c7be61" />
+                    <circle cx="445" cy="70" r="3" fill="#c7be61" />
+                    <circle cx="490" cy="80" r="3" fill="#c7be61" />
+                    <circle cx="535" cy="50" r="3" fill="#c7be61" />
+
+                    <g class="chart-months">
+                        <text x="40" y="220">Jan</text>
+                        <text x="85" y="220">Feb</text>
+                        <text x="130" y="220">Mar</text>
+                        <text x="175" y="220">Apr</text>
+                        <text x="220" y="220">May</text>
+                        <text x="265" y="220">Jun</text>
+                        <text x="310" y="220">Jul</text>
+                        <text x="355" y="220">Aug</text>
+                        <text x="400" y="220">Sep</text>
+                        <text x="445" y="220">Oct</text>
+                        <text x="490" y="220">Nov</text>
+                        <text x="535" y="220">Dec</text>
+                    </g>
+                </svg>
+            </div>
+        </div>
+
+        <div class="dashboard-card dashboard-top-products">
+            <h2>Top products</h2>
+
+            <div class="top-products-list">
+                @foreach (var product in Model.TopProducts)
+                {
+                    <div class="top-product-item">
+                        <span class="top-product-rank">@product.Rank</span>
+                        <img src="@product.ImageUrl" alt="@product.Name" class="top-product-image" />
+
+                        <div class="top-product-info">
+                            <p class="top-product-name">@product.Name</p>
+                            <p class="top-product-sold">@product.SoldCount sold</p>
+                        </div>
+
+                        <div class="top-product-total">@product.TotalAmount</div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-card dashboard-orders-card">
+        <div class="dashboard-card-head dashboard-orders-head">
+            <h2>Recent orders</h2>
+            <a href="#" class="view-all-link">View all</a>
+        </div>
+
+        <div class="dashboard-orders-table-wrap">
+            <table class="dashboard-orders-table">
+                <thead>
+                    <tr>
+                        <th>Order</th>
+                        <th>Customer</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var order in Model.RecentOrders)
+                    {
+                        <tr>
+                            <td>@order.OrderCode</td>
+                            <td>@order.CustomerName</td>
+                            <td>@order.Total</td>
+                            <td>
+                                <span class="order-status @order.Status.ToLower()">
+                                    @order.Status
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>

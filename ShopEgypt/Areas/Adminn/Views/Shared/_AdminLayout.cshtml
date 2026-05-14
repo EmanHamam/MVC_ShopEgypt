@@ -1,0 +1,106 @@
+﻿@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Admin | ShopEgypt</title>
+
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    @RenderSection("Styles", required: false)
+</head>
+<body class="admin-body">
+    <div class="admin-shell">
+        <aside class="admin-sidebar">
+            <div class="admin-brand">
+                <a asp-area="Adminn" asp-controller="Dashboard" asp-action="Index" class="admin-brand-link">
+                    <span class="admin-brand-dot"></span>
+                    <span>ShopEgypt</span>
+                </a>
+            </div>
+
+            <div class="admin-side-label">Manage</div>
+
+            <nav class="admin-nav">
+                <a asp-area="Adminn" asp-controller="Dashboard" asp-action="Index"
+                   class="admin-nav-link @(currentController == "Dashboard" ? "active" : "")">
+                    <i class="fa-solid fa-table-columns"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <a asp-area="Adminn" asp-controller="Products" asp-action="Index"
+                   class="admin-nav-link @(currentController == "Products" ? "active" : "")">
+                    <i class="fa-solid fa-box"></i>
+                    <span>Products</span>
+                </a>
+
+                <a asp-area="Adminn" asp-controller="Orders" asp-action="Index"
+                   class="admin-nav-link @(currentController == "Orders" ? "active" : "")">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span>Orders</span>
+                </a>
+
+                <a asp-area="Adminn" asp-controller="Customers" asp-action="Index"
+                   class="admin-nav-link @(currentController == "Customers" ? "active" : "")">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Customers</span>
+                </a>
+
+                <a asp-area="Adminn" asp-controller="Categories" asp-action="Index"
+                   class="admin-nav-link @(currentController == "Categories" ? "active" : "")">
+                    <i class="fa-solid fa-tags"></i>
+                    <span>Categories</span>
+                </a>
+
+                <a asp-area="Adminn" asp-controller="Banners" asp-action="Index"
+                   class="admin-nav-link @(currentController == "Banners" ? "active" : "")">
+                    <i class="fa-regular fa-image"></i>
+                    <span>Banners</span>
+                </a>
+
+                <a asp-area="Adminn" asp-controller="Reviews" asp-action="Index"
+                   class="admin-nav-link @(currentController == "Reviews" ? "active" : "")">
+                    <i class="fa-regular fa-star"></i>
+                    <span>Reviews</span>
+                </a>
+
+                <a asp-area="Adminn" asp-controller="Coupons" asp-action="Index"
+                   class="admin-nav-link @(currentController == "Coupons" ? "active" : "")">
+                    <i class="fa-solid fa-ticket"></i>
+                    <span>Coupons</span>
+                </a>
+
+                <a asp-area="Adminn" asp-controller="Settings" asp-action="Index"
+                   class="admin-nav-link @(currentController == "Settings" ? "active" : "")">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Settings</span>
+                </a>
+                
+            </nav>
+
+            <div class="admin-pro-card">
+                <h4>ShopEgypt Pro</h4>
+                <p>Unlock advanced analytics</p>
+                <button type="button">Upgrade</button>
+            </div>
+        </aside>
+
+        <main class="admin-main">
+            @RenderBody()
+        </main>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

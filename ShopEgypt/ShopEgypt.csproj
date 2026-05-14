@@ -47,6 +47,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Areas\Adminn\Data\" />
     <Folder Include="Areas\Identity\Data\" />
   </ItemGroup>
 
