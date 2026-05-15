@@ -2,22 +2,24 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.Security.Claims;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using ShopEgypt.Application.Interfaces.ICartService;
 using ShopEgypt.Domain.Entities;
 using ShopEgypt.Infrastructure.Email;
+using ShopEgypt.Infrastructure.Services.CartService;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ShopEgypt.Areas.Identity.Pages.Account
 {
@@ -30,13 +32,15 @@ namespace ShopEgypt.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly IEmailSender _emailSender;
         private readonly ILogger<ExternalLoginModel> _logger;
+        private readonly ICartService _cartService;
 
         public ExternalLoginModel(
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             ILogger<ExternalLoginModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            ICartService cartService)
         {
             _signInManager = signInManager;
             _userManager = userManager;
@@ -44,6 +48,7 @@ namespace ShopEgypt.Areas.Identity.Pages.Account
             _emailStore = GetEmailStore();
             _logger = logger;
             _emailSender = emailSender;
+            _cartService = cartService;
         }
 
         /// <summary>
@@ -119,14 +124,21 @@ namespace ShopEgypt.Areas.Identity.Pages.Account
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
                 var user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
 
-                if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl) && returnUrl != "/")
-                {
-                    return LocalRedirect(returnUrl);
-                }
+                 var isAdmin = await _userManager.IsInRoleAsync(user, "Admin");
 
-                if (user != null && await _userManager.IsInRoleAsync(user, "Admin"))
+                if (isAdmin)
                 {
                     return RedirectToAction("Index", "Dashboard", new { area = "Adminn" });
+                }
+
+                await _cartService.MergeSessionCartToUserCartAsync();
+
+                // Prevent normal users from being redirected into admin area
+                if (!string.IsNullOrWhiteSpace(returnUrl) &&
+                    Url.IsLocalUrl(returnUrl) &&
+                    !returnUrl.StartsWith("/Adminn", StringComparison.OrdinalIgnoreCase))
+                {
+                    return LocalRedirect(returnUrl);
                 }
 
                 return RedirectToAction("Index", "Home", new { area = "" });
