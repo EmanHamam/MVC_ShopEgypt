@@ -147,22 +147,16 @@ namespace ShopEgypt.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User logged in.");
 
+                    var isAdmin = await _userManager.IsInRoleAsync(user, "Admin");
+
+                    if (isAdmin)
+                    {
+                        return RedirectToPage("/Dashboard/Index", new { area = "Adminn" });
+                    }
 
                     await _cartService.MergeSessionCartToUserCartAsync();
 
-                    if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl) && returnUrl != "/")
-                    {
-                        return LocalRedirect(returnUrl);
-                    }
-
-                    // Redirect admins to admin area
-                    if (await _userManager.IsInRoleAsync(user, "Admin"))
-                    {
-                        return RedirectToAction("Index", "Dashboard", new { area = "Adminn" });
-                    }
-
-                    // Normal users go to default public home
-                    return RedirectToAction("Index", "Home", new { area = "" });
+                    return LocalRedirect(Url.Content("~/"));
                 }
 
                 if (result.RequiresTwoFactor)
