@@ -1,3 +1,4 @@
+using ShopEgypt.Application.DTOs.Admin;
 using ShopEgypt.Application.DTOs.OrdersDTO;
 using ShopEgypt.Domain.Entities;
 using ShopEgypt.Domain.Enums;
@@ -49,5 +50,8 @@ namespace ShopEgypt.Application.Interfaces.IOrderService
         /// Retrieves all orders for a given user, including their OrderItems and Product navigations.
         /// </summary>
         Task<List<Order>> GetOrdersByUserIdAsync(string userId);
+
+        
+        Task<List<AdminOrderListDTO>> GetAllOrdersForAdminAsync();
     }
 }

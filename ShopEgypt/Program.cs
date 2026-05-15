@@ -13,7 +13,7 @@ namespace ShopEgypt
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");;
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found."); ;
 
             builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 
@@ -85,6 +85,11 @@ namespace ShopEgypt
             app.UseAuthorization();
 
             app.MapStaticAssets();
+            app.MapAreaControllerRoute(
+                    name: "AdminArea",
+                    areaName: "Adminn",
+                    pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}")
+                    .WithStaticAssets();
             app.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}"
@@ -94,7 +99,7 @@ namespace ShopEgypt
 
             app.Run();
 
-            
+
 
         }
     }

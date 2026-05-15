@@ -1,4 +1,5 @@
-﻿using ShopEgypt.Application.DTOs.ReviewDtos;
+﻿using ShopEgypt.Application.DTOs.Admin;
+using ShopEgypt.Application.DTOs.ReviewDtos;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,6 +16,12 @@ namespace ShopEgypt.Application.Interfaces.IReviewService
         Task<bool> UpdateReviewAsync(UpdateReviewDto dto, CancellationToken ct = default);
         //Task DeleteAsync(int id, string requestingUserId, CancellationToken ct = default);
         Task<bool> CheckExistingReviewAsync(int productId, string userId, CancellationToken ct = default);
+
+
+
+        // Admin
+        Task<AdminReviewsPageDto> GetAdminReviewsPageAsync(string? search = null, int? rating = null, CancellationToken ct = default);
+        Task<bool> DeleteReviewAsync(int id, CancellationToken ct = default);
 
     }
 }

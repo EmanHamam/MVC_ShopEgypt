@@ -120,9 +120,6 @@ namespace ShopEgypt.Data.Context
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Product_Category");
 
-                entity.HasOne(d => d.Seller).WithMany(p => p.Products)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Product_Seller");
             });
 
             builder.Entity<ProductImage>(entity =>

@@ -82,4 +82,20 @@ document.addEventListener("DOMContentLoaded", function () {
             syncQty(current);
         });
     }
+
+            
 });
+
+function closeSuccessAlert() {
+    const alertBox = document.getElementById("successAlert");
+    if (alertBox) {
+        alertBox.classList.add("hide");
+        setTimeout(() => {
+            alertBox.remove();
+        }, 400);
+    }
+}
+
+setTimeout(() => {
+    closeSuccessAlert();
+}, 2000);

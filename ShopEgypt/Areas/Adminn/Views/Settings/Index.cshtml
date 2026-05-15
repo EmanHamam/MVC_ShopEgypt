@@ -1,0 +1,59 @@
+﻿@model ShopEgypt.Areas.Adminn.Models.Settings.SettingsViewModel
+
+@{
+    ViewData["Title"] = "Settings";
+}
+
+
+<div class="container-fluid py-4">
+    <h1 class="settings-page-title">Settings</h1>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div id="successAlert" class="success-message">
+            <span>@TempData["SuccessMessage"]</span>
+            <button type="button" class="alert-close-btn" onclick="closeSuccessAlert()">×</button>
+        </div>
+    }
+
+    <form asp-action="Index" method="post">
+        @Html.AntiForgeryToken()
+
+        <div class="settings-wrapper">
+            <div class="settings-card">
+                <h2 class="settings-card-title">Store</h2>
+
+                <div class="form-group">
+                    <label asp-for="StoreName" class="form-label">Store Name</label>
+                    <input asp-for="StoreName" class="form-input" />
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="SupportEmail" class="form-label">Support Email</label>
+                    <input asp-for="SupportEmail" class="form-input" />
+                </div>
+
+                <div class="form-group mb-0">
+                    <label asp-for="Currency" class="form-label">Currency</label>
+                    <input asp-for="Currency" class="form-input" />
+                </div>
+            </div>
+
+            <div class="settings-card">
+                <h2 class="settings-card-title">Shipping</h2>
+
+                <div class="form-group">
+                    <label asp-for="FreeShippingThreshold" class="form-label">Free Shipping Threshold</label>
+                    <input asp-for="FreeShippingThreshold" class="form-input" />
+                </div>
+
+                <div class="form-group mb-0">
+                    <label asp-for="StandardRate" class="form-label">Standard Rate</label>
+                    <input asp-for="StandardRate" class="form-input" />
+                </div>
+            </div>
+
+            <button type="submit" class="save-btn">Save changes</button>
+        </div>
+    </form>
+</div>

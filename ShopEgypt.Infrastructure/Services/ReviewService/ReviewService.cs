@@ -1,5 +1,6 @@
 ﻿using Mapster;
 using Microsoft.EntityFrameworkCore;
+using ShopEgypt.Application.DTOs.Admin;
 using ShopEgypt.Application.DTOs.ReviewDtos;
 using ShopEgypt.Application.Interfaces.IReviewService;
 using ShopEgypt.Data.Context;
@@ -11,7 +12,7 @@ using System.Text;
 
 namespace ShopEgypt.Infrastructure.Services.ReviewService
 {
-    internal class ReviewService: IReviewService
+    public class ReviewService: IReviewService
     {
         private readonly ApplicationDbContext _context;
 
@@ -100,5 +101,77 @@ namespace ShopEgypt.Infrastructure.Services.ReviewService
             return await _context.Reviews.AnyAsync(r => r.ProductId == productId && r.ApplicationUserId == userId, ct);
         }
 
+        public async Task<AdminReviewsPageDto> GetAdminReviewsPageAsync(string? search = null, int? rating = null, CancellationToken ct = default)
+        {
+            var query = _context.Reviews
+                .Include(r => r.Product)
+                .Include(r => r.ApplicationUser)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                search = search.Trim();
+
+                query = query.Where(r =>
+                    r.Comment.Contains(search) ||
+                    r.Product.Title.Contains(search) ||
+                    r.ApplicationUser.Email.Contains(search) ||
+                    r.ApplicationUser.UserName.Contains(search) ||
+                    ((r.ApplicationUser.FirstName + " " + r.ApplicationUser.LastName).Contains(search)));
+            }
+
+            if (rating.HasValue && rating.Value >= 1 && rating.Value <= 5)
+            {
+                query = query.Where(r => r.Rating == rating.Value);
+            }
+
+            var reviews = await query
+                .OrderByDescending(r => r.CreatedAt)
+                .ToListAsync(ct);
+
+            var dto = new AdminReviewsPageDto
+            {
+                TotalReviews = reviews.Count,
+                AverageRating = reviews.Count == 0 ? null : Math.Round(reviews.Average(r => r.Rating), 1),
+                FiveStarReviews = reviews.Count(r => r.Rating == 5),
+                Search = search,
+                RatingFilter = rating,
+                Reviews = reviews.Select(r =>
+                {
+                    var customerName = $"{r.ApplicationUser?.FirstName} {r.ApplicationUser?.LastName}".Trim();
+
+                    if (string.IsNullOrWhiteSpace(customerName))
+                        customerName = r.ApplicationUser?.UserName ?? r.ApplicationUser?.Email ?? "Unknown Customer";
+
+                    return new AdminReviewListItemDto
+                    {
+                        Id = r.Id,
+                        ProductId = r.ProductId,
+                        ProductName = r.Product?.Title ?? $"Product #{r.ProductId}",
+                        UserId = r.ApplicationUserId,
+                        CustomerName = customerName,
+                        CustomerEmail = r.ApplicationUser?.Email ?? string.Empty,
+                        Rating = r.Rating,
+                        Comment = r.Comment ?? string.Empty,
+                        CreatedAt = r.CreatedAt
+                    };
+                }).ToList()
+            };
+
+            return dto;
+        }
+
+        public async Task<bool> DeleteReviewAsync(int id, CancellationToken ct = default)
+        {
+            var review = await _context.Reviews.FirstOrDefaultAsync(r => r.Id == id, ct);
+            if (review == null)
+                return false;
+
+            _context.Reviews.Remove(review);
+            await _context.SaveChangesAsync(ct);
+            return true;
+        }
     }
+
 }
+

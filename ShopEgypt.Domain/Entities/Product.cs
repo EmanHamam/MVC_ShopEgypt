@@ -35,9 +35,6 @@ public partial class Product
     public int CategoryId { get; set; }
     public int BrandID { get; set; }
 
-    [Required]
-    [StringLength(450)]
-    public string SellerId { get; set; }
 
     public DateTime CreatedAt { get; set; }
 
@@ -57,9 +54,6 @@ public partial class Product
     [InverseProperty("Product")]
     public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
 
-    [ForeignKey("SellerId")]
-    [InverseProperty("Products")]
-    public virtual ApplicationUser Seller { get; set; }
 
     [InverseProperty("Product")]
     public virtual ICollection<WishlistItem> WishlistItems { get; set; } = new List<WishlistItem>();

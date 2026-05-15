@@ -1,0 +1,269 @@
+﻿@model ShopEgypt.Areas.Adminn.Models.Products.AdminProductListPageViewModel
+
+@{
+    ViewData["Title"] = "Products";
+}
+@if (TempData["Success"] != null)
+{
+    <div id="successAlert" class="success-message">
+        <span>@TempData["Success"]</span>
+        <button type="button" class="alert-close-btn" onclick="closeSuccessAlert()">×</button>
+    </div>
+}
+<section class="admin-products-page">
+    <div class="admin-page-head">
+        <div>
+            <h1 class="admin-page-title">Products</h1>
+            <p class="admin-page-meta">@Model.TotalCount items</p>
+        </div>
+
+        <a href="/Adminn/Products/Create" class="admin-primary-btn">
+            <i class="fa-solid fa-plus"></i>
+            <span>Add product</span>
+        </a>
+    </div>
+
+    <div class="admin-products-card">
+        <form method="get" class="admin-products-filters">
+            <input type="hidden" name="pageNumber" value="1" />
+
+            <div class="admin-search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" name="search" value="@Model.Search" placeholder="Search products" />
+            </div>
+
+            <select name="categoryId" class="admin-filter-select">
+                <option value="">All categories</option>
+                @foreach (var category in Model.Categories)
+                {
+                    if (Model.CategoryId == category.Id)
+                    {
+                        <option value="@category.Id" selected>@category.Name</option>
+                    }
+                    else
+                    {
+                        <option value="@category.Id">@category.Name</option>
+                    }
+                }
+            </select>
+
+            <select name="status" class="admin-filter-select">
+                @if (string.IsNullOrWhiteSpace(Model.Status))
+                {
+                    <option value="" selected>All status</option>
+                }
+                else
+                {
+                    <option value="">All status</option>
+                }
+
+                @if (Model.Status == "active")
+                {
+                    <option value="active" selected>Active</option>
+                }
+                else
+                {
+                    <option value="active">Active</option>
+                }
+
+                @if (Model.Status == "inactive")
+                {
+                    <option value="inactive" selected>Inactive</option>
+                }
+                else
+                {
+                    <option value="inactive">Inactive</option>
+                }
+            </select>
+
+            <select name="pageSize" class="admin-filter-select">
+                @if (Model.PageSize == 10)
+                {
+                    <option value="10" selected>10 / page</option>
+                }
+                else
+                {
+                    <option value="10">10 / page</option>
+                }
+
+                @if (Model.PageSize == 20)
+                {
+                    <option value="20" selected>20 / page</option>
+                }
+                else
+                {
+                    <option value="20">20 / page</option>
+                }
+
+                @if (Model.PageSize == 50)
+                {
+                    <option value="50" selected>50 / page</option>
+                }
+                else
+                {
+                    <option value="50">50 / page</option>
+                }
+            </select>
+
+            <button type="submit" class="admin-filter-submit">Filter</button>
+        </form>
+
+        <div class="admin-products-table-wrap">
+            <table class="admin-products-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th>Status</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Products.Any())
+                    {
+                        @foreach (var product in Model.Products)
+                        {
+                            var shownPrice = product.DiscountPrice.HasValue && product.DiscountPrice.Value > 0
+                                ? product.DiscountPrice.Value
+                                : product.Price;
+
+                            <tr>
+                                <td>
+                                    <div class="admin-product-cell">
+                                        <img src="@(string.IsNullOrWhiteSpace(product.MainImageUrl) ? "/images/placeholder.png" : product.MainImageUrl)"
+                                             class="admin-product-thumb"
+                                             alt="@product.Title" />
+
+                                        <div>
+                                            <p class="admin-product-title">@product.Title</p>
+                                            <p class="admin-product-subtitle">
+                                                @(string.IsNullOrWhiteSpace(product.BrandName) ? "No brand" : product.BrandName)
+                                            </p>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td>@(string.IsNullOrWhiteSpace(product.CategoryName) ? "-" : product.CategoryName)</td>
+                                <td>@shownPrice.ToString("N0") EGP</td>
+                                <td>@product.Stock</td>
+                                <td>
+                                    <span class="admin-status-badge @(product.IsActive ? "active" : "inactive")">
+                                        @(product.IsActive ? "Active" : "Inactive")
+                                    </span>
+                                </td>
+                                <td class="admin-products-actions">
+                                    <a href="/Adminn/Products/Edit/@product.Id" class="admin-icon-btn" title="Edit">
+                                        <i class="fa-regular fa-pen-to-square"></i>
+                                    </a>
+
+                                    <form action="/Adminn/Products/Delete" method="post" class="admin-delete-inline-form"
+                                          onsubmit="return confirm('Are you sure you want to delete this product?');">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@product.Id" />
+                                        <button type="submit" class="admin-icon-btn danger" title="Delete">
+                                            <i class="fa-regular fa-trash-can"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="admin-products-empty">
+                                No products found.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        @if (Model.TotalPages > 1)
+        {
+            <div class="admin-pagination">
+                <div class="admin-pagination-info">
+                    Showing
+                    <strong>@(((Model.PageNumber - 1) * Model.PageSize) + 1)</strong>
+                    to
+                    <strong>@Math.Min(Model.PageNumber * Model.PageSize, Model.TotalCount)</strong>
+                    of
+                    <strong>@Model.TotalCount</strong>
+                    products
+                </div>
+
+                <div class="admin-pagination-links">
+                    @if (Model.HasPreviousPage)
+                    {
+                        <a href="@Url.Action("Index", "Products", new
+                           {
+                               area = "Adminn",
+                               search = Model.Search,
+                               categoryId = Model.CategoryId,
+                               status = Model.Status,
+                               pageNumber = Model.PageNumber - 1,
+                               pageSize = Model.PageSize
+                           })"
+                           class="admin-page-btn">
+                            Previous
+                        </a>
+                    }
+                    else
+                    {
+                        <span class="admin-page-btn disabled">Previous</span>
+                    }
+
+                    @{
+                        var startPage = Math.Max(1, Model.PageNumber - 2);
+                        var endPage = Math.Min(Model.TotalPages, Model.PageNumber + 2);
+                    }
+
+                    @for (int i = startPage; i <= endPage; i++)
+                    {
+                        if (i == Model.PageNumber)
+                        {
+                            <span class="admin-page-btn active">@i</span>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("Index", "Products", new
+                               {
+                                   area = "Adminn",
+                                   search = Model.Search,
+                                   categoryId = Model.CategoryId,
+                                   status = Model.Status,
+                                   pageNumber = i,
+                                   pageSize = Model.PageSize
+                               })"
+                               class="admin-page-btn">
+                                @i
+                            </a>
+                        }
+                    }
+
+                    @if (Model.HasNextPage)
+                    {
+                        <a href="@Url.Action("Index", "Products", new
+                           {
+                               area = "Adminn",
+                               search = Model.Search,
+                               categoryId = Model.CategoryId,
+                               status = Model.Status,
+                               pageNumber = Model.PageNumber + 1,
+                               pageSize = Model.PageSize
+                           })"
+                           class="admin-page-btn">
+                            Next
+                        </a>
+                    }
+                    else
+                    {
+                        <span class="admin-page-btn disabled">Next</span>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</section>

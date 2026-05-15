@@ -1,0 +1,52 @@
+﻿@model IEnumerable<ShopEgypt.Application.DTOs.Admin.AdminCustomerListDTO>
+
+@{
+    ViewData["Title"] = "Customers";
+}
+
+<div class="container-fluid py-4">
+    <h1 class="customers-page-title">Customers</h1>
+
+    <div class="customers-card">
+        <table class="customers-table">
+            <thead>
+                <tr>
+                    <th>Customer</th>
+                    <th>Orders</th>
+                    <th>Spent</th>
+                    <th>Member Since</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    @foreach (var customer in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="customer-cell">
+                                    <div class="customer-avatar">
+                                        @customer.Initial
+                                    </div>
+                                    <div class="customer-info">
+                                        <span class="customer-name">@customer.FullName</span>
+                                        <span class="customer-email">@customer.Email</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>@customer.OrdersCount</td>
+                            <td class="spent-value">@customer.TotalSpent.ToString("N0") EGP</td>
+                            <td class="member-since">@customer.MemberSinceYear</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4" class="customers-empty">No customers found.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

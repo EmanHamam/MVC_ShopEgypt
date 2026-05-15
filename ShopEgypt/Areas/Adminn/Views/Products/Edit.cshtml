@@ -1,0 +1,119 @@
+﻿@model ShopEgypt.Areas.Adminn.Models.Products.AdminProductFormViewModel
+
+@{
+    ViewData["Title"] = "Edit Product";
+}
+
+<section class="admin-form-page">
+    <div class="admin-form-card">
+        <h1 class="admin-page-title">Edit product</h1>
+
+        <form action="/Adminn/Products/Edit" method="post" class="admin-form">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="UpdateDto.Id" />
+
+            <div class="admin-form-group">
+                <label asp-for="UpdateDto.Title"></label>
+                <input asp-for="UpdateDto.Title" class="admin-input" />
+                <span asp-validation-for="UpdateDto.Title" class="text-danger"></span>
+            </div>
+
+            <div class="admin-form-group">
+                <label asp-for="UpdateDto.Description"></label>
+                <textarea asp-for="UpdateDto.Description" class="admin-textarea"></textarea>
+                <span asp-validation-for="UpdateDto.Description" class="text-danger"></span>
+            </div>
+
+            <div class="admin-form-grid">
+                <div class="admin-form-group">
+                    <label asp-for="UpdateDto.Price"></label>
+                    <input asp-for="UpdateDto.Price" class="admin-input" />
+                    <span asp-validation-for="UpdateDto.Price" class="text-danger"></span>
+                </div>
+
+                <div class="admin-form-group">
+                    <label asp-for="UpdateDto.DiscountPrice"></label>
+                    <input asp-for="UpdateDto.DiscountPrice" class="admin-input" />
+                    <span asp-validation-for="UpdateDto.DiscountPrice" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="admin-form-grid">
+                <div class="admin-form-group">
+                    <label asp-for="UpdateDto.Stock"></label>
+                    <input asp-for="UpdateDto.Stock" class="admin-input" />
+                    <span asp-validation-for="UpdateDto.Stock" class="text-danger"></span>
+                </div>
+
+                <div class="admin-form-group">
+                    <label asp-for="UpdateDto.IsActive"></label>
+                    <select asp-for="UpdateDto.IsActive" class="admin-input">
+                        <option value="true">Active</option>
+                        <option value="false">Inactive</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="admin-form-grid">
+                <div class="admin-form-group">
+                    <label asp-for="UpdateDto.CategoryId"></label>
+                    <select asp-for="UpdateDto.CategoryId" class="admin-input">
+                        <option value="">Select category</option>
+                        @foreach (var category in Model.Categories)
+                        {
+                            if (Model.UpdateDto.CategoryId == category.Id)
+                            {
+                                <option value="@category.Id" selected>@category.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@category.Id">@category.Name</option>
+                            }
+                        }
+                    </select>
+                    <span asp-validation-for="UpdateDto.CategoryId" class="text-danger"></span>
+                </div>
+
+                <div class="admin-form-group">
+                    <label asp-for="UpdateDto.BrandId"></label>
+                    <select asp-for="UpdateDto.BrandId" class="admin-input">
+                        <option value="">Select brand</option>
+                        @foreach (var brand in Model.Brands)
+                        {
+                            if (Model.UpdateDto.BrandId == brand.Id)
+                            {
+                                <option value="@brand.Id" selected>@brand.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@brand.Id">@brand.Name</option>
+                            }
+                        }
+                    </select>
+                    <span asp-validation-for="UpdateDto.BrandId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="admin-form-grid">
+                <div class="admin-form-group">
+                    <label asp-for="UpdateDto.Color"></label>
+                    <input asp-for="UpdateDto.Color" class="admin-input" />
+                </div>
+
+                <div class="admin-form-group">
+                    <label asp-for="UpdateDto.Size"></label>
+                    <input asp-for="UpdateDto.Size" class="admin-input" />
+                </div>
+            </div>
+
+            <div class="admin-form-actions">
+                <a href="/Adminn/Products/Index" class="admin-secondary-btn">Cancel</a>
+                <button type="submit" class="admin-primary-btn">Save changes</button>
+            </div>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

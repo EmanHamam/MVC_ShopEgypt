@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ShopEgypt.Application.Interfaces.IAddressService;
 using ShopEgypt.Application.Interfaces.ICartService;
 using ShopEgypt.Application.Interfaces.ICategoryService;
+using ShopEgypt.Application.Interfaces.ICustomerService;
 using ShopEgypt.Application.Interfaces.IImageStorageService;
 using ShopEgypt.Application.Interfaces.IOrderService;
 using ShopEgypt.Application.Interfaces.IProductService;
@@ -16,20 +18,20 @@ using ShopEgypt.Data.Context;
 using ShopEgypt.Domain.Entities;
 using ShopEgypt.Infrastructure.ExternalServices.SendGridEmailSender;
 using ShopEgypt.Infrastructure.ExternalServices.StripeService;
+using ShopEgypt.Infrastructure.Services.AddressService;
 using ShopEgypt.Infrastructure.Services.CartService;
 using ShopEgypt.Infrastructure.Services.CategoryService;
 using ShopEgypt.Infrastructure.Services.CloudinaryService;
+using ShopEgypt.Infrastructure.Services.CustomerService;
 using ShopEgypt.Infrastructure.Services.OrderService;
 using ShopEgypt.Infrastructure.Services.ProductService;
 using ShopEgypt.Infrastructure.Services.ReviewService;
 using ShopEgypt.Infrastructure.Services.WishlistItemService;
 using ShopEgypt.Infrastructure.UnitOfWork;
-using StripeConfig = Stripe.StripeConfiguration;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using ShopEgypt.Application.Interfaces.IAddressService;
-using ShopEgypt.Infrastructure.Services.AddressService;
+using StripeConfig = Stripe.StripeConfiguration;
 
 namespace ShopEgypt.Infrastructure.ServiceRegistration
 {
@@ -71,8 +73,8 @@ namespace ShopEgypt.Infrastructure.ServiceRegistration
         });
 
             // Configure Stripe Dev — key is read once at startup from user secrets / env vars
-            StripeConfig.ApiKey = configuration.GetSection("Stripe")["SecretKey"] 
-                ?? throw new InvalidOperationException("Stripe SecretKey not found in configuration.");
+            //StripeConfig.ApiKey = configuration.GetSection("Stripe")["SecretKey"] 
+            //    ?? throw new InvalidOperationException("Stripe SecretKey not found in configuration.");
 
 
             //Application Services Registration
@@ -85,6 +87,7 @@ namespace ShopEgypt.Infrastructure.ServiceRegistration
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IStripeService, StripeService>();
             services.AddScoped<IWishlistItemService, WishlistItemService>();
+            services.AddScoped<ICustomerService, CustomerService>();
 
             // Auto Mapper
             //services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfile>());

@@ -1,0 +1,43 @@
+﻿@model ShopEgypt.Application.DTOs.UpdateCategoryDto
+
+@{
+    ViewData["Title"] = "Edit Category";
+}
+
+<section class="admin-form-page">
+    <div class="admin-form-card">
+        <h1 class="admin-page-title">Edit category</h1>
+
+        <form asp-area="Adminn" asp-controller="Categories" asp-action="Edit" method="post" class="admin-form">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+
+            <div class="admin-form-group">
+                <label asp-for="Name"></label>
+                <input asp-for="Name" class="admin-input" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="admin-form-group">
+                <label asp-for="Description"></label>
+                <textarea asp-for="Description" class="admin-textarea"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="admin-form-group">
+                <label asp-for="ImageUrl"></label>
+                <input asp-for="ImageUrl" class="admin-input" />
+                <span asp-validation-for="ImageUrl" class="text-danger"></span>
+            </div>
+
+            <div class="admin-form-actions">
+                <a asp-area="Adminn" asp-controller="Categories" asp-action="Index" class="admin-secondary-btn">Cancel</a>
+                <button type="submit" class="admin-primary-btn">Save changes</button>
+            </div>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
