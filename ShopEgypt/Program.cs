@@ -93,8 +93,6 @@ namespace ShopEgypt
                     pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}")
                     .WithStaticAssets();
 
-
-
             app.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}"

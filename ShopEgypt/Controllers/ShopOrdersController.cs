@@ -14,7 +14,8 @@ using System.Text.Json;
 namespace ShopEgypt.Controllers
 {
     [Authorize]
-    public class OrdersController : Controller
+    [Route("Orders/[action]/{orderId?}")]
+    public class ShopOrdersController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ICartService                 _cartService;
@@ -23,7 +24,7 @@ namespace ShopEgypt.Controllers
         private readonly IConfiguration               _config;
         private readonly IAddressService              _addressService;  
 
-        public OrdersController(
+        public ShopOrdersController(
             UserManager<ApplicationUser> userManager,
             ICartService                 cartService,
             IOrderService                orderService,

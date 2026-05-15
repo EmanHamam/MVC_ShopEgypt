@@ -10,7 +10,7 @@
         @if (User.Identity?.IsAuthenticated ?? false)
         {
             <p class="auth-subtitle">Are you sure you want to sign out?</p>
-            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
+            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/products" method="post">
                 <button type="submit" class="auth-btn auth-btn-signin">Sign out</button>
             </form>
         }

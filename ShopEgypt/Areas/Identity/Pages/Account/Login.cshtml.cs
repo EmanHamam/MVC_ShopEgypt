@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using ShopEgypt.Application.Interfaces.ICartService;
+using ShopEgypt.Areas.Identity;
 using ShopEgypt.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -113,7 +114,7 @@ namespace ShopEgypt.Areas.Identity.Pages.Account
                 ModelState.AddModelError(string.Empty, ErrorMessage);
             }
 
-            returnUrl ??= Url.Content("~/");
+            returnUrl = AuthRedirectHelper.SanitizeReturnUrl(returnUrl ?? Url.Content("~/"));
 
             // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
@@ -125,7 +126,7 @@ namespace ShopEgypt.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            returnUrl ??= Url.Content("~/");
+            returnUrl = AuthRedirectHelper.SanitizeReturnUrl(returnUrl ?? Url.Content("~/"));
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
@@ -151,12 +152,17 @@ namespace ShopEgypt.Areas.Identity.Pages.Account
 
                     if (isAdmin)
                     {
-                        return RedirectToPage("/Dashboard/Index", new { area = "Adminn" });
+                        return LocalRedirect(AuthRedirectHelper.AdminDashboardPath);
                     }
 
                     await _cartService.MergeSessionCartToUserCartAsync();
 
-                    return LocalRedirect(Url.Content("~/"));
+                    if (Url.IsLocalUrl(returnUrl))
+                    {
+                        return LocalRedirect(returnUrl);
+                    }
+
+                    return LocalRedirect(AuthRedirectHelper.ShopPath);
                 }
 
                 if (result.RequiresTwoFactor)

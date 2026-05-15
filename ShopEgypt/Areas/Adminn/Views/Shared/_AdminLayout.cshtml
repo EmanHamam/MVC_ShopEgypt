@@ -40,8 +40,8 @@
                     <span>Products</span>
                 </a>
 
-                <a asp-area="Adminn" asp-controller="Orders" asp-action="Index"
-                   class="admin-nav-link @(currentController == "Orders" ? "active" : "")">
+                <a asp-area="Adminn" asp-controller="AdminOrders" asp-action="Index"
+                   class="admin-nav-link @(currentController == "AdminOrders" ? "active" : "")">
                     <i class="fa-solid fa-cart-shopping"></i>
                     <span>Orders</span>
                 </a>
@@ -78,7 +78,7 @@
             <form asp-area="Identity"
                   asp-page="/Account/Logout"
                   method="post"
-                  asp-route-returnUrl="@Url.Content("~/")"
+                  asp-route-returnUrl="/products"
                   class="admin-logout-form">
                 @Html.AntiForgeryToken()
                 <button type="submit" class="admin-nav-link admin-logout-btn">

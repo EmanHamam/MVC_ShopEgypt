@@ -58,7 +58,7 @@
                                         _ => "bg-secondary text-white"
                                     };
 
-                                    <tr style="cursor: pointer;" onclick="window.location.href='@Url.Action("Detail", "Orders", new { orderId = order.OrderId })'">
+                                    <tr style="cursor: pointer;" onclick="window.location.href='@Url.Action("Detail", "ShopOrders", new { orderId = order.OrderId })'">
                                         <td>
                                             <div class="fw-semibold">#@order.OrderId</div>
                                             <div class="text-muted small">@order.OrderItems.Count items</div>
@@ -89,16 +89,16 @@
                 <nav aria-label="Page navigation" class="mt-4">
                     <ul class="pagination justify-content-center">
                         <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
-                            <a class="page-link" asp-action="MyOrders" asp-route-page="@(Model.CurrentPage - 1)">Previous</a>
+                            <a class="page-link" asp-controller="ShopOrders" asp-action="MyOrders" asp-route-page="@(Model.CurrentPage - 1)">Previous</a>
                         </li>
                         @for (int i = 1; i <= Model.TotalPages; i++)
                         {
                             <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
-                                <a class="page-link" asp-action="MyOrders" asp-route-page="@i">@i</a>
+                                <a class="page-link" asp-controller="ShopOrders" asp-action="MyOrders" asp-route-page="@i">@i</a>
                             </li>
                         }
                         <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
-                            <a class="page-link" asp-action="MyOrders" asp-route-page="@(Model.CurrentPage + 1)">Next</a>
+                            <a class="page-link" asp-controller="ShopOrders" asp-action="MyOrders" asp-route-page="@(Model.CurrentPage + 1)">Next</a>
                         </li>
                     </ul>
                 </nav>

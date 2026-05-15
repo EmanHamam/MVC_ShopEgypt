@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ShopEgypt.Application.Interfaces.ICartService;
+using ShopEgypt.Areas.Identity;
 using ShopEgypt.Domain.Entities;
 using ShopEgypt.Infrastructure.UnitOfWork;
 using ShopEgypt.ViewModels.Header;
@@ -49,7 +50,8 @@ namespace ShopEgypt.ViewComponents
             {
                 CartCount = await _cartService.GetCartCountAsync(),
                 WishlistCount = wishlistCount,
-                UserGreetingName = userGreetingName
+                UserGreetingName = userGreetingName,
+                MyOrdersUrl = AuthRedirectHelper.MyOrdersPath
             };
 
             return View(model);

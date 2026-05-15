@@ -6,7 +6,7 @@ namespace ShopEgypt.Areas.Adminn.Controllers
 {
     [Area("Adminn")]
     [Authorize(Roles = "Admin")]
-    public class OrdersController(IOrderService orderService) : Controller
+    public class AdminOrdersController(IOrderService orderService) : Controller
     {
         public async Task<IActionResult> Index()
         {
