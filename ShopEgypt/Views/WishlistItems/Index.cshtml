@@ -61,7 +61,7 @@
                                 
                                 <td style="padding: 1.25rem 1rem;">
                                     <div style="display: flex; gap: 0.75rem; justify-content: center; align-items: center;">
-                                        <a asp-controller="Products" 
+                                        <a asp-area="" asp-controller="Products" 
                                            asp-action="Details" 
                                            asp-route-id="@item.ProductId"
                                            style="padding: 0.5rem 1rem; background: #2c2416; color: white; text-decoration: none; border-radius: 6px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 0.85rem; font-weight: 500; transition: background 0.2s ease; display: inline-block;"
@@ -69,7 +69,7 @@
                                            onmouseout="this.style.background='#2c2416'">
                                             View Product
                                         </a>
-                                        <form asp-controller="WishListItems" 
+                                        <form asp-area="" asp-controller="WishListItems" 
                                               asp-action="Remove" 
                                               method="post" 
                                               style="display: inline-block; margin: 0;"
@@ -104,7 +104,7 @@
                 <p style="font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1rem; color: #7a7060; margin-bottom: 2rem;">
                     Start adding items you love to your wishlist
                 </p>
-                <a asp-controller="Products" 
+                <a asp-area="" asp-controller="Products" 
                    asp-action="Index" 
                    style="display: inline-block; padding: 0.75rem 2rem; background: #2c2416; color: white; text-decoration: none; border-radius: 8px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1rem; font-weight: 500; transition: background 0.2s ease;"
                    onmouseover="this.style.background='#3d3320'"

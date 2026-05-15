@@ -30,14 +30,14 @@ namespace ShopEgypt.Areas.Identity.Pages.Account
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out.");
 
-            returnUrl = AuthRedirectHelper.SanitizeReturnUrl(returnUrl);
+            returnUrl = ShopRouteHelper.SanitizeReturnUrl(returnUrl);
 
             if (Url.IsLocalUrl(returnUrl))
             {
                 return LocalRedirect(returnUrl);
             }
 
-            return LocalRedirect(AuthRedirectHelper.ShopPath);
+            return LocalRedirect(ShopRouteHelper.ShopPath);
         }
     }
 }

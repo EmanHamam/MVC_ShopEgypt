@@ -36,7 +36,6 @@ namespace ShopEgypt.ViewComponents
                         ? appUser.FirstName.Trim()
                         : (!string.IsNullOrWhiteSpace(appUser.Email) ? appUser.Email : appUser.UserName);
 
-                    // Get wishlist count for the current user
                     var userId = UserClaimsPrincipal?.FindFirstValue(ClaimTypes.NameIdentifier);
                     if (!string.IsNullOrEmpty(userId))
                     {
@@ -51,7 +50,13 @@ namespace ShopEgypt.ViewComponents
                 CartCount = await _cartService.GetCartCountAsync(),
                 WishlistCount = wishlistCount,
                 UserGreetingName = userGreetingName,
-                MyOrdersUrl = AuthRedirectHelper.MyOrdersPath
+                ShopUrl = ShopRouteHelper.ShopPath,
+                CategoriesUrl = ShopRouteHelper.CategoriesPath,
+                MyOrdersUrl = ShopRouteHelper.MyOrdersPath,
+                AboutUrl = ShopRouteHelper.AboutPath,
+                HomeUrl = ShopRouteHelper.HomePath,
+                CartUrl = ShopRouteHelper.CartPath,
+                WishlistUrl = ShopRouteHelper.WishlistPath
             };
 
             return View(model);

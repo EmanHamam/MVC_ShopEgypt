@@ -73,8 +73,8 @@ namespace ShopEgypt.Infrastructure.ServiceRegistration
         });
 
             // Configure Stripe Dev — key is read once at startup from user secrets / env vars
-            //StripeConfig.ApiKey = configuration.GetSection("Stripe")["SecretKey"] 
-            //    ?? throw new InvalidOperationException("Stripe SecretKey not found in configuration.");
+            StripeConfig.ApiKey = configuration.GetSection("Stripe")["SecretKey"] 
+               ?? throw new InvalidOperationException("Stripe SecretKey not found in configuration.");
 
 
             //Application Services Registration

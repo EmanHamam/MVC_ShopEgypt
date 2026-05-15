@@ -6,7 +6,7 @@ namespace ShopEgypt.Areas.Adminn.Controllers
 {
     [Area("Adminn")]
     [Authorize(Roles = "Admin")]
-    public class ReviewsController(IReviewService reviewService) : Controller
+    public class AdminReviewsController(IReviewService reviewService) : Controller
     {
         [HttpGet]
         public async Task<IActionResult> Index(string? search, int? rating, CancellationToken ct)
@@ -20,7 +20,7 @@ namespace ShopEgypt.Areas.Adminn.Controllers
         public async Task<IActionResult> Delete(int id, CancellationToken ct)
         {
             await reviewService.DeleteReviewAsync(id, ct);
-            return RedirectToAction("Index", "Reviews", new { area = "Adminn" });
+            return RedirectToAction("Index", "AdminReviews", new { area = "Adminn" });
         }
     }
 }

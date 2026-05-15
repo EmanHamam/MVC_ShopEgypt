@@ -18,7 +18,7 @@ namespace ShopEgypt.Areas.Identity.Pages.Account
         {
             if (User.Identity?.IsAuthenticated == true && !User.IsInRole("Admin"))
             {
-                return LocalRedirect(AuthRedirectHelper.ShopPath);
+                return LocalRedirect(ShopRouteHelper.ShopPath);
             }
 
             return Page();

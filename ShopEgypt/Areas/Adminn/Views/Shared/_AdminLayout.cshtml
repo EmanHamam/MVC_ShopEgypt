@@ -34,8 +34,8 @@
                     <span>Dashboard</span>
                 </a>
 
-                <a asp-area="Adminn" asp-controller="Products" asp-action="Index"
-                   class="admin-nav-link @(currentController == "Products" ? "active" : "")">
+                <a asp-area="Adminn" asp-controller="AdminProducts" asp-action="Index"
+                   class="admin-nav-link @(currentController == "AdminProducts" ? "active" : "")">
                     <i class="fa-solid fa-box"></i>
                     <span>Products</span>
                 </a>
@@ -52,16 +52,16 @@
                     <span>Customers</span>
                 </a>
 
-                <a asp-area="Adminn" asp-controller="Categories" asp-action="Index"
-                   class="admin-nav-link @(currentController == "Categories" ? "active" : "")">
+                <a asp-area="Adminn" asp-controller="AdminCategories" asp-action="Index"
+                   class="admin-nav-link @(currentController == "AdminCategories" ? "active" : "")">
                     <i class="fa-solid fa-tags"></i>
                     <span>Categories</span>
                 </a>
 
                 
 
-                <a asp-area="Adminn" asp-controller="Reviews" asp-action="Index"
-                   class="admin-nav-link @(currentController == "Reviews" ? "active" : "")">
+                <a asp-area="Adminn" asp-controller="AdminReviews" asp-action="Index"
+                   class="admin-nav-link @(currentController == "AdminReviews" ? "active" : "")">
                     <i class="fa-regular fa-star"></i>
                     <span>Reviews</span>
                 </a>

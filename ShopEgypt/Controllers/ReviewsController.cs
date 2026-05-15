@@ -81,7 +81,7 @@ namespace ShopEgypt.Controllers
                 throw new Exception($"Review not found after save.");
             }
 
-            return RedirectToAction("Details", "Products", new { Id = dto.ProductId });
+            return RedirectToAction("Details", "Products", new { area = "", Id = dto.ProductId });
         }
 
         // GET /Reviews/Edit/5
@@ -136,7 +136,7 @@ namespace ShopEgypt.Controllers
                 return View(dto);
             }
 
-            return RedirectToAction("Details", "Products", new { Id = dto.ProductId });
+            return RedirectToAction("Details", "Products", new { area = "", Id = dto.ProductId });
         }
     }
 }

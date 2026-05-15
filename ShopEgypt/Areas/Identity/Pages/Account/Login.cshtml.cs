@@ -114,7 +114,7 @@ namespace ShopEgypt.Areas.Identity.Pages.Account
                 ModelState.AddModelError(string.Empty, ErrorMessage);
             }
 
-            returnUrl = AuthRedirectHelper.SanitizeReturnUrl(returnUrl ?? Url.Content("~/"));
+            returnUrl = ShopRouteHelper.SanitizeReturnUrl(returnUrl ?? Url.Content("~/"));
 
             // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
@@ -126,7 +126,7 @@ namespace ShopEgypt.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            returnUrl = AuthRedirectHelper.SanitizeReturnUrl(returnUrl ?? Url.Content("~/"));
+            returnUrl = ShopRouteHelper.SanitizeReturnUrl(returnUrl ?? Url.Content("~/"));
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
@@ -152,7 +152,7 @@ namespace ShopEgypt.Areas.Identity.Pages.Account
 
                     if (isAdmin)
                     {
-                        return LocalRedirect(AuthRedirectHelper.AdminDashboardPath);
+                        return LocalRedirect(ShopRouteHelper.AdminDashboardPath);
                     }
 
                     await _cartService.MergeSessionCartToUserCartAsync();
@@ -162,7 +162,7 @@ namespace ShopEgypt.Areas.Identity.Pages.Account
                         return LocalRedirect(returnUrl);
                     }
 
-                    return LocalRedirect(AuthRedirectHelper.ShopPath);
+                    return LocalRedirect(ShopRouteHelper.ShopPath);
                 }
 
                 if (result.RequiresTwoFactor)

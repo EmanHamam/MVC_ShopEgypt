@@ -18,7 +18,7 @@
             @foreach (var category in Model)
             {
                 <article class="category-card">
-                    <a asp-controller="Products" asp-action="Index" asp-route-categoryId="@category.Id" class="category-card-link">
+                    <a asp-area="" asp-controller="Products" asp-action="Index" asp-route-categoryId="@category.Id" class="category-card-link">
                         <img src="@(string.IsNullOrWhiteSpace(category.ImageUrl) ? "/images/placeholder.png" : category.ImageUrl)" alt="@category.Name" />
                         <div class="category-card-content">
                             <h3>@category.Name</h3>

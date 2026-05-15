@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using ShopEgypt.Application.Interfaces.ICartService;
 using ShopEgypt.Domain.Entities;
 using ShopEgypt.ViewModels.Cart;
 
 namespace ShopEgypt.Controllers.Cart
 {
+    [Route("Cart")]
     public class CartController : Controller
     {
         private readonly ICartService _cartService;
@@ -16,6 +17,8 @@ namespace ShopEgypt.Controllers.Cart
         }
 
         [HttpGet]
+        [Route("")]
+        [Route("Index")]
         public async Task<IActionResult> Index()
         {
             var cartItems = await _cartService.GetCartAsync();
@@ -46,6 +49,7 @@ namespace ShopEgypt.Controllers.Cart
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("Add")]
         public async Task<IActionResult> Add(int productId, int qty = 1, string? returnUrl = null)
         {
             await _cartService.AddToCartAsync(productId, qty);
@@ -53,10 +57,11 @@ namespace ShopEgypt.Controllers.Cart
             if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl))
                 return Redirect(returnUrl);
 
-            return RedirectToAction("Index", "Shop");
+            return LocalRedirect("/products");
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("Increase")]
         public async Task<IActionResult> Increase(int productId)
         {
             var cartItems = await _cartService.GetCartAsync();
@@ -67,11 +72,12 @@ namespace ShopEgypt.Controllers.Cart
                 await _cartService.UpdateQuantityAsync(productId, item.Quantity + 1);
             }
 
-            return RedirectToAction(nameof(Index));
+            return LocalRedirect("/Cart");
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("Decrease")]
         public async Task<IActionResult> Decrease(int productId)
         {
             var cartItems = await _cartService.GetCartAsync();
@@ -83,15 +89,16 @@ namespace ShopEgypt.Controllers.Cart
                 await _cartService.UpdateQuantityAsync(productId, newQty);
             }
 
-            return RedirectToAction(nameof(Index));
+            return LocalRedirect("/Cart");
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("Remove")]
         public async Task<IActionResult> Remove(int productId)
         {
             await _cartService.RemoveFromCartAsync(productId);
-            return RedirectToAction(nameof(Index));
+            return LocalRedirect("/Cart");
         }
     }
 }

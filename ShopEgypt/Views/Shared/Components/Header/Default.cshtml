@@ -2,17 +2,16 @@
 
 <header class="site-header">
     <div class="container header-container">
-        <a asp-controller="Home" asp-action="Index" class="logo">
+        <a href="@Model.HomeUrl" class="logo">
             <span class="logo-dot"></span>
             <span class="logo-text">Shop<span>Egypt</span></span>
         </a>
 
         <nav class="main-nav" id="mainNav">
-            <a asp-controller="Products" asp-action="Index">Shop</a>
-            <a asp-controller="Category" asp-action="Index">Categories</a>
+            <a href="@Model.ShopUrl">Shop</a>
+            <a href="@Model.CategoriesUrl">Categories</a>
             <a href="@Model.MyOrdersUrl">My Orders</a>
-            <a asp-controller="Home" asp-action="About">About</a>
-            <a asp-controller="Home" asp-action="Contact">Contact</a>
+            <a href="@Model.AboutUrl">About</a>
         </nav>
 
         <div class="header-icons">
@@ -20,7 +19,7 @@
                 <i class="fa-solid fa-magnifying-glass"></i>
             </a>
 
-            <a asp-controller="Wishlist" asp-action="Index" class="icon-btn badge-wrap" aria-label="Wishlist">
+            <a href="@Model.WishlistUrl" class="icon-btn badge-wrap" aria-label="Wishlist">
                 <i class="fa-regular fa-heart"></i>
                 @if (Model.WishlistCount > 0)
                 {
@@ -32,7 +31,7 @@
                 @await Html.PartialAsync("_LoginPartial", Model)
             </div>
 
-            <a asp-controller="Cart" asp-action="Index" class="icon-btn badge-wrap" aria-label="Cart">
+            <a href="@Model.CartUrl" class="icon-btn badge-wrap" aria-label="Cart">
                 <i class="fa-solid fa-bag-shopping"></i>
                 @if (Model.CartCount > 0)
                 {
@@ -47,9 +46,8 @@
     </div>
 
     <div class="mobile-nav" id="mobileNav">
-        <a asp-controller="Shop" asp-action="Index">Shop</a>
-        <a asp-controller="Categories" asp-action="Index">Categories</a>
-        <a asp-controller="Home" asp-action="About">About</a>
-        <a asp-controller="Home" asp-action="Contact">Contact</a>
+        <a href="@Model.ShopUrl">Shop</a>
+        <a href="@Model.CategoriesUrl">Categories</a>
+        <a href="@Model.AboutUrl">About</a>
     </div>
 </header>

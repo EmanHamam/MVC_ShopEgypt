@@ -8,7 +8,7 @@
     <div class="admin-form-card">
         <h1 class="admin-page-title">Edit category</h1>
 
-        <form asp-area="Adminn" asp-controller="Categories" asp-action="Edit" method="post" class="admin-form">
+        <form asp-area="Adminn" asp-controller="AdminCategories" asp-action="Edit" method="post" class="admin-form">
             @Html.AntiForgeryToken()
             <input type="hidden" asp-for="Id" />
 
@@ -31,7 +31,7 @@
             </div>
 
             <div class="admin-form-actions">
-                <a asp-area="Adminn" asp-controller="Categories" asp-action="Index" class="admin-secondary-btn">Cancel</a>
+                <a asp-area="Adminn" asp-controller="AdminCategories" asp-action="Index" class="admin-secondary-btn">Cancel</a>
                 <button type="submit" class="admin-primary-btn">Save changes</button>
             </div>
         </form>

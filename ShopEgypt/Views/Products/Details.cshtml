@@ -17,9 +17,9 @@
     <div class="container product-detail-grid">
         <div class="product-gallery">
             <nav class="product-breadcrumb">
-                <a asp-controller="Home" asp-action="Index">Home</a>
+                <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                 <span>/</span>
-                <a asp-controller="Products" asp-action="Index">Shop</a>
+                <a asp-area="" asp-controller="Products" asp-action="Index">Shop</a>
                 <span>/</span>
                 <span>@Model.Title</span>
             </nav>
@@ -150,7 +150,7 @@
       </div>
 
       <div class="review-form-card">
-        <form asp-controller="Reviews" asp-action="Create" method="post">
+        <form asp-area="" asp-controller="Reviews" asp-action="Create" method="post">
             @Html.AntiForgeryToken()
             <input type="hidden" name="ProductId" value="@Model.Id" />
             <input type="hidden" name=ApplicationUserId value="@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value" />
