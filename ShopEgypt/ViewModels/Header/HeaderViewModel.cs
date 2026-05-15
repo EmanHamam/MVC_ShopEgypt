@@ -10,7 +10,7 @@
         public string ShopUrl { get; set; } = "/products";
         public string CategoriesUrl { get; set; } = "/Category";
         public string MyOrdersUrl { get; set; } = "/Orders/MyOrders";
-        public string AboutUrl { get; set; } = "/Home/About";
+        public string AboutUrl { get; set; } = "/about";
         public string HomeUrl { get; set; } = "/";
         public string CartUrl { get; set; } = "/Cart";
         public string WishlistUrl { get; set; } = "/Wishlist";

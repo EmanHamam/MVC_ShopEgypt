@@ -20,7 +20,8 @@ namespace ShopEgypt.Controllers
         {
             return View();
         }
-
+        [Route("about")]
+        [Route("")]
         public IActionResult About() => View();
 
         //[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
