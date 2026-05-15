@@ -1,14 +1,19 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 //using ShopEgypt.Models;
 using System.Diagnostics;
 
 namespace ShopEgypt.Controllers
 {
+    [Route("")]
     public class HomeController : Controller
     {
+        [HttpGet]
+        [Route("Index")]
+        [Route("")]
         public IActionResult Index()
         {
-            return RedirectToAction("Index", "Products");
+            return View();
         }
 
         public IActionResult Privacy()
