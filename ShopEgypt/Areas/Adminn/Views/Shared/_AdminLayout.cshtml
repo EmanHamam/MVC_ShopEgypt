@@ -58,11 +58,7 @@
                     <span>Categories</span>
                 </a>
 
-                <a asp-area="Adminn" asp-controller="Banners" asp-action="Index"
-                   class="admin-nav-link @(currentController == "Banners" ? "active" : "")">
-                    <i class="fa-regular fa-image"></i>
-                    <span>Banners</span>
-                </a>
+                
 
                 <a asp-area="Adminn" asp-controller="Reviews" asp-action="Index"
                    class="admin-nav-link @(currentController == "Reviews" ? "active" : "")">
@@ -70,11 +66,7 @@
                     <span>Reviews</span>
                 </a>
 
-                <a asp-area="Adminn" asp-controller="Coupons" asp-action="Index"
-                   class="admin-nav-link @(currentController == "Coupons" ? "active" : "")">
-                    <i class="fa-solid fa-ticket"></i>
-                    <span>Coupons</span>
-                </a>
+                
 
                 <a asp-area="Adminn" asp-controller="Settings" asp-action="Index"
                    class="admin-nav-link @(currentController == "Settings" ? "active" : "")">
@@ -83,7 +75,17 @@
                 </a>
                 
             </nav>
-
+            <form asp-area="Identity"
+                  asp-page="/Account/Logout"
+                  method="post"
+                  asp-route-returnUrl="@Url.Content("~/")"
+                  class="admin-logout-form">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="admin-nav-link admin-logout-btn">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Sign Out</span>
+                </button>
+            </form>
             <div class="admin-pro-card">
                 <h4>ShopEgypt Pro</h4>
                 <p>Unlock advanced analytics</p>
@@ -102,5 +104,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
     @RenderSection("Scripts", required: false)
+
 </body>
 </html>

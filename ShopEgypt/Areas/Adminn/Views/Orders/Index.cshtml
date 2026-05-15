@@ -1,0 +1,63 @@
+﻿@model IEnumerable<ShopEgypt.Application.DTOs.Admin.AdminOrderListDTO>
+
+@{
+    ViewData["Title"] = "Orders";
+}
+
+<div class="container-fluid py-4">
+    <h1 class="orders-page-title">Orders</h1>
+
+    <div class="orders-card">
+        <table class="orders-table">
+            <thead>
+                <tr>
+                    <th>Order</th>
+                    <th>Customer</th>
+                    <th>Date</th>
+                    <th>Items</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    @foreach (var order in Model)
+                    {
+                        var statusClass = order.Status.ToString().ToLower() switch
+                        {
+                            "2" => "status-processing",
+                            "3" => "status-shipped",
+                            "4" => "status-delivered",
+                            "0" => "status-pending",
+                            "1" => "status-confirmed",
+                            "5" => "status-cancelled",
+                            _ => "status-pending"
+
+                            
+                        };
+
+                        <tr>
+                            <td class="order-id">@order.OrderNumber</td>
+                            <td>@order.CustomerName</td>
+                            <td class="order-date">@order.OrderDate.ToString("MMM dd, yyyy")</td>
+                            <td>@order.ItemsCount</td>
+                            <td class="total-amount">@order.TotalAmount.ToString("N0") EGP</td>
+                            <td>
+                                <span class="status-badge @statusClass">
+                                    @order.Status
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6" class="orders-empty">No orders found.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -17,7 +17,6 @@ namespace ShopEgypt.Application.DTOs.Admin
         public string? Size { get; set; }
         public int CategoryId { get; set; }
         public int BrandId { get; set; }
-        public string SellerId { get; set; } = string.Empty;
         public List<string> ImageUrls { get; set; } = new();
     }
 }

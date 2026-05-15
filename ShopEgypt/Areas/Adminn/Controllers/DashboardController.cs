@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShopEgypt.Areas.Adminn.Models.Dashboard;
 using ShopEgypt.Data.Context;
@@ -6,6 +7,7 @@ using ShopEgypt.Data.Context;
 namespace ShopEgypt.Areas.Adminn.Controllers
 {
     [Area("Adminn")]
+    [Authorize(Roles = "Admin")]
     public class DashboardController : Controller
     {
         private readonly ApplicationDbContext _context;

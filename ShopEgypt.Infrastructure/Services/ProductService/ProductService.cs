@@ -99,39 +99,6 @@ namespace ShopEgypt.Infrastructure.Services.ProductService
                 .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
         }
 
-        public async Task<Product> CreateProductAsync(Product product, CancellationToken cancellationToken)
-        {
-            product.CreatedAt = DateTime.UtcNow;
-            Context.Products.Add(product);
-            await Context.SaveChangesAsync(cancellationToken);
-            return product;
-        }
-
-        public async Task<Product> UpdateProductAsync(Product product, CancellationToken cancellationToken)
-        {
-            int id = product.Id;
-            var updatedproduct = await Context.Products.FindAsync(id, cancellationToken);
-            if (updatedproduct == null)
-            {
-                throw new InvalidOperationException("Product not found");
-            }
-            product.Adapt(updatedproduct);
-            await Context.SaveChangesAsync(cancellationToken);
-            return updatedproduct;
-        }
-
-        public async Task<bool> DeleteProductAsync(int id, CancellationToken cancellationToken)
-        {
-            var product = await Context.Products.FindAsync(id, cancellationToken);
-            if (product == null)
-            { 
-                return false;
-            }
-            Context.Products.Remove(product);
-            await Context.SaveChangesAsync(cancellationToken);
-            return true;
-        }
-
         public async Task<int> GetNextImageOrderAsync(int productId, CancellationToken cancellationToken)
         {
             var maxOrder = await Context.ProductImages
@@ -141,6 +108,9 @@ namespace ShopEgypt.Infrastructure.Services.ProductService
 
             return (maxOrder ?? -1) + 1;
         }
+
+
+
         #region AdminRegion
         public async Task<PagedResultDto<AdminProductListItemDto>> GetAdminProductsAsync(AdminProductFilterDto filter,CancellationToken cancellationToken)
         {
@@ -163,9 +133,7 @@ namespace ShopEgypt.Infrastructure.Services.ProductService
             if (!string.IsNullOrWhiteSpace(filter.Search))
             {
                 var keyword = filter.Search.Trim().ToLower();
-                query = query.Where(p =>
-                    p.Title.ToLower().Contains(keyword) ||
-                    (p.Description != null && p.Description.ToLower().Contains(keyword)));
+                query = query.Where(p =>p.Title.ToLower().Contains(keyword) ||(p.Description != null && p.Description.ToLower().Contains(keyword)));
             }
 
             var totalCount = await query.CountAsync(cancellationToken);
@@ -221,7 +189,6 @@ namespace ShopEgypt.Infrastructure.Services.ProductService
                 Size = p.Size,
                 CategoryId = p.CategoryId,
                 BrandId = p.BrandID,
-                SellerId = p.SellerId,
                 ImageUrls = p.ProductImages
                     .OrderBy(i => i.DisplayOrder)
                     .Select(i => i.ImageUrl)
@@ -243,7 +210,6 @@ namespace ShopEgypt.Infrastructure.Services.ProductService
                 Size = dto.Size,
                 CategoryId = dto.CategoryId,
                 BrandID = dto.BrandId,
-                SellerId = dto.SellerId,
                 CreatedAt = DateTime.UtcNow
             };
 

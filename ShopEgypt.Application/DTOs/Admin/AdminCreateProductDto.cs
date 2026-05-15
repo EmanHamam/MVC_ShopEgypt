@@ -7,13 +7,10 @@ namespace ShopEgypt.Application.DTOs.Admin
 {
     public class AdminCreateProductDto
     {
-        [Required]
-        [StringLength(255)]
-        public string Title { get; set; } = string.Empty;
+        public string? Title { get; set; }
 
         public string? Description { get; set; }
 
-        [Range(0.01, double.MaxValue)]
         public decimal Price { get; set; }
 
         public decimal? DiscountPrice { get; set; }
@@ -32,6 +29,6 @@ namespace ShopEgypt.Application.DTOs.Admin
         [Required]
         public int BrandId { get; set; }
 
-        public string SellerId { get; set; } = string.Empty;
+        
     }
 }

@@ -117,7 +117,19 @@ namespace ShopEgypt.Areas.Identity.Pages.Account
             if (result.Succeeded)
             {
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
-                return LocalRedirect(returnUrl);
+                var user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+
+                if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl) && returnUrl != "/")
+                {
+                    return LocalRedirect(returnUrl);
+                }
+
+                if (user != null && await _userManager.IsInRoleAsync(user, "Admin"))
+                {
+                    return RedirectToAction("Index", "Dashboard", new { area = "Adminn" });
+                }
+
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
             if (result.IsLockedOut)
             {

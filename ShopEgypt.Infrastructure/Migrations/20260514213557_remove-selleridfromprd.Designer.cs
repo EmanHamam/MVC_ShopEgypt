@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShopEgypt.Data.Context;
 
@@ -11,9 +12,11 @@ using ShopEgypt.Data.Context;
 namespace ShopEgypt.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260514213557_remove-selleridfromprd")]
+    partial class removeselleridfromprd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -506,9 +509,6 @@ namespace ShopEgypt.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int>("BrandID")
                         .HasColumnType("int");
 
@@ -537,6 +537,11 @@ namespace ShopEgypt.Infrastructure.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18, 2)");
 
+                    b.Property<string>("SellerId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Size")
                         .HasColumnType("nvarchar(max)");
 
@@ -551,11 +556,11 @@ namespace ShopEgypt.Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("PK__Product__3214EC07E567E955");
 
-                    b.HasIndex("ApplicationUserId");
-
                     b.HasIndex("BrandID");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("SellerId");
 
                     b.ToTable("Product");
                 });
@@ -824,10 +829,6 @@ namespace ShopEgypt.Infrastructure.Migrations
 
             modelBuilder.Entity("ShopEgypt.Domain.Entities.Product", b =>
                 {
-                    b.HasOne("ShopEgypt.Domain.Entities.ApplicationUser", null)
-                        .WithMany("Products")
-                        .HasForeignKey("ApplicationUserId");
-
                     b.HasOne("ShopEgypt.Domain.Entities.Brand", "Brand")
                         .WithMany("Products")
                         .HasForeignKey("BrandID")
@@ -840,9 +841,17 @@ namespace ShopEgypt.Infrastructure.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_Product_Category");
 
+                    b.HasOne("ShopEgypt.Domain.Entities.ApplicationUser", "Seller")
+                        .WithMany("Products")
+                        .HasForeignKey("SellerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Brand");
 
                     b.Navigation("Category");
+
+                    b.Navigation("Seller");
                 });
 
             modelBuilder.Entity("ShopEgypt.Domain.Entities.ProductImage", b =>

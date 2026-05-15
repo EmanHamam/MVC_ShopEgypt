@@ -1,3 +1,4 @@
+using ShopEgypt.Application.DTOs.Admin;
 using ShopEgypt.Application.DTOs.OrdersDTO;
 using ShopEgypt.Application.Interfaces.IAddressService;
 using ShopEgypt.Application.Interfaces.ICartService;
@@ -252,6 +253,40 @@ namespace ShopEgypt.Infrastructure.Services.OrderService
             return orders.Where(o => o.ApplicationUserId == userId)
                          .OrderByDescending(o => o.OrderDate)
                          .ToList();
+        }
+
+        public async Task<List<AdminOrderListDTO>> GetAllOrdersForAdminAsync()
+        {
+            var orders = await _unitOfWork.Orders.GetAllAsync();
+            var users = await _unitOfWork.ApplicationUsers.GetAllAsync();
+            var orderItems = await _unitOfWork.OrderItems.GetAllAsync();
+
+            var result = orders
+                .OrderByDescending(o => o.OrderDate)
+                .Select(o =>
+                {
+                    var user = users.FirstOrDefault(u => u.Id == o.ApplicationUserId);
+
+                    var customerName = user != null
+                        ? $"{user.FirstName} {user.LastName}".Trim()
+                        : "Unknown Customer";
+
+                    if (string.IsNullOrWhiteSpace(customerName))
+                        customerName = user?.UserName ?? "Unknown Customer";
+
+                    return new AdminOrderListDTO
+                    {
+                        OrderId = o.Id,
+                        CustomerName = customerName,
+                        OrderDate = o.OrderDate,
+                        ItemsCount = orderItems.Count(oi => oi.OrderId == o.Id),
+                        TotalAmount = o.TotalAmount,
+                        Status = o.Status
+                    };
+                })
+                .ToList();
+
+            return result;
         }
     }
 }

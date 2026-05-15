@@ -3,7 +3,13 @@
 @{
     ViewData["Title"] = "Products";
 }
-
+@if (TempData["Success"] != null)
+{
+    <div id="successAlert" class="success-message">
+        <span>@TempData["Success"]</span>
+        <button type="button" class="alert-close-btn" onclick="closeSuccessAlert()">×</button>
+    </div>
+}
 <section class="admin-products-page">
     <div class="admin-page-head">
         <div>
@@ -19,6 +25,8 @@
 
     <div class="admin-products-card">
         <form method="get" class="admin-products-filters">
+            <input type="hidden" name="pageNumber" value="1" />
+
             <div class="admin-search-box">
                 <i class="fa-solid fa-magnifying-glass"></i>
                 <input type="text" name="search" value="@Model.Search" placeholder="Search products" />
@@ -65,6 +73,35 @@
                 else
                 {
                     <option value="inactive">Inactive</option>
+                }
+            </select>
+
+            <select name="pageSize" class="admin-filter-select">
+                @if (Model.PageSize == 10)
+                {
+                    <option value="10" selected>10 / page</option>
+                }
+                else
+                {
+                    <option value="10">10 / page</option>
+                }
+
+                @if (Model.PageSize == 20)
+                {
+                    <option value="20" selected>20 / page</option>
+                }
+                else
+                {
+                    <option value="20">20 / page</option>
+                }
+
+                @if (Model.PageSize == 50)
+                {
+                    <option value="50" selected>50 / page</option>
+                }
+                else
+                {
+                    <option value="50">50 / page</option>
                 }
             </select>
 
@@ -144,5 +181,89 @@
                 </tbody>
             </table>
         </div>
+        @if (Model.TotalPages > 1)
+        {
+            <div class="admin-pagination">
+                <div class="admin-pagination-info">
+                    Showing
+                    <strong>@(((Model.PageNumber - 1) * Model.PageSize) + 1)</strong>
+                    to
+                    <strong>@Math.Min(Model.PageNumber * Model.PageSize, Model.TotalCount)</strong>
+                    of
+                    <strong>@Model.TotalCount</strong>
+                    products
+                </div>
+
+                <div class="admin-pagination-links">
+                    @if (Model.HasPreviousPage)
+                    {
+                        <a href="@Url.Action("Index", "Products", new
+                           {
+                               area = "Adminn",
+                               search = Model.Search,
+                               categoryId = Model.CategoryId,
+                               status = Model.Status,
+                               pageNumber = Model.PageNumber - 1,
+                               pageSize = Model.PageSize
+                           })"
+                           class="admin-page-btn">
+                            Previous
+                        </a>
+                    }
+                    else
+                    {
+                        <span class="admin-page-btn disabled">Previous</span>
+                    }
+
+                    @{
+                        var startPage = Math.Max(1, Model.PageNumber - 2);
+                        var endPage = Math.Min(Model.TotalPages, Model.PageNumber + 2);
+                    }
+
+                    @for (int i = startPage; i <= endPage; i++)
+                    {
+                        if (i == Model.PageNumber)
+                        {
+                            <span class="admin-page-btn active">@i</span>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("Index", "Products", new
+                               {
+                                   area = "Adminn",
+                                   search = Model.Search,
+                                   categoryId = Model.CategoryId,
+                                   status = Model.Status,
+                                   pageNumber = i,
+                                   pageSize = Model.PageSize
+                               })"
+                               class="admin-page-btn">
+                                @i
+                            </a>
+                        }
+                    }
+
+                    @if (Model.HasNextPage)
+                    {
+                        <a href="@Url.Action("Index", "Products", new
+                           {
+                               area = "Adminn",
+                               search = Model.Search,
+                               categoryId = Model.CategoryId,
+                               status = Model.Status,
+                               pageNumber = Model.PageNumber + 1,
+                               pageSize = Model.PageSize
+                           })"
+                           class="admin-page-btn">
+                            Next
+                        </a>
+                    }
+                    else
+                    {
+                        <span class="admin-page-btn disabled">Next</span>
+                    }
+                </div>
+            </div>
+        }
     </div>
 </section>

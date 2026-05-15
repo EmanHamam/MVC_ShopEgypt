@@ -1,0 +1,114 @@
+﻿@model ShopEgypt.Application.DTOs.Admin.AdminReviewsPageDto
+
+@{
+    ViewData["Title"] = "Reviews";
+}
+
+
+<div class="container-fluid py-4">
+    <h1 class="reviews-page-title">Reviews</h1>
+    <p class="reviews-subtitle">Moderate customer feedback</p>
+
+    <div class="reviews-stats">
+        <div class="stat-card">
+            <div class="stat-label">Total Reviews</div>
+            <div class="stat-value">@Model.TotalReviews</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Average Rating</div>
+            <div class="stat-value">@(Model.AverageRating?.ToString("0.0") ?? "—")</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">5-Star Reviews</div>
+            <div class="stat-value">@Model.FiveStarReviews</div>
+        </div>
+    </div>
+
+    <div class="reviews-filter-card">
+        <form method="get" asp-action="Index" class="reviews-filter-form">
+            <input type="text"
+                   name="search"
+                   value="@Model.Search"
+                   class="search-input"
+                   placeholder="Search reviews..." />
+
+            <select name="rating" class="rating-select" onchange="this.form.submit()">
+                <option value="">All ratings</option>
+                @for (int i = 1; i <= 5; i++)
+                {
+                    if (Model.RatingFilter == i)
+                    {
+                        <option value="@i" selected>@i Stars</option>
+                    }
+                    else
+                    {
+                        <option value="@i">@i Stars</option>
+                    }
+                }
+            </select>
+        </form>
+    </div>
+
+    <div class="reviews-list-card">
+        @if (Model.Reviews != null && Model.Reviews.Any())
+        {
+            @foreach (var review in Model.Reviews)
+            {
+                <div class="review-item">
+                    <div class="review-top">
+                        <div class="review-user">
+                            <div class="review-avatar">@review.CustomerInitial</div>
+                            <div class="review-user-info">
+                                <div class="review-customer-name">@review.CustomerName</div>
+                                <div class="review-meta">
+                                    @review.CustomerEmail • @review.CreatedAt.ToString("MMM dd, yyyy")
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="review-rating">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            if (i <= review.Rating)
+                            {
+                                <span>★</span>
+                            }
+                            else
+                            {
+                                <span style="color:#d0d5dd;">★</span>
+                            }
+                        }
+                    </div>
+
+                    <div class="review-comment">
+                        @review.Comment
+                    </div>
+
+                    <div class="review-footer">
+                        <div class="review-product">
+                            Product: <strong>@review.ProductName</strong>
+                        </div>
+
+                        <form method="post" asp-action="Delete" asp-route-id="@review.Id">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="delete-btn"
+                                    onclick="return confirm('Are you sure you want to delete this review?')">
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="reviews-empty">
+                <div class="reviews-empty-title">No reviews yet</div>
+                <div class="reviews-empty-text">
+                    Customer reviews will appear here as they're submitted.
+                </div>
+            </div>
+        }
+    </div>
+</div>

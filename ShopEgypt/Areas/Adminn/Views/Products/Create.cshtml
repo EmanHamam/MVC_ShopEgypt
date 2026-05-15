@@ -1,0 +1,104 @@
+﻿@model ShopEgypt.Areas.Adminn.Models.Products.AdminProductFormViewModel
+
+@{
+    ViewData["Title"] = "Create Product";
+}
+
+<section class="admin-form-page">
+    <div class="admin-form-card">
+        <h1 class="admin-page-title">Add product</h1>
+
+        <form action="/Adminn/Products/Create" method="post" class="admin-form">
+            @Html.AntiForgeryToken()
+
+            <div class="admin-form-group">
+                <label asp-for="CreateDto.Title"></label>
+                <input asp-for="CreateDto.Title" class="admin-input" />
+                <span asp-validation-for="CreateDto.Title" class="text-danger"></span>
+            </div>
+
+            <div class="admin-form-group">
+                <label asp-for="CreateDto.Description"></label>
+                <textarea asp-for="CreateDto.Description" class="admin-textarea"></textarea>
+                <span asp-validation-for="CreateDto.Description" class="text-danger"></span>
+            </div>
+
+            <div class="admin-form-grid">
+                <div class="admin-form-group">
+                    <label asp-for="CreateDto.Price"></label>
+                    <input asp-for="CreateDto.Price" class="admin-input" />
+                    <span asp-validation-for="CreateDto.Price" class="text-danger"></span>
+                </div>
+
+                <div class="admin-form-group">
+                    <label asp-for="CreateDto.DiscountPrice"></label>
+                    <input asp-for="CreateDto.DiscountPrice" class="admin-input" />
+                    <span asp-validation-for="CreateDto.DiscountPrice" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="admin-form-grid">
+                <div class="admin-form-group">
+                    <label asp-for="CreateDto.Stock"></label>
+                    <input asp-for="CreateDto.Stock" class="admin-input" />
+                    <span asp-validation-for="CreateDto.Stock" class="text-danger"></span>
+                </div>
+
+                <div class="admin-form-group">
+                    <label asp-for="CreateDto.IsActive"></label>
+                    <select asp-for="CreateDto.IsActive" class="admin-input">
+                        <option value="true">Active</option>
+                        <option value="false">Inactive</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="admin-form-grid">
+                <div class="admin-form-group">
+                    <label asp-for="CreateDto.CategoryId"></label>
+                    <select asp-for="CreateDto.CategoryId" class="admin-input">
+                        <option value="">Select category</option>
+                        @foreach (var category in Model.Categories)
+                        {
+                            <option value="@category.Id">@category.Name</option>
+                        }
+                    </select>
+                    <span asp-validation-for="CreateDto.CategoryId" class="text-danger"></span>
+                </div>
+
+                <div class="admin-form-group">
+                    <label asp-for="CreateDto.BrandId"></label>
+                    <select asp-for="CreateDto.BrandId" class="admin-input">
+                        <option value="">Select brand</option>
+                        @foreach (var brand in Model.Brands)
+                        {
+                            <option value="@brand.Id">@brand.Name</option>
+                        }
+                    </select>
+                    <span asp-validation-for="CreateDto.BrandId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="admin-form-grid">
+                <div class="admin-form-group">
+                    <label asp-for="CreateDto.Color"></label>
+                    <input asp-for="CreateDto.Color" class="admin-input" />
+                </div>
+
+                <div class="admin-form-group">
+                    <label asp-for="CreateDto.Size"></label>
+                    <input asp-for="CreateDto.Size" class="admin-input" />
+                </div>
+            </div>
+
+            <div class="admin-form-actions">
+                <a href="/Adminn/Products/Index" class="admin-secondary-btn">Cancel</a>
+                <button type="submit" class="admin-primary-btn">Create product</button>
+            </div>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

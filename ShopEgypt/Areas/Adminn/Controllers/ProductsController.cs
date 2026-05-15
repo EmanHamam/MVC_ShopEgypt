@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ShopEgypt.Application.DTOs.Admin;
 using ShopEgypt.Application.DTOs.Admin;
 using ShopEgypt.Application.Interfaces.ICategoryService;
 using ShopEgypt.Application.Interfaces.IProductService;
@@ -10,16 +10,14 @@ using ShopEgypt.Data.Context;
 namespace ShopEgypt.Areas.Adminn.Controllers
 {
     [Area("Adminn")]
+    [Authorize(Roles = "Admin")]
     public class ProductsController : Controller
     {
         private readonly IProductService _productService;
         private readonly ICategoryService _categoryService;
         private readonly ApplicationDbContext _context;
 
-        public ProductsController(
-            IProductService productService,
-            ICategoryService categoryService,
-            ApplicationDbContext context)
+        public ProductsController(IProductService productService,ICategoryService categoryService,ApplicationDbContext context)
         {
             _productService = productService;
             _categoryService = categoryService;
@@ -27,13 +25,7 @@ namespace ShopEgypt.Areas.Adminn.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(
-            string? search,
-            int? categoryId,
-            string? status,
-            int pageNumber = 1,
-            int pageSize = 20,
-            CancellationToken cancellationToken = default)
+        public async Task<IActionResult> Index(string? search,int? categoryId,string? status,int pageNumber = 1,int pageSize = 10,CancellationToken cancellationToken = default)
         {
             bool? isActive = status?.ToLower() switch
             {
@@ -62,6 +54,8 @@ namespace ShopEgypt.Areas.Adminn.Controllers
                 Search = search,
                 CategoryId = categoryId,
                 Status = status,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
                 Categories = categories.Select(c => new AdminSelectItemViewModel
                 {
                     Id = c.Id,
@@ -71,7 +65,8 @@ namespace ShopEgypt.Areas.Adminn.Controllers
 
             return View(model);
         }
-
+        
+        
         [HttpGet]
         public async Task<IActionResult> Create(CancellationToken cancellationToken)
         {
@@ -87,9 +82,7 @@ namespace ShopEgypt.Areas.Adminn.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(
-            AdminProductFormViewModel vm,
-            CancellationToken cancellationToken)
+        public async Task<IActionResult> Create(AdminProductFormViewModel vm,CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
@@ -98,18 +91,10 @@ namespace ShopEgypt.Areas.Adminn.Controllers
                 return View(vm);
             }
 
-            // Temporary seller fallback - replace later with logged-in seller/admin identity if needed
-            if (string.IsNullOrWhiteSpace(vm.CreateDto.SellerId))
-            {
-                vm.CreateDto.SellerId = await _context.Users
-                    .Select(u => u.Id)
-                    .FirstOrDefaultAsync(cancellationToken) ?? string.Empty;
-            }
-
             await _productService.CreateAdminProductAsync(vm.CreateDto, cancellationToken);
 
             TempData["Success"] = "Product created successfully.";
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", "Products", new{area = "Adminn"});
         }
 
         [HttpGet]
@@ -144,9 +129,7 @@ namespace ShopEgypt.Areas.Adminn.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(
-            AdminProductFormViewModel vm,
-            CancellationToken cancellationToken)
+        public async Task<IActionResult> Edit(AdminProductFormViewModel vm,CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
@@ -160,7 +143,7 @@ namespace ShopEgypt.Areas.Adminn.Controllers
                 return NotFound();
 
             TempData["Success"] = "Product updated successfully.";
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", "Products", new { area = "Adminn" });
         }
 
         [HttpPost]
@@ -173,21 +156,21 @@ namespace ShopEgypt.Areas.Adminn.Controllers
                 ? "Product deleted successfully."
                 : "Product not found.";
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", "Products", new { area = "Adminn" });
         }
 
         private async Task LoadLookupDataAsync(AdminProductFormViewModel vm, CancellationToken cancellationToken)
         {
             var categories = await _categoryService.GetAllCategoriesAsync(cancellationToken);
 
-            //var brands = await _context.Brands
-            //    .AsNoTracking()
-            //    .Select(b => new AdminSelectItemViewModel
-            //    {
-            //        Id = b.Id,
-            //        Name = b.Name
-            //    })
-            //    .ToListAsync(cancellationToken);
+            var brands = await _context.Brand
+                .AsNoTracking()
+                .Select(b => new AdminSelectItemViewModel
+                {
+                    Id = b.BrandID,
+                    Name = b.BrandName
+                })
+                .ToListAsync(cancellationToken);
 
             vm.Categories = categories.Select(c => new AdminSelectItemViewModel
             {
@@ -195,7 +178,7 @@ namespace ShopEgypt.Areas.Adminn.Controllers
                 Name = c.Name
             }).ToList();
 
-            //vm.Brands = brands;
+            vm.Brands = brands;
         }
     }
 }
