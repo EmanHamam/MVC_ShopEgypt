@@ -105,62 +105,77 @@ namespace ShopEgypt.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnGetCallbackAsync(string returnUrl = null, string remoteError = null)
         {
-            returnUrl = ShopRouteHelper.SanitizeReturnUrl(returnUrl ?? Url.Content("~/"));
+            returnUrl = returnUrl ?? Url.Content("~/");
+
             if (remoteError != null)
             {
                 ErrorMessage = $"Error from external provider: {remoteError}";
-                return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
+                return RedirectToPage("./Login");
             }
+
             var info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
             {
-                ErrorMessage = "Error loading external login information.";
-                return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
+                return RedirectToPage("./Login");
             }
 
-            // Sign in the user with this external login provider if the user already has a login.
-            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
+            var result = await _signInManager.ExternalLoginSignInAsync(
+                info.LoginProvider,
+                info.ProviderKey,
+                isPersistent: false,
+                bypassTwoFactor: true);
+
             if (result.Succeeded)
             {
-                _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
-                var user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
-
-                 var isAdmin = await _userManager.IsInRoleAsync(user, "Admin");
-
-                if (isAdmin)
-                {
-                    return LocalRedirect(ShopRouteHelper.AdminDashboardPath);
-                }
-
-                await _cartService.MergeSessionCartToUserCartAsync();
-
-                if (Url.IsLocalUrl(returnUrl))
-                {
-                    return LocalRedirect(returnUrl);
-                }
-
-                return LocalRedirect(ShopRouteHelper.ShopPath);
+                return LocalRedirect(returnUrl);
             }
-            if (result.IsLockedOut)
+
+            var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+
+            if (string.IsNullOrEmpty(email))
             {
-                return RedirectToPage("./Lockout");
+                return RedirectToPage("./Login");
             }
-            else
+
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user != null)
             {
-                // If the user does not have an account, then ask the user to create an account.
-                ReturnUrl = returnUrl;
-                ProviderDisplayName = info.ProviderDisplayName;
-                if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
+                var logins = await _userManager.GetLoginsAsync(user);
+                if (!logins.Any(l => l.LoginProvider == info.LoginProvider))
                 {
-                    Input = new InputModel
+                    var addLoginResult = await _userManager.AddLoginAsync(user, info);
+                    if (!addLoginResult.Succeeded)
                     {
-                        Email = info.Principal.FindFirstValue(ClaimTypes.Email)
-                    };
+                        // handle failure
+                        return RedirectToPage("./Login");
+                    }
                 }
-                return Page();
-            }
-        }
 
+                await _signInManager.SignInAsync(user, isPersistent: false);
+                return LocalRedirect(returnUrl);
+            }
+
+            var newUser = new ApplicationUser
+            {
+                UserName = email,
+                Email = email,
+                EmailConfirmed = true 
+            };
+
+            var createResult = await _userManager.CreateAsync(newUser);
+
+            if (createResult.Succeeded)
+            {
+                await _userManager.AddLoginAsync(newUser, info);
+                await _signInManager.SignInAsync(newUser, isPersistent: false);
+
+                return LocalRedirect(returnUrl);
+            }
+
+            ErrorMessage = "Error creating user.";
+            return RedirectToPage("./Login");
+        }
         public async Task<IActionResult> OnPostConfirmationAsync(string returnUrl = null)
         {
             returnUrl = ShopRouteHelper.SanitizeReturnUrl(returnUrl ?? Url.Content("~/"));
