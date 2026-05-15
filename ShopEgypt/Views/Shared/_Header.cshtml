@@ -1,11 +1,11 @@
-﻿@{
+@{
     var cartCount = ViewBag.CartCount ?? 3;
     var wishlistCount = ViewBag.WishlistCount ?? 3;
 }
 
 <header class="site-header">
     <div class="container header-container">
-        <a asp-controller="Home" asp-action="Index" class="logo">
+        <a asp-area="" asp-controller="Home" asp-action="Index" class="logo">
             <span class="logo-dot"></span>
             <span class="logo-text">Shop<span>Egypt</span></span>
         </a>
@@ -14,7 +14,6 @@
             <a asp-controller="Products" asp-action="Index">Shop</a>
             <a asp-controller="Categories" asp-action="Index">Categories</a>
             <a asp-controller="Home" asp-action="About">About</a>
-            <a asp-controller="Home" asp-action="Contact" class="active">Contact</a>
         </nav>
 
         <div class="header-icons">
@@ -22,7 +21,7 @@
                 <i class="fa-solid fa-magnifying-glass"></i>
             </a>
 
-            <a asp-controller="Wishlist" asp-action="Index" class="icon-btn badge-wrap" aria-label="Wishlist">
+            <a asp-controller="WishListItems" asp-action="Index" class="icon-btn badge-wrap" aria-label="Wishlist">
                 <i class="fa-regular fa-heart"></i>
                 @if (wishlistCount > 0)
                 {
@@ -52,6 +51,5 @@
         <a asp-controller="Shop" asp-action="Index">Shop</a>
         <a asp-controller="Categories" asp-action="Index">Categories</a>
         <a asp-controller="Home" asp-action="About">About</a>
-        <a asp-controller="Home" asp-action="Contact">Contact</a>
     </div>
 </header>

@@ -12,7 +12,7 @@
         </div>
 
         <a asp-area="Adminn"
-           asp-controller="Categories"
+           asp-area="Adminn" asp-controller="AdminCategories"
            asp-action="Create"
            class="admin-primary-btn">
             <i class="fa-solid fa-plus"></i>
@@ -39,7 +39,7 @@
 
                     <div class="admin-category-actions">
                         <a asp-area="Adminn"
-                           asp-controller="Categories"
+                           asp-area="Adminn" asp-controller="AdminCategories"
                            asp-action="Edit"
                            asp-route-id="@category.Id"
                            class="admin-category-edit">
@@ -48,7 +48,7 @@
                         </a>
 
                         <form asp-area="Adminn"
-                              asp-controller="Categories"
+                              asp-area="Adminn" asp-controller="AdminCategories"
                               asp-action="Delete"
                               method="post"
                               class="admin-delete-form"

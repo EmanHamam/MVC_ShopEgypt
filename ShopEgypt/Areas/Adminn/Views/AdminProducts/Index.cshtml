@@ -197,7 +197,7 @@
                 <div class="admin-pagination-links">
                     @if (Model.HasPreviousPage)
                     {
-                        <a href="@Url.Action("Index", "Products", new
+                        <a href="@Url.Action("Index", "AdminProducts", new
                            {
                                area = "Adminn",
                                search = Model.Search,
@@ -228,7 +228,7 @@
                         }
                         else
                         {
-                            <a href="@Url.Action("Index", "Products", new
+                            <a href="@Url.Action("Index", "AdminProducts", new
                                {
                                    area = "Adminn",
                                    search = Model.Search,
@@ -245,7 +245,7 @@
 
                     @if (Model.HasNextPage)
                     {
-                        <a href="@Url.Action("Index", "Products", new
+                        <a href="@Url.Action("Index", "AdminProducts", new
                            {
                                area = "Adminn",
                                search = Model.Search,

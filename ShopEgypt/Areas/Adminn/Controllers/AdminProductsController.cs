@@ -11,13 +11,13 @@ namespace ShopEgypt.Areas.Adminn.Controllers
 {
     [Area("Adminn")]
     [Authorize(Roles = "Admin")]
-    public class ProductsController : Controller
+    public class AdminProductsController : Controller
     {
         private readonly IProductService _productService;
         private readonly ICategoryService _categoryService;
         private readonly ApplicationDbContext _context;
 
-        public ProductsController(IProductService productService,ICategoryService categoryService,ApplicationDbContext context)
+        public AdminProductsController(IProductService productService,ICategoryService categoryService,ApplicationDbContext context)
         {
             _productService = productService;
             _categoryService = categoryService;
@@ -94,7 +94,7 @@ namespace ShopEgypt.Areas.Adminn.Controllers
             await _productService.CreateAdminProductAsync(vm.CreateDto, cancellationToken);
 
             TempData["Success"] = "Product created successfully.";
-            return RedirectToAction("Index", "Products", new{area = "Adminn"});
+            return RedirectToAction("Index", "AdminProducts", new { area = "Adminn" });
         }
 
         [HttpGet]
@@ -143,7 +143,7 @@ namespace ShopEgypt.Areas.Adminn.Controllers
                 return NotFound();
 
             TempData["Success"] = "Product updated successfully.";
-            return RedirectToAction("Index", "Products", new { area = "Adminn" });
+            return RedirectToAction("Index", "AdminProducts", new { area = "Adminn" });
         }
 
         [HttpPost]
@@ -156,7 +156,7 @@ namespace ShopEgypt.Areas.Adminn.Controllers
                 ? "Product deleted successfully."
                 : "Product not found.";
 
-            return RedirectToAction("Index", "Products", new { area = "Adminn" });
+            return RedirectToAction("Index", "AdminProducts", new { area = "Adminn" });
         }
 
         private async Task LoadLookupDataAsync(AdminProductFormViewModel vm, CancellationToken cancellationToken)

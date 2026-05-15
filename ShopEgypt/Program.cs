@@ -84,9 +84,12 @@ namespace ShopEgypt
             app.UseSession();
             app.UseAuthorization();
 
+            
+
             app.MapStaticAssets();
 
 
+            
             app.MapAreaControllerRoute(
                     name: "AdminArea",
                     areaName: "Adminn",
@@ -98,7 +101,7 @@ namespace ShopEgypt
                     pattern: "{controller=Home}/{action=Index}/{id?}"
                 )
                 .WithStaticAssets();
-
+            
             //app.MapAreaControllerRoute(
             //        name: "AdminArea",
             //        areaName: "Adminn",

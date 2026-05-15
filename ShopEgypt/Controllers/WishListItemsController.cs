@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShopEgypt.Application.DTOs.WishlistItemsDTOs;
 using ShopEgypt.Application.Interfaces.IWishlistItemService;
@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 namespace ShopEgypt.Controllers
 {
     [Authorize]
+    [Route("Wishlist")]
     public class WishListItemsController : Controller
     {
         private readonly IUnitOfWork _uow;
@@ -20,7 +21,8 @@ namespace ShopEgypt.Controllers
         }
 
         [HttpGet]
-        [Route("/Wishlist")]
+        [Route("")]
+        [Route("Index")]
         public async Task<IActionResult> Index(CancellationToken cancellationToken = default)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -35,6 +37,7 @@ namespace ShopEgypt.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("Add")]
         public async Task<IActionResult> Add(int productId, string returnUrl = null, CancellationToken cancellationToken = default)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -63,6 +66,7 @@ namespace ShopEgypt.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("Remove")]
         public async Task<IActionResult> Remove(int productId, int wishlistId, CancellationToken cancellationToken = default)
         {
             await _uow.WishlistItemService.RemoveWishlistItem(productId, wishlistId);

@@ -105,7 +105,7 @@ namespace ShopEgypt.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnGetCallbackAsync(string returnUrl = null, string remoteError = null)
         {
-            returnUrl = AuthRedirectHelper.SanitizeReturnUrl(returnUrl ?? Url.Content("~/"));
+            returnUrl = ShopRouteHelper.SanitizeReturnUrl(returnUrl ?? Url.Content("~/"));
             if (remoteError != null)
             {
                 ErrorMessage = $"Error from external provider: {remoteError}";
@@ -129,7 +129,7 @@ namespace ShopEgypt.Areas.Identity.Pages.Account
 
                 if (isAdmin)
                 {
-                    return LocalRedirect(AuthRedirectHelper.AdminDashboardPath);
+                    return LocalRedirect(ShopRouteHelper.AdminDashboardPath);
                 }
 
                 await _cartService.MergeSessionCartToUserCartAsync();
@@ -139,7 +139,7 @@ namespace ShopEgypt.Areas.Identity.Pages.Account
                     return LocalRedirect(returnUrl);
                 }
 
-                return LocalRedirect(AuthRedirectHelper.ShopPath);
+                return LocalRedirect(ShopRouteHelper.ShopPath);
             }
             if (result.IsLockedOut)
             {
@@ -163,7 +163,7 @@ namespace ShopEgypt.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostConfirmationAsync(string returnUrl = null)
         {
-            returnUrl = AuthRedirectHelper.SanitizeReturnUrl(returnUrl ?? Url.Content("~/"));
+            returnUrl = ShopRouteHelper.SanitizeReturnUrl(returnUrl ?? Url.Content("~/"));
             // Get the information about the user from the external login provider
             var info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
@@ -215,7 +215,7 @@ namespace ShopEgypt.Areas.Identity.Pages.Account
                             return LocalRedirect(returnUrl);
                         }
 
-                        return LocalRedirect(AuthRedirectHelper.ShopPath);
+                        return LocalRedirect(ShopRouteHelper.ShopPath);
                     }
                 }
                 foreach (var error in result.Errors)

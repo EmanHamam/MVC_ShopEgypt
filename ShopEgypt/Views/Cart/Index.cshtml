@@ -16,7 +16,7 @@
             <div class="cart-empty">
                 <div class="cart-empty-inner">
                     <h2>Your bag is empty.</h2>
-                    <a asp-controller="Products" asp-action="Index" class="cart-start-btn">
+                    <a asp-area="" asp-controller="Products" asp-action="Index" class="cart-start-btn">
                         Start shopping
                         <span>→</span>
                     </a>
@@ -37,7 +37,7 @@
                             <div class="cart-card-content">
                                 <div class="cart-card-top">
                                     <div>
-                                        <a asp-controller="Products"
+                                        <a asp-area="" asp-controller="Products"
                                                asp-action="Details"
                                                asp-route-id="@item.ProductId"
                                                class="cart-product-name">
@@ -46,7 +46,7 @@
                                         <p class="cart-product-price">@item.UnitPrice.ToString("N0") EGP</p>
                                     </div>
 
-                                    <form asp-controller="Cart" asp-action="Remove" method="post">
+                                    <form asp-area="" asp-controller="Cart" asp-action="Remove" method="post">
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="productId" value="@item.ProductId" />
                                         <button type="submit" class="cart-remove-btn" title="Remove item">×</button>
@@ -55,7 +55,7 @@
 
                                 <div class="cart-card-bottom">
                                     <div class="qty-box">
-                                        <form asp-controller="Cart" asp-action="Decrease" method="post">
+                                        <form asp-area="" asp-controller="Cart" asp-action="Decrease" method="post">
                                             @Html.AntiForgeryToken()
                                             <input type="hidden" name="productId" value="@item.ProductId" />
                                             <button type="submit" class="qty-btn" title="Decrease quantity">−</button>
@@ -63,7 +63,7 @@
 
                                         <span class="qty-value">@item.Quantity</span>
 
-                                        <form asp-controller="Cart" asp-action="Increase" method="post">
+                                        <form asp-area="" asp-controller="Cart" asp-action="Increase" method="post">
                                             @Html.AntiForgeryToken()
                                             <input type="hidden" name="productId" value="@item.ProductId" />
                                             <button type="submit" class="qty-btn" title="Increase quantity">+</button>
@@ -103,11 +103,11 @@
 
                     <input type="text" class="promo-input" placeholder="Promo code" />
 
-                    <a asp-controller="ShopOrders" asp-action="Address" class="checkout-btn">
+                    <a asp-area="" asp-controller="ShopOrders" asp-action="Address" class="checkout-btn">
                         Checkout
                     </a>
 
-                    <a asp-controller="Shop" asp-action="Index" class="continue-shopping">
+                    <a asp-area="" asp-controller="Shop" asp-action="Index" class="continue-shopping">
                         Continue shopping
                     </a>
                 </aside>

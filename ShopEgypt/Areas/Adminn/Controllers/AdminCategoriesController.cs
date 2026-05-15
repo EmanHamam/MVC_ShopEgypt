@@ -1,18 +1,17 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShopEgypt.Application.DTOs;
-using ShopEgypt.Application.DTOs;
 using ShopEgypt.Application.Interfaces.ICategoryService;
 
 namespace ShopEgypt.Areas.Adminn.Controllers
 {
     [Area("Adminn")]
     [Authorize(Roles = "Admin")]
-    public class CategoriesController : Controller
+    public class AdminCategoriesController : Controller
     {
         private readonly ICategoryService _categoryService;
 
-        public CategoriesController(ICategoryService categoryService)
+        public AdminCategoriesController(ICategoryService categoryService)
         {
             _categoryService = categoryService;
         }

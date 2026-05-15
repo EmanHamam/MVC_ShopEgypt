@@ -10,7 +10,7 @@
         <h2 style="font-family: var(--font-display); font-size: 32px; margin-bottom: 32px;">Edit Your Review</h2>
 
         <div class="review-form-card">
-            <form asp-controller="Reviews" asp-action="Edit" asp-route-id="@Model.Id" method="post">
+            <form asp-area="" asp-controller="Reviews" asp-action="Edit" asp-route-id="@Model.Id" method="post">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="ProductId" value="@Model.ProductId" />
                 <input type="hidden" name="ApplicationUserId" value="@Model.ApplicationUserId" />

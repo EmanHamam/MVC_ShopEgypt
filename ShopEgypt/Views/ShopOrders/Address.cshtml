@@ -4,85 +4,80 @@
     ViewData["Title"] = "Shipping Address";
 }
 
-<div class="checkout-container">
-    <!-- Step Indicator -->
-    <div class="checkout-steps mb-5">
-        <div class="step active">
-            <div class="step-circle">1</div>
-            <span>Address</span>
+<div class="checkout-wrapper">
+    <div class="checkout-container">
+        <!-- Step Indicator -->
+        <div class="checkout-steps mb-5">
+            <div class="step active">
+                <div class="step-circle">1</div>
+                <span>Address</span>
+            </div>
+            <div class="step-line"></div>
+            <div class="step">
+                <div class="step-circle">2</div>
+                <span>Summary</span>
+            </div>
+            <div class="step-line"></div>
+            <div class="step">
+                <div class="step-circle">3</div>
+                <span>Payment</span>
+            </div>
+            <div class="step-line"></div>
+            <div class="step">
+                <div class="step-circle">4</div>
+                <span>Confirmed</span>
+            </div>
         </div>
-        <div class="step-line"></div>
-        <div class="step">
-            <div class="step-circle">2</div>
-            <span>Summary</span>
-        </div>
-        <div class="step-line"></div>
-        <div class="step">
-            <div class="step-circle">3</div>
-            <span>Payment</span>
-        </div>
-        <div class="step-line"></div>
-        <div class="step">
-            <div class="step-circle">4</div>
-            <span>Confirmed</span>
-        </div>
-    </div>
 
-    <div class="row justify-content-center">
-        <div class="col-lg-6">
-            <div class="card shadow-sm border-0 rounded-4">
-                <div class="card-body p-4 p-md-5">
-                    <h2 class="fw-bold mb-1">Shipping Address</h2>
-                    <p class="text-muted mb-4">Where should we deliver your order?</p>
+        <div class="checkout-form-wrapper">
+            <div class="checkout-card">
+                <h2 class="checkout-title">Shipping Address</h2>
+                <p class="checkout-subtitle">Where should we deliver your order?</p>
 
-                    <form asp-controller="ShopOrders" asp-action="Address" method="post">
-                        <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2" role="alert"></div>
+                <form asp-controller="ShopOrders" asp-action="Address" method="post" class="custom-form">
+                    <div asp-validation-summary="ModelOnly" class="form-error-summary" role="alert"></div>
 
-                        <div class="mb-3">
-                            <label asp-for="Street" class="form-label fw-semibold"></label>
-                            <input asp-for="Street" class="form-control form-control-lg"
-                                   placeholder="e.g. 12 Tahrir Square" />
-                            <span asp-validation-for="Street" class="text-danger small"></span>
+                    <div class="form-group mb-4">
+                        <label asp-for="Street" class="form-label"></label>
+                        <input asp-for="Street" class="form-input" placeholder="e.g. 12 Tahrir Square" />
+                        <span asp-validation-for="Street" class="form-error"></span>
+                    </div>
+
+                    <div class="form-row mb-4">
+                        <div class="form-group half-width">
+                            <label asp-for="City" class="form-label"></label>
+                            <input asp-for="City" class="form-input" placeholder="e.g. Cairo" />
+                            <span asp-validation-for="City" class="form-error"></span>
                         </div>
-
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-6">
-                                <label asp-for="City" class="form-label fw-semibold"></label>
-                                <input asp-for="City" class="form-control"
-                                       placeholder="e.g. Cairo" />
-                                <span asp-validation-for="City" class="text-danger small"></span>
-                            </div>
-                            <div class="col-md-6">
-                                <label asp-for="State" class="form-label fw-semibold"></label>
-                                <input asp-for="State" class="form-control"
-                                       placeholder="e.g. Cairo Governorate" />
-                            </div>
+                        <div class="form-group half-width">
+                            <label asp-for="State" class="form-label"></label>
+                            <input asp-for="State" class="form-input" placeholder="e.g. Cairo Governorate" />
                         </div>
+                    </div>
 
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-6">
-                                <label asp-for="ZipCode" class="form-label fw-semibold"></label>
-                                <input asp-for="ZipCode" class="form-control" placeholder="e.g. 11511" />
-                            </div>
-                            <div class="col-md-6">
-                                <label asp-for="Country" class="form-label fw-semibold"></label>
-                                <input asp-for="Country" class="form-control" value="Egypt" />
-                                <span asp-validation-for="Country" class="text-danger small"></span>
-                            </div>
+                    <div class="form-row mb-4">
+                        <div class="form-group half-width">
+                            <label asp-for="ZipCode" class="form-label"></label>
+                            <input asp-for="ZipCode" class="form-input" placeholder="e.g. 11511" />
                         </div>
+                        <div class="form-group half-width">
+                            <label asp-for="Country" class="form-label"></label>
+                            <input asp-for="Country" class="form-input" value="Egypt" />
+                            <span asp-validation-for="Country" class="form-error"></span>
+                        </div>
+                    </div>
 
-                        <div class="d-grid mt-4">
-                            <button type="submit" class="btn btn-primary btn-lg rounded-3">
-                                Continue to Summary <i class="bi bi-arrow-right ms-1"></i>
-                            </button>
-                        </div>
-                    </form>
-                </div>
+                    <div class="form-actions mt-5">
+                        <button type="submit" class="btn-checkout">
+                            Continue to Summary <i class="fa-solid fa-arrow-right ms-2"></i>
+                        </button>
+                    </div>
+                </form>
             </div>
 
-            <div class="text-center mt-3">
-                <a asp-controller="Cart" asp-action="Index" class="text-muted small">
-                    <i class="bi bi-arrow-left me-1"></i> Back to Cart
+            <div class="back-link-wrapper mt-4">
+                <a href="/Cart" class="back-link">
+                    <i class="fa-solid fa-arrow-left me-2"></i> Back to Cart
                 </a>
             </div>
         </div>
@@ -90,23 +85,192 @@
 </div>
 
 <style>
-    .checkout-container { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
+    .checkout-wrapper {
+        background: #faf9f7;
+        min-height: 80vh;
+        padding: 60px 20px;
+        font-family: Arial, sans-serif;
+    }
+    .checkout-container {
+        max-width: 700px;
+        margin: 0 auto;
+    }
 
+    /* Steps Indicator */
     .checkout-steps {
-        display: flex; align-items: center; justify-content: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 40px;
     }
     .step {
-        display: flex; flex-direction: column; align-items: center; gap: .3rem;
-        font-size: .8rem; color: #aaa; min-width: 70px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        font-size: 11px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #888;
+        min-width: 60px;
     }
-    .step.active .step-circle { background: #0d6efd; color: #fff; }
-    .step.done  .step-circle  { background: #198754; color: #fff; }
     .step-circle {
-        width: 36px; height: 36px; border-radius: 50%;
-        display: flex; align-items: center; justify-content: center;
-        background: #e9ecef; font-weight: 700; font-size: .9rem;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #eee;
+        font-weight: 600;
+        font-size: 13px;
+        color: #888;
+        transition: all 0.3s ease;
     }
-    .step-line { flex: 1; height: 2px; background: #dee2e6; margin: 0 .5rem; margin-bottom: 1.2rem; }
+    .step.active .step-circle {
+        background: #1a1a1a;
+        color: #c8a96e;
+    }
+    .step.active span {
+        color: #1a1a1a;
+        font-weight: 600;
+    }
+    .step.done .step-circle {
+        background: #c8a96e;
+        color: #fff;
+    }
+    .step-line {
+        flex: 1;
+        height: 1px;
+        background: #ddd;
+        margin: 0 10px;
+        margin-bottom: 20px;
+    }
+
+    /* Checkout Card */
+    .checkout-form-wrapper {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    .checkout-card {
+        background: #fff;
+        padding: 48px;
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.03);
+        border: 1px solid #f0ede8;
+    }
+    .checkout-title {
+        font-family: 'Georgia', serif;
+        font-size: 28px;
+        color: #1a1a1a;
+        margin-bottom: 8px;
+    }
+    .checkout-subtitle {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 32px;
+    }
+
+    /* Form Styles */
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+    .form-row {
+        display: flex;
+        gap: 20px;
+    }
+    .half-width {
+        flex: 1;
+    }
+    .form-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    .form-input {
+        padding: 14px 16px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 14px;
+        color: #1a1a1a;
+        background: #faf9f7;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-input:focus {
+        outline: none;
+        border-color: #c8a96e;
+        box-shadow: 0 0 0 3px rgba(200, 169, 110, 0.1);
+        background: #fff;
+    }
+    .form-input::placeholder {
+        color: #aaa;
+    }
+    .form-error {
+        font-size: 12px;
+        color: #d9534f;
+        margin-top: 4px;
+    }
+    .form-error-summary {
+        background: #fdf2f2;
+        color: #d9534f;
+        padding: 12px;
+        border-radius: 6px;
+        margin-bottom: 24px;
+        font-size: 13px;
+        border: 1px solid #fad2d2;
+    }
+    .form-error-summary ul {
+        margin: 0;
+        padding-left: 20px;
+    }
+
+    /* Buttons & Links */
+    .btn-checkout {
+        background: #1a1a1a;
+        color: #fff;
+        border: none;
+        width: 100%;
+        padding: 16px;
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.1s;
+    }
+    .btn-checkout:hover {
+        background: #333;
+    }
+    .btn-checkout:active {
+        transform: scale(0.99);
+    }
+    .back-link-wrapper {
+        text-align: center;
+    }
+    .back-link {
+        font-size: 13px;
+        color: #666;
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+    .back-link:hover {
+        color: #1a1a1a;
+    }
+
+    /* Responsive */
+    @@media (max-width: 600px) {
+        .form-row {
+            flex-direction: column;
+            gap: 16px;
+        }
+        .checkout-card {
+            padding: 32px 24px;
+        }
+    }
 </style>
 
 @section Scripts {
