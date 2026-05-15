@@ -71,7 +71,7 @@
 </div>
 
 <!-- Hidden form submitted after JS confirms payment -->
-<form id="success-form" asp-action="PaymentSuccess" asp-controller="Orders" method="post" class="d-none">
+<form id="success-form" asp-action="PaymentSuccess" asp-controller="ShopOrders" method="post" class="d-none">
     @Html.AntiForgeryToken()
     <input type="hidden" name="orderId" id="success-order-id" value="@orderId" />
 </form>

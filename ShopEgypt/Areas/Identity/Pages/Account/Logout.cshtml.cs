@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using ShopEgypt.Areas.Identity;
 using ShopEgypt.Domain.Entities;
 
 namespace ShopEgypt.Areas.Identity.Pages.Account
@@ -28,16 +29,15 @@ namespace ShopEgypt.Areas.Identity.Pages.Account
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out.");
-            if (returnUrl != null)
+
+            returnUrl = AuthRedirectHelper.SanitizeReturnUrl(returnUrl);
+
+            if (Url.IsLocalUrl(returnUrl))
             {
                 return LocalRedirect(returnUrl);
             }
-            else
-            {
-                // This needs to be a redirect so that the browser performs a new
-                // request and the identity for the user gets updated.
-                return RedirectToPage();
-            }
+
+            return LocalRedirect(AuthRedirectHelper.ShopPath);
         }
     }
 }

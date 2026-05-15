@@ -1,0 +1,28 @@
+@page
+@model AccessDeniedModel
+@{
+    ViewData["Title"] = "Access Denied";
+}
+
+<div class="auth-page">
+    <div class="auth-card">
+        <h1 class="auth-title">Access Denied</h1>
+        <p class="auth-subtitle">You don't have permission to access this page.</p>
+        
+        <div class="alert alert-warning mt-4" role="alert">
+            <strong>You are not authorized to access this resource.</strong>
+        </div>
+
+        <div class="mt-4">
+            <p>
+                <a asp-controller="Products" asp-action="Index" class="auth-btn auth-btn-signin" style="display: inline-block; text-decoration: none; text-align: center;">
+                    Return to Shop
+                </a>
+            </p>
+        </div>
+
+        <p class="auth-footer-text mt-3">
+            If you believe this is a mistake, please <a href="mailto:support@shopegypt.com" class="auth-link-accent">contact support</a>.
+        </p>
+    </div>
+</div>

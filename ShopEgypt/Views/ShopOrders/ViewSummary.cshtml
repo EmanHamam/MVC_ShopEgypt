@@ -126,7 +126,7 @@
                         <span>EGP @((Model.TotalAmount > 1500 ? Model.TotalAmount : Model.TotalAmount + 80).ToString("F2"))</span>
                     </div>
 
-                    <form asp-action="ConfirmOrder" asp-controller="Orders" method="post">
+                    <form asp-action="ConfirmOrder" asp-controller="ShopOrders" method="post">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="orderId" value="@Model.OrderId" />
                         <div class="d-grid">

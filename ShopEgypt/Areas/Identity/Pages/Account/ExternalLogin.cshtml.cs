@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ShopEgypt.Application.Interfaces.ICartService;
+using ShopEgypt.Areas.Identity;
 using ShopEgypt.Domain.Entities;
 using ShopEgypt.Infrastructure.Email;
 using ShopEgypt.Infrastructure.Services.CartService;
@@ -104,7 +105,7 @@ namespace ShopEgypt.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnGetCallbackAsync(string returnUrl = null, string remoteError = null)
         {
-            returnUrl = returnUrl ?? Url.Content("~/");
+            returnUrl = AuthRedirectHelper.SanitizeReturnUrl(returnUrl ?? Url.Content("~/"));
             if (remoteError != null)
             {
                 ErrorMessage = $"Error from external provider: {remoteError}";
@@ -128,20 +129,17 @@ namespace ShopEgypt.Areas.Identity.Pages.Account
 
                 if (isAdmin)
                 {
-                    return RedirectToAction("Index", "Dashboard", new { area = "Adminn" });
+                    return LocalRedirect(AuthRedirectHelper.AdminDashboardPath);
                 }
 
                 await _cartService.MergeSessionCartToUserCartAsync();
 
-                // Prevent normal users from being redirected into admin area
-                if (!string.IsNullOrWhiteSpace(returnUrl) &&
-                    Url.IsLocalUrl(returnUrl) &&
-                    !returnUrl.StartsWith("/Adminn", StringComparison.OrdinalIgnoreCase))
+                if (Url.IsLocalUrl(returnUrl))
                 {
                     return LocalRedirect(returnUrl);
                 }
 
-                return RedirectToAction("Index", "Home", new { area = "" });
+                return LocalRedirect(AuthRedirectHelper.ShopPath);
             }
             if (result.IsLockedOut)
             {
@@ -165,7 +163,7 @@ namespace ShopEgypt.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostConfirmationAsync(string returnUrl = null)
         {
-            returnUrl = returnUrl ?? Url.Content("~/");
+            returnUrl = AuthRedirectHelper.SanitizeReturnUrl(returnUrl ?? Url.Content("~/"));
             // Get the information about the user from the external login provider
             var info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
@@ -210,7 +208,14 @@ namespace ShopEgypt.Areas.Identity.Pages.Account
                         }
 
                         await _signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);
-                        return LocalRedirect(returnUrl);
+                        await _cartService.MergeSessionCartToUserCartAsync();
+
+                        if (Url.IsLocalUrl(returnUrl))
+                        {
+                            return LocalRedirect(returnUrl);
+                        }
+
+                        return LocalRedirect(AuthRedirectHelper.ShopPath);
                     }
                 }
                 foreach (var error in result.Errors)
