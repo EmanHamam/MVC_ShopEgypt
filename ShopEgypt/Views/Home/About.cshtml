@@ -1,0 +1,436 @@
+@{
+    ViewData["Title"] = "About";
+}
+
+<!-- ===== HERO / OUR STORY ===== -->
+<section class="about-hero">
+    <p class="about-label">OUR STORY</p>
+    <h1 class="about-heading">A love letter to Egyptian<br>craft.</h1>
+    <p class="about-sub">
+        Founded in Cairo in 2022, ShopEgypt brings the country's most thoughtful makers to your doorstep<br>
+        — with care, transparency, and a relentless eye for quality.
+    </p>
+</section>
+
+<!-- ===== OUR MISSION ===== -->
+<section class="mission-section">
+    <div class="mission-image">
+        <img src="https://cdn.pixabay.com/photo/2019/03/12/12/47/people-4050698_1280.jpg"
+             alt="Egyptian artisan woman" />
+    </div>
+    <div class="mission-content">
+        <p class="section-label-gold">OUR MISSION</p>
+        <h2 class="mission-title">Heritage, reimagined for today with spirit of Teamwork</h2>
+        <p class="mission-text">
+            We work directly with artisans across Egypt — from the linen looms of
+            Akhmim to the leather workshops of Khan el-Khalili. Every piece is selected
+            for its quality, its story, and its place in modern life.
+        </p>
+        <div class="stats-row">
+            <div class="stat-item">
+                <p class="stat-number">120+</p>
+                <p class="stat-label">Makers</p>
+            </div>
+            <div class="stat-item">
+                <p class="stat-number">12k+</p>
+                <p class="stat-label">Customers</p>
+            </div>
+            <div class="stat-item">
+                <p class="stat-number">4.9★</p>
+                <p class="stat-label">Rating</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== OUR VALUES ===== -->
+<section class="values-section">
+    <div class="values-content">
+        <p class="section-label-gold">OUR VALUES</p>
+        <h2 class="values-title">Made well.<br>Made fairly.</h2>
+        <div class="values-list">
+            <div class="value-item">
+                <div class="value-bar"></div>
+                <div>
+                    <p class="value-name">Fair trade</p>
+                    <p class="value-desc">Direct partnerships, fair wages, transparent supply chains.</p>
+                </div>
+            </div>
+            <div class="value-item">
+                <div class="value-bar"></div>
+                <div>
+                    <p class="value-name">Slow design</p>
+                    <p class="value-desc">No fleeting trends. Pieces designed to last decades.</p>
+                </div>
+            </div>
+            <div class="value-item">
+                <div class="value-bar"></div>
+                <div>
+                    <p class="value-name">Egyptian first</p>
+                    <p class="value-desc">Every product is designed and made in Egypt.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="values-image">
+        <img src="https://images.unsplash.com/photo-1547949003-9792a18a2601?w=700&q=80"
+             alt="Bag and sandals" />
+    </div>
+</section>
+
+<!-- ===== TEAM ===== -->
+<section class="team-section">
+    <p class="section-label-gold" style="text-align:center;">THE PEOPLE</p>
+    <h2 class="team-title">Built by believers.</h2>
+    <p class="team-sub">A small team with a big love for what Egypt makes.</p>
+
+    <div class="team-grid">
+        <div class="team-card">
+            <img src="https://placehold.net/avatar.svg" alt="Founder" />
+            <p class="team-name">Omar Khaled</p>
+            <p class="team-role">Techinal Lead</p>
+        </div>
+        <div class="team-card">
+            <img src="https://avatars.githubusercontent.com/u/168054375?v=4" alt="Founder" />
+            <p class="team-name">Mohamed Fathi</p>
+            <p class="team-role">Co-founder &amp; CEO</p>
+        </div>
+        <div class="team-card">
+            <img src="https://avatars.githubusercontent.com/u/88643633?v=4" alt="Head of Curation" />
+            <p class="team-name">Mostafa Hendy</p>
+            <p class="team-role">Head of Curation</p>
+        </div>
+        <div class="team-card">
+            <img src="https://placehold.net/avatar.svg" alt="Design Lead" />
+            <p class="team-name">Eman Hamam</p>
+            <p class="team-role">SW Architect</p>
+        </div>
+        <div class="team-card">
+            <img src="https://placehold.net/avatar.svg" alt="Maker Relations" />
+            <p class="team-name">Mariam Magdy</p>
+            <p class="team-role">Senior Backend Engineer</p>
+        </div>
+    </div>
+</section>
+
+<!-- ===== CTA BANNER ===== -->
+<section class="about-cta">
+    <div class="about-cta-bg"></div>
+    <div class="about-cta-content">
+        <p class="section-label-gold" style="color:#c8a96e;">JOIN US</p>
+        <h2 class="about-cta-title">Discover the makers<br>behind your next favourite thing.</h2>
+        <a href="/Products" class="btn-primary-about">Shop the collection →</a>
+    </div>
+</section>
+
+<!-- ===== STYLES ===== -->
+<style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+        font-family: 'Georgia', 'Times New Roman', serif;
+        background: #faf9f7;
+        color: #1a1a1a;
+    }
+
+    /* ---- Hero ---- */
+    .about-hero {
+        background: #f0ede8;
+        text-align: center;
+        padding: 96px 64px 80px;
+    }
+
+    .about-label {
+        font-size: 11px;
+        letter-spacing: 0.18em;
+        color: #aaa;
+        font-family: Arial, sans-serif;
+        margin-bottom: 20px;
+    }
+
+    .about-heading {
+        font-size: clamp(2rem, 5vw, 3.8rem);
+        font-weight: 700;
+        line-height: 1.12;
+        color: #1a1a1a;
+        margin-bottom: 24px;
+    }
+
+    .about-sub {
+        font-size: 15px;
+        color: #666;
+        font-family: Arial, sans-serif;
+        line-height: 1.75;
+        max-width: 620px;
+        margin: 0 auto;
+    }
+
+    /* ---- Shared label ---- */
+    .section-label-gold {
+        font-size: 11px;
+        letter-spacing: 0.18em;
+        color: #c8a96e;
+        font-family: Arial, sans-serif;
+        margin-bottom: 14px;
+        display: block;
+    }
+
+    /* ---- Mission ---- */
+    .mission-section {
+        display: flex;
+        align-items: center;
+        gap: 64px;
+        padding: 88px 80px;
+        background: #fff;
+    }
+
+    .mission-image {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .mission-image img {
+        width: 100%;
+        aspect-ratio: 4/5;
+        object-fit: cover;
+        border-radius: 10px;
+        display: block;
+    }
+
+    .mission-content {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .mission-title {
+        font-size: clamp(1.6rem, 3vw, 2.4rem);
+        font-weight: 700;
+        line-height: 1.2;
+        color: #1a1a1a;
+        margin-bottom: 18px;
+    }
+
+    .mission-text {
+        font-size: 14px;
+        color: #555;
+        font-family: Arial, sans-serif;
+        line-height: 1.8;
+        margin-bottom: 36px;
+    }
+
+    .stats-row {
+        display: flex;
+        gap: 40px;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        line-height: 1;
+        margin-bottom: 6px;
+    }
+
+    .stat-label {
+        font-size: 12px;
+        color: #999;
+        font-family: Arial, sans-serif;
+        letter-spacing: 0.06em;
+    }
+
+    /* ---- Values ---- */
+    .values-section {
+        display: flex;
+        align-items: center;
+        gap: 64px;
+        padding: 88px 80px;
+        background: #faf9f7;
+    }
+
+    .values-content { flex: 1; min-width: 0; }
+
+    .values-title {
+        font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+        font-weight: 700;
+        line-height: 1.15;
+        color: #1a1a1a;
+        margin-bottom: 36px;
+    }
+
+    .values-list { display: flex; flex-direction: column; gap: 24px; }
+
+    .value-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 18px;
+    }
+
+    .value-bar {
+        width: 3px;
+        height: 48px;
+        background: #c8a96e;
+        border-radius: 2px;
+        flex-shrink: 0;
+        margin-top: 2px;
+    }
+
+    .value-name {
+        font-size: 15px;
+        font-weight: 700;
+        font-family: Arial, sans-serif;
+        color: #1a1a1a;
+        margin-bottom: 5px;
+    }
+
+    .value-desc {
+        font-size: 13px;
+        color: #777;
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+    }
+
+    .values-image {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .values-image img {
+        width: 100%;
+        aspect-ratio: 4/5;
+        object-fit: cover;
+        border-radius: 10px;
+        display: block;
+    }
+
+    /* ---- Team ---- */
+    .team-section {
+        background: #fff;
+        padding: 88px 80px;
+        text-align: center;
+    }
+
+    .team-title {
+        font-size: clamp(1.6rem, 3vw, 2.4rem);
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 10px;
+    }
+
+    .team-sub {
+        font-size: 14px;
+        color: #888;
+        font-family: Arial, sans-serif;
+        margin-bottom: 48px;
+    }
+
+    .team-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 28px;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .team-card img {
+        width: 100%;
+        aspect-ratio: 1;
+        object-fit: cover;
+        border-radius: 8px;
+        display: block;
+        margin-bottom: 14px;
+        filter: grayscale(20%);
+        transition: filter 0.3s;
+    }
+    .team-card:hover img { filter: grayscale(0%); }
+
+    .team-name {
+        font-size: 14px;
+        font-weight: 700;
+        font-family: Arial, sans-serif;
+        color: #1a1a1a;
+        margin-bottom: 4px;
+    }
+
+    .team-role {
+        font-size: 12px;
+        color: #aaa;
+        font-family: Arial, sans-serif;
+    }
+
+    /* ---- CTA Banner ---- */
+    .about-cta {
+        position: relative;
+        min-height: 320px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .about-cta-bg {
+        position: absolute;
+        inset: 0;
+        background-image: url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1400&q=80');
+        background-size: cover;
+        background-position: center;
+        filter: brightness(0.38);
+    }
+
+    .about-cta-content {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        padding: 72px 32px;
+    }
+
+    .about-cta-title {
+        font-size: clamp(1.6rem, 3.5vw, 2.8rem);
+        font-weight: 700;
+        color: #fff;
+        line-height: 1.2;
+        margin-bottom: 28px;
+    }
+
+    .btn-primary-about {
+        background: #fff;
+        color: #1a1a1a;
+        padding: 14px 32px;
+        border-radius: 4px;
+        font-size: 14px;
+        font-family: Arial, sans-serif;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-decoration: none;
+        display: inline-block;
+        transition: background 0.2s, color 0.2s;
+    }
+    .btn-primary-about:hover { background: #c8a96e; color: #fff; }
+
+    /* ---- Responsive ---- */
+    @@media (max-width: 1024px) {
+        .mission-section, .values-section { padding: 64px 40px; gap: 40px; }
+        .team-section { padding: 64px 40px; }
+    }
+
+    @@media (max-width: 768px) {
+        .about-hero { padding: 64px 24px 56px; }
+        .about-sub br { display: none; }
+        .mission-section {
+            flex-direction: column;
+            padding: 48px 24px;
+            gap: 32px;
+        }
+        .values-section {
+            flex-direction: column-reverse;
+            padding: 48px 24px;
+            gap: 32px;
+        }
+        .team-section { padding: 48px 24px; }
+        .team-grid { grid-template-columns: repeat(2, 1fr); gap: 18px; }
+        .stats-row { gap: 24px; }
+    }
+
+    @@media (max-width: 480px) {
+        .team-grid { grid-template-columns: repeat(2, 1fr); }
+        .about-heading br { display: none; }
+    }
+</style>

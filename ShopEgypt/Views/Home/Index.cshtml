@@ -1,8 +1,1010 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<!-- Marquee / Announcement Bar -->
+<div class="announcement-bar">
+    <div class="marquee-track">
+        <span>FREE SHIPPING OVER 1500 EGP</span>
+        <span class="dot">✦</span>
+        <span>HANDPICKED EGYPTIAN MAKERS</span>
+        <span class="dot">✦</span>
+        <span>30-DAY RETURNS</span>
+        <span class="dot">✦</span>
+        <span>SECURE CHECKOUT</span>
+        <span class="dot">✦</span>
+        <span>FREE SHIPPING OVER 1500 EGP</span>
+        <span class="dot">✦</span>
+        <span>HANDPICKED EGYPTIAN MAKERS</span>
+        <span class="dot">✦</span>
+        <span>30-DAY RETURNS</span>
+        <span class="dot">✦</span>
+        <span>SECURE CHECKOUT</span>
+        <span class="dot">✦</span>
+        <span>FREE SHIPPING OVER 1500 EGP</span>
+        <span class="dot">✦</span>
+        <span>HANDPICKED EGYPTIAN MAKERS</span>
+        <span class="dot">✦</span>
+        <span>30-DAY RETURNS</span>
+        <span class="dot">✦</span>
+        <span>SECURE CHECKOUT</span>
+        <span class="dot">✦</span>
+    </div>
 </div>
+
+<!-- ===== HERO SECTION ===== -->
+<section class="hero-section">
+    <div class="hero-content">
+        <p class="hero-label">— SPRING EDIT 2026</p>
+        <h1 class="hero-heading">
+            Stay grounded.<br>
+            <span class="hero-heading-accent">Live beautifully.</span>
+        </h1>
+        <p class="hero-subtext">
+            A curated edit of Egypt's most thoughtful makers —<br>
+            delivered with the care your home deserves.
+        </p>
+        <div class="hero-actions">
+            <a href="/products" class="btn-primary">Shop the edit →</a>
+            <a href="/Category" class="btn-ghost">Explore categories</a>
+        </div>
+        <!-- Social proof -->
+        <div class="social-proof">
+            <div class="avatar-stack">
+                <img src="https://i.pravatar.cc/32?img=1" alt="customer" />
+                <img src="https://i.pravatar.cc/32?img=2" alt="customer" />
+                <img src="https://i.pravatar.cc/32?img=3" alt="customer" />
+            </div>
+            <div class="rating-info">
+                <div class="stars">★★★★★</div>
+                <p>Loved by many customers</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="hero-image-wrapper">
+        <div class="hero-image-placeholder">
+            <img src="https://images.unsplash.com/photo-1547949003-9792a18a2601?w=700&q=80"
+                 alt="Hero product" class="hero-img" />
+            <!-- Floating product card -->
+            <div class="floating-card">
+                <p class="floating-card-label">New Arrival</p>
+                <p class="floating-card-name">Mouft Olive Brimmel</p>
+                <p class="floating-card-price">1,890 EGP</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== TRUST BADGES ===== -->
+<section class="trust-badges">
+    <div class="badge-item">
+        <span class="badge-icon">🚚</span>
+        <div>
+            <p class="badge-title">Free shipping</p>
+            <p class="badge-sub">On orders over 1500 EGP</p>
+        </div>
+    </div>
+    <div class="badge-item">
+        <span class="badge-icon">🔒</span>
+        <div>
+            <p class="badge-title">Secure checkout</p>
+            <p class="badge-sub">Encrypted & protected</p>
+        </div>
+    </div>
+    <div class="badge-item">
+        <span class="badge-icon">✦</span>
+        <div>
+            <p class="badge-title">Curated quality</p>
+            <p class="badge-sub">Vetted Egyptian makers</p>
+        </div>
+    </div>
+</section>
+
+<!-- ===== SHOP BY CATEGORY ===== -->
+<section class="categories-section">
+    <div class="section-header">
+        <div>
+            <p class="section-label">SHOP BY CATEGORY</p>
+            <h2 class="section-title">Made for every<br>corner of life.</h2>
+        </div>
+        <a href="/Category" class="view-all-link">View all →</a>
+    </div>
+
+    <div class="category-grid">
+        <div class="category-card">
+            <a href="products?categoryId=79">
+                <img src="https://cdn.dummyjson.com/product-images/furniture/annibale-colombo-bed/thumbnail.webp"
+                    alt="Home & Living" />
+            </a>
+            <div class="category-label">Home &amp; Living</div>
+        </div>
+        <div class="category-card">
+            <a href="products?categoryId=84">
+                <img src="https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=500&q=80"
+                    alt="Fashion" />
+            </a>
+            <div class="category-label">Fashion</div>
+        </div>
+        <div class="category-card">
+        <a href="products?categoryId=87">
+            <img src="https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=500&q=80"
+                 alt="Accessories" />
+        </a>
+            <div class="category-label">Accessories</div>
+        </div>
+        <div class="category-card">
+            <a href="products?categoryId=77">   
+                <img src="https://cdn.dummyjson.com/product-images/beauty/essence-mascara-lash-princess/thumbnail.webp"
+                    alt="Beauty & Scent" />
+            </a>
+            <div class="category-label">Beauty &amp; Scent</div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== THIS WEEK'S EDIT ===== -->
+<section class="featured-section">
+    <div class="section-header">
+        <div>
+            <p class="section-label">FEATURED</p>
+            <h2 class="section-title">This week's edit.</h2>
+        </div>
+        <a href="/Products" class="view-all-link">Shop all →</a>
+    </div>
+
+    <div class="products-grid">
+        <!-- Product 1 -->
+        <div class="product-card">
+            <div class="product-image-wrapper">
+                <span class="product-badge new">NEW</span>
+                <a href="products/details/95">
+                <img src="https://cdn.dummyjson.com/product-images/mens-watches/brown-leather-belt-watch/thumbnail.webp"
+                     alt="Sneakers" />
+                </a>
+                <button class="wishlist-btn">♡</button>
+            </div>
+            <div class="product-info">
+                <p class="product-name">Brown Leather Belt Watch</p>
+                <p class="product-price">8500 EGP</p>
+            </div>
+        </div>
+
+        <!-- Product 2 -->
+        <div class="product-card">
+            <div class="product-image-wrapper">
+            <a href="products/details/120">
+                <span class="product-badge bestseller">BESTSELLER</span>
+                <img src="https://cdn.dummyjson.com/product-images/skin-care/attitude-super-leaves-hand-soap/thumbnail.webp"
+                     alt="Teapot" />
+            </a>
+                <button class="wishlist-btn">♡</button>
+            </div>
+            <div class="product-info">
+                <p class="product-name">Attitude Super Leaves Hand Soap</p>
+                <p class="product-price">700 EGP</p>
+            </div>
+        </div>
+
+        <!-- Product 3 -->
+        <div class="product-card">
+            <div class="product-image-wrapper">
+            <a href="products/details/12">
+                <img src="https://cdn.dummyjson.com/product-images/fragrances/gucci-bloom-eau-de/thumbnail.webp"
+                     alt="Leather Bag" />
+            </a>
+                <button class="wishlist-btn">♡</button>
+            </div>
+            <div class="product-info">
+                <p class="product-name">Gucci Bloom Eau de</p>
+                <p class="product-price">6800 EGP</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== PAGE STYLES ===== -->
+<style>
+    /* ---- Reset & Base ---- */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+        font-family: 'Georgia', 'Times New Roman', serif;
+        background: #faf9f7;
+        color: #1a1a1a;
+    }
+
+    /* ---- Announcement Bar ---- */
+    .announcement-bar {
+        background: #1a1a1a;
+        color: #fff;
+        font-size: 11px;
+        letter-spacing: 0.12em;
+        font-family: 'Arial', sans-serif;
+        overflow: hidden;
+        white-space: nowrap;
+        padding: 9px 0;
+    }
+
+    .marquee-track {
+        display: inline-block;
+        animation: marquee 28s linear infinite;
+    }
+
+    .marquee-track span { margin-right: 28px; }
+    .marquee-track .dot { color: #c8a96e; margin-right: 28px; }
+
+    @@keyframes marquee {
+        0%   { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+    }
+
+    /* ---- Hero ---- */
+    .hero-section {
+        display: flex;
+        align-items: center;
+        gap: 40px;
+        padding: 80px 64px;
+        min-height: 520px;
+        background: #f5f3ee;
+    }
+
+    .hero-content { flex: 1; max-width: 520px; }
+
+    .hero-label {
+        font-size: 12px;
+        letter-spacing: 0.14em;
+        color: #888;
+        font-family: Arial, sans-serif;
+        margin-bottom: 18px;
+    }
+
+    .hero-heading {
+        font-size: clamp(2rem, 4vw, 3.2rem);
+        font-weight: 700;
+        line-height: 1.15;
+        color: #1a1a1a;
+        margin-bottom: 8px;
+    }
+
+    .hero-heading-accent { color: #c8a96e; }
+
+    .hero-subtext {
+        font-size: 15px;
+        color: #555;
+        line-height: 1.7;
+        margin: 18px 0 28px;
+        font-family: Arial, sans-serif;
+    }
+
+    .hero-actions {
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+        margin-bottom: 32px;
+    }
+
+    .btn-primary {
+        background: #1a1a1a;
+        color: #fff;
+        padding: 13px 28px;
+        border-radius: 4px;
+        font-size: 13px;
+        font-family: Arial, sans-serif;
+        letter-spacing: 0.04em;
+        text-decoration: none;
+        transition: background 0.2s;
+    }
+    .btn-primary:hover { background: #333; }
+
+    .btn-ghost {
+        background: transparent;
+        color: #1a1a1a;
+        border: 1.5px solid #1a1a1a;
+        padding: 12px 26px;
+        border-radius: 4px;
+        font-size: 13px;
+        font-family: Arial, sans-serif;
+        letter-spacing: 0.04em;
+        text-decoration: none;
+        transition: background 0.2s, color 0.2s;
+    }
+    .btn-ghost:hover { background: #1a1a1a; color: #fff; }
+
+    /* Social proof */
+    .social-proof { display: flex; align-items: center; gap: 12px; }
+
+    .avatar-stack { display: flex; }
+    .avatar-stack img {
+        width: 32px; height: 32px;
+        border-radius: 50%;
+        border: 2px solid #fff;
+        margin-left: -8px;
+        object-fit: cover;
+    }
+    .avatar-stack img:first-child { margin-left: 0; }
+
+    .rating-info .stars { color: #e8a838; font-size: 13px; margin-bottom: 2px; }
+    .rating-info p { font-size: 12px; color: #666; font-family: Arial, sans-serif; }
+
+    /* Hero image */
+    .hero-image-wrapper {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        position: relative;
+    }
+
+    .hero-image-placeholder {
+        position: relative;
+        max-width: 520px;
+        width: 100%;
+    }
+
+    .hero-img {
+        width: 100%;
+        height: 360px;
+        object-fit: cover;
+        border-radius: 8px;
+        display: block;
+    }
+
+    .floating-card {
+        position: absolute;
+        bottom: -16px;
+        right: -16px;
+        background: #fff;
+        border-radius: 8px;
+        padding: 14px 18px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+        min-width: 160px;
+    }
+
+    .floating-card-label {
+        font-size: 10px;
+        color: #888;
+        font-family: Arial, sans-serif;
+        letter-spacing: 0.1em;
+        margin-bottom: 4px;
+    }
+
+    .floating-card-name {
+        font-size: 13px;
+        font-weight: 600;
+        color: #1a1a1a;
+        font-family: Arial, sans-serif;
+        margin-bottom: 4px;
+    }
+
+    .floating-card-price {
+        font-size: 14px;
+        color: #c8a96e;
+        font-weight: 700;
+        font-family: Arial, sans-serif;
+    }
+
+    /* ---- Trust Badges ---- */
+    .trust-badges {
+        display: flex;
+        justify-content: center;
+        gap: 0;
+        background: #fff;
+        border-top: 1px solid #eee;
+        border-bottom: 1px solid #eee;
+        padding: 28px 64px;
+    }
+
+    .badge-item {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        flex: 1;
+        max-width: 280px;
+        justify-content: center;
+        padding: 0 24px;
+        border-right: 1px solid #eee;
+    }
+    .badge-item:last-child { border-right: none; }
+
+    .badge-icon { font-size: 22px; }
+
+    .badge-title {
+        font-size: 14px;
+        font-weight: 600;
+        font-family: Arial, sans-serif;
+        color: #1a1a1a;
+    }
+
+    .badge-sub {
+        font-size: 12px;
+        color: #888;
+        font-family: Arial, sans-serif;
+        margin-top: 2px;
+    }
+
+    /* ---- Sections Shared ---- */
+    .categories-section,
+    .featured-section {
+        padding: 72px 64px;
+    }
+
+    .featured-section { background: #faf9f7; }
+    .categories-section { background: #fff; }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 36px;
+    }
+
+    .section-label {
+        font-size: 11px;
+        letter-spacing: 0.16em;
+        color: #c8a96e;
+        font-family: Arial, sans-serif;
+        margin-bottom: 10px;
+    }
+
+    .section-title {
+        font-size: clamp(1.6rem, 3vw, 2.4rem);
+        font-weight: 700;
+        line-height: 1.2;
+        color: #1a1a1a;
+    }
+
+    .view-all-link {
+        font-size: 13px;
+        color: #1a1a1a;
+        text-decoration: none;
+        font-family: Arial, sans-serif;
+        border-bottom: 1px solid #1a1a1a;
+        padding-bottom: 2px;
+        white-space: nowrap;
+    }
+    .view-all-link:hover { color: #c8a96e; border-color: #c8a96e; }
+
+    /* ---- Category Grid ---- */
+    .category-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+    }
+
+    .category-card {
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+        cursor: pointer;
+        aspect-ratio: 3/4;
+    }
+
+    .category-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+        display: block;
+    }
+    .category-card:hover img { transform: scale(1.05); }
+
+    .category-label {
+        position: absolute;
+        bottom: 0; left: 0; right: 0;
+        background: linear-gradient(transparent, rgba(0,0,0,0.65));
+        color: #fff;
+        font-size: 15px;
+        font-weight: 600;
+        font-family: Arial, sans-serif;
+        padding: 32px 18px 16px;
+    }
+
+    /* ---- Products Grid ---- */
+    .products-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+    }
+
+    .product-card { cursor: pointer; }
+
+    .product-image-wrapper {
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+        aspect-ratio: 4/5;
+        background: #f0ede8;
+        margin-bottom: 14px;
+    }
+
+    .product-image-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+        display: block;
+    }
+    .product-card:hover .product-image-wrapper img { transform: scale(1.04); }
+
+    .product-badge {
+        position: absolute;
+        top: 12px; left: 12px;
+        font-size: 10px;
+        font-family: Arial, sans-serif;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        padding: 4px 9px;
+        border-radius: 3px;
+        z-index: 1;
+    }
+    .product-badge.new { background: #1a1a1a; color: #fff; }
+    .product-badge.bestseller { background: #c8a96e; color: #fff; }
+
+    .wishlist-btn {
+        position: absolute;
+        top: 12px; right: 12px;
+        background: #fff;
+        border: none;
+        border-radius: 50%;
+        width: 34px; height: 34px;
+        font-size: 16px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        transition: transform 0.2s;
+        z-index: 1;
+    }
+    .wishlist-btn:hover { transform: scale(1.1); color: #c8a96e; }
+
+    .product-name {
+        font-size: 14px;
+        font-weight: 600;
+        font-family: Arial, sans-serif;
+        color: #1a1a1a;
+        margin-bottom: 5px;
+    }
+
+    .product-price {
+        font-size: 14px;
+        color: #666;
+        font-family: Arial, sans-serif;
+    }
+
+    /* ---- Responsive ---- */
+    @@media (max-width: 1024px) {
+        .hero-section { padding: 60px 32px; }
+        .trust-badges { padding: 24px 32px; }
+        .categories-section, .featured-section { padding: 56px 32px; }
+        .category-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    }
+
+    @@media (max-width: 768px) {
+        .hero-section {
+            flex-direction: column;
+            padding: 40px 20px 60px;
+            min-height: auto;
+        }
+        .hero-image-wrapper { width: 100%; }
+        .floating-card { right: 0; bottom: -12px; }
+        .trust-badges {
+            flex-direction: column;
+            padding: 20px;
+            gap: 16px;
+        }
+        .badge-item {
+            border-right: none;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 16px;
+            justify-content: flex-start;
+        }
+        .badge-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .categories-section, .featured-section { padding: 40px 20px; }
+        .products-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+        .section-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+    }
+
+    @@media (max-width: 480px) {
+        .category-grid { grid-template-columns: repeat(2, 1fr); }
+        .products-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+        .hero-actions { flex-direction: column; }
+        .btn-primary, .btn-ghost { text-align: center; }
+    }
+
+    /* ---- Extended sections ---- */
+
+    /* 6-product grid */
+    .products-grid-6 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+    }
+
+    /* Journal Banner */
+    .journal-banner {
+        margin: 0 64px 72px;
+        border-radius: 12px;
+        overflow: hidden;
+        position: relative;
+        min-height: 240px;
+        display: flex;
+        align-items: center;
+    }
+
+    .journal-banner-bg {
+        position: absolute;
+        inset: 0;
+        background-image: url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80');
+        background-size: cover;
+        background-position: center;
+        filter: brightness(0.45);
+    }
+
+    .journal-banner-content {
+        position: relative;
+        z-index: 1;
+        padding: 52px 56px;
+        max-width: 440px;
+    }
+
+    .journal-label {
+        font-size: 10px;
+        letter-spacing: 0.2em;
+        color: #c8a96e;
+        font-family: Arial, sans-serif;
+        margin-bottom: 14px;
+    }
+
+    .journal-title {
+        font-size: clamp(1.6rem, 3vw, 2.2rem);
+        color: #fff;
+        font-weight: 700;
+        line-height: 1.2;
+        margin-bottom: 14px;
+    }
+
+    .journal-sub {
+        font-size: 13px;
+        color: rgba(255,255,255,0.72);
+        font-family: Arial, sans-serif;
+        line-height: 1.65;
+        margin-bottom: 24px;
+    }
+
+    .btn-gold {
+        background: #c8a96e;
+        color: #fff;
+        padding: 11px 24px;
+        border-radius: 4px;
+        font-size: 13px;
+        font-family: Arial, sans-serif;
+        letter-spacing: 0.04em;
+        text-decoration: none;
+        display: inline-block;
+        transition: background 0.2s;
+    }
+    .btn-gold:hover { background: #b8945a; }
+
+    /* Testimonials */
+    .testimonials-section {
+        background: #faf9f7;
+        padding: 72px 64px;
+        text-align: center;
+    }
+
+    .testimonials-section .section-label {
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    .testimonials-section .section-title {
+        margin-bottom: 40px;
+        display: block;
+    }
+
+    .testimonials-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        text-align: left;
+    }
+
+    .testimonial-card {
+        background: #fff;
+        border-radius: 10px;
+        padding: 24px 22px;
+        border: 1px solid #eee;
+    }
+
+    .testimonial-stars {
+        color: #e8a838;
+        font-size: 13px;
+        margin-bottom: 12px;
+        letter-spacing: 2px;
+    }
+
+    .testimonial-text {
+        font-size: 13px;
+        color: #444;
+        font-family: Arial, sans-serif;
+        line-height: 1.7;
+        margin-bottom: 16px;
+    }
+
+    .testimonial-author {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .testimonial-author img {
+        width: 34px; height: 34px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .testimonial-name {
+        font-size: 12px;
+        font-weight: 700;
+        font-family: Arial, sans-serif;
+        color: #1a1a1a;
+    }
+
+    .testimonial-loc {
+        font-size: 11px;
+        color: #aaa;
+        font-family: Arial, sans-serif;
+    }
+
+    /* Newsletter */
+    .newsletter-section {
+        background: #fff;
+        border-top: 1px solid #eee;
+        padding: 64px;
+        display: flex;
+        align-items: center;
+        gap: 48px;
+        justify-content: center;
+    }
+
+    .newsletter-text { max-width: 380px; }
+
+    .newsletter-title {
+        font-size: clamp(1.4rem, 2.5vw, 2rem);
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 10px;
+    }
+
+    .newsletter-sub {
+        font-size: 13px;
+        color: #666;
+        font-family: Arial, sans-serif;
+        line-height: 1.65;
+    }
+
+    .newsletter-form {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .newsletter-input {
+        border: 1.5px solid #ddd;
+        border-radius: 4px;
+        padding: 12px 18px;
+        font-size: 13px;
+        font-family: Arial, sans-serif;
+        outline: none;
+        width: 260px;
+        transition: border-color 0.2s;
+        background: #faf9f7;
+    }
+    .newsletter-input:focus { border-color: #c8a96e; }
+
+    .btn-subscribe {
+        background: #1a1a1a;
+        color: #fff;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 4px;
+        font-size: 13px;
+        font-family: Arial, sans-serif;
+        cursor: pointer;
+        transition: background 0.2s;
+        white-space: nowrap;
+    }
+    .btn-subscribe:hover { background: #333; }
+
+    /* extended responsive */
+    @@media (max-width: 1024px) {
+        .journal-banner { margin: 0 32px 56px; }
+        .testimonials-section { padding: 56px 32px; }
+        .newsletter-section { padding: 48px 32px; flex-direction: column; text-align: center; }
+        .newsletter-text { max-width: 100%; }
+    }
+
+    @@media (max-width: 768px) {
+        .products-grid-6 { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+        .journal-banner { margin: 0 20px 40px; min-height: 280px; }
+        .journal-banner-content { padding: 36px 28px; }
+        .testimonials-section { padding: 40px 20px; }
+        .testimonials-grid { grid-template-columns: 1fr; gap: 14px; }
+        .newsletter-section { padding: 40px 20px; }
+        .newsletter-input { width: 100%; }
+        .newsletter-form { width: 100%; flex-direction: column; }
+        .btn-subscribe { width: 100%; }
+    }
+</style>
+
+
+<!-- ===== EXTENDED: 6-PRODUCT GRID ===== -->
+<!-- <section class="featured-section" style="padding-top:0; background:#fff;">
+    <div style="padding: 0 64px 72px;">
+        <div class="products-grid-6">
+
+            <div class="product-card">
+                <div class="product-image-wrapper">
+                    <span class="product-badge new">NEW ARRIVAL</span>
+                    <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80" alt="Olive Runner" />
+                    <button class="wishlist-btn">♡</button>
+                </div>
+                <div class="product-info">
+                    <p style="font-size:10px;color:#aaa;font-family:Arial,sans-serif;letter-spacing:.08em;margin-bottom:4px;">NEW ARRIVAL</p>
+                    <p class="product-name">Mouft Olive Runner</p>
+                    <p class="product-price">1,890 EGP</p>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image-wrapper">
+                    <span class="product-badge bestseller">BESTSELLER</span>
+                    <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=500&q=80" alt="Saffron Teapot" />
+                    <button class="wishlist-btn">♡</button>
+                </div>
+                <div class="product-info">
+                    <p style="font-size:10px;color:#aaa;font-family:Arial,sans-serif;letter-spacing:.08em;margin-bottom:4px;">HOME &amp; LIVING</p>
+                    <p class="product-name">Saffron Heritage Teapot</p>
+                    <p class="product-price">730 EGP</p>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image-wrapper">
+                    <span class="product-badge" style="background:#e8e3db;color:#555;">COMING SOON</span>
+                    <img src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=500&q=80" alt="Crossbody" />
+                    <button class="wishlist-btn">♡</button>
+                </div>
+                <div class="product-info">
+                    <p style="font-size:10px;color:#aaa;font-family:Arial,sans-serif;letter-spacing:.08em;margin-bottom:4px;">ACCESSORIES</p>
+                    <p class="product-name">Olive Brass Crossbody</p>
+                    <p class="product-price">2,450 EGP</p>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image-wrapper" style="background:#111;">
+                    <span class="product-badge new">NEW ARRIVAL</span>
+                    <img src="https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=500&q=80" alt="Oud Parfum" />
+                    <button class="wishlist-btn">♡</button>
+                    <button style="position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:#fff;border:none;border-radius:4px;padding:8px 20px;font-size:12px;font-family:Arial,sans-serif;cursor:pointer;white-space:nowrap;font-weight:600;">Add to bag</button>
+                </div>
+                <div class="product-info">
+                    <p style="font-size:10px;color:#aaa;font-family:Arial,sans-serif;letter-spacing:.08em;margin-bottom:4px;">BEAUTY &amp; SCENT</p>
+                    <p class="product-name">Amber Oud Eau de Parfum</p>
+                    <p class="product-price">1,950 EGP</p>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image-wrapper" style="background:#f7ede4;">
+                    <span class="product-badge new">NEW ARRIVAL</span>
+                    <img src="https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=500&q=80" alt="Cairo Linen Shirt" />
+                    <button class="wishlist-btn">♡</button>
+                </div>
+                <div class="product-info">
+                    <p style="font-size:10px;color:#aaa;font-family:Arial,sans-serif;letter-spacing:.08em;margin-bottom:4px;">FASHION</p>
+                    <p class="product-name">Cairo Linen Shirt</p>
+                    <p class="product-price">880 EGP</p>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image-wrapper" style="background:#e8dcc8;">
+                    <span class="product-badge bestseller">BESTSELLER</span>
+                    <img src="https://images.unsplash.com/photo-1580893246395-52aead8960dc?w=500&q=80" alt="Nubian Stripe Throw" />
+                    <button class="wishlist-btn">♡</button>
+                </div>
+                <div class="product-info">
+                    <p style="font-size:10px;color:#aaa;font-family:Arial,sans-serif;letter-spacing:.08em;margin-bottom:4px;">HOME &amp; LIVING</p>
+                    <p class="product-name">Nubian Stripe Throw</p>
+                    <p class="product-price">1,290 EGP</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section> -->
+
+<!-- ===== JOURNAL BANNER ===== -->
+<div class="journal-banner">
+    <div class="journal-banner-bg"></div>
+    <div class="journal-banner-content">
+        <p class="journal-label">THE JOURNAL</p>
+        <h2 class="journal-title">Stories from<br>Egypt's makers.</h2>
+        <p class="journal-sub">
+            From the leather workshops of Khan el-Khalili to the<br>
+            linen rooms of Akhmim — hear the voices behind<br>
+            every piece.
+        </p>
+        <a href="/Home/About" class="btn-gold">Read About Us →</a>
+    </div>
+</div>
+
+<!-- ===== TESTIMONIALS ===== -->
+<section class="testimonials-section">
+    <span class="section-label">LOVED BY YOU</span>
+    <h2 class="section-title">Words from our community.</h2>
+
+    <div class="testimonials-grid">
+
+        <div class="testimonial-card">
+            <div class="testimonial-stars">★★★★★</div>
+            <p class="testimonial-text">
+                "ShopEgypt has become my go-to for thoughtful gifts. The packaging alone feels like a celebration."
+            </p>
+            <div class="testimonial-author">
+                <img src="https://i.pravatar.cc/34?img=5" alt="Layla" />
+                <div>
+                    <p class="testimonial-name">Layla H.</p>
+                    <p class="testimonial-loc">Cairo</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="testimonial-card">
+            <div class="testimonial-stars">★★★★★</div>
+            <p class="testimonial-text">
+                "Quality you can feel. My olive runners are six months in and still look brand new."
+            </p>
+            <div class="testimonial-author">
+                <img src="https://i.pravatar.cc/34?img=8" alt="Omar" />
+                <div>
+                    <p class="testimonial-name">Omar E.</p>
+                    <p class="testimonial-loc">Alexandria</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="testimonial-card">
+            <div class="testimonial-stars">★★★★★</div>
+            <p class="testimonial-text">
+                "I keep discovering Egyptian makers I've never heard of. Every order is an adventure."
+            </p>
+            <div class="testimonial-author">
+                <img src="https://i.pravatar.cc/34?img=11" alt="Nour" />
+                <div>
+                    <p class="testimonial-name">Nour A.</p>
+                    <p class="testimonial-loc">Luxor</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ===== NEWSLETTER ===== -->
+<section class="newsletter-section">
+    <div class="newsletter-text">
+        <h2 class="newsletter-title">Join the list.</h2>
+        <p class="newsletter-sub">
+            Early access to new drops, maker stories, and 10% off your first order.
+        </p>
+    </div>
+    <div class="newsletter-form">
+        <input type="email" class="newsletter-input" placeholder="your@@email.com" />
+        <button class="btn-subscribe">Subscribe</button>
+    </div>
+</section>
