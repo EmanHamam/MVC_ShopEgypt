@@ -40,25 +40,13 @@
             <div class="filter-block">
                 <h3>Category</h3>
                 <div class="filter-list">
-                    <a asp-action="Index"
-                       asp-area="" asp-controller="Products"
-                       asp-route-categoryId=""
-                       asp-route-sortBy="@selectedSortValue"
-                       asp-route-keyWord="@keyword"
-                       asp-route-minPrice="@minPriceValue"
-                       asp-route-maxPrice="@maxPriceValue"
+                    <a href="/products?categoryId=&sortBy=@selectedSortValue&keyWord=@keyword&minPrice=@minPriceValue&maxPrice=@maxPriceValue"
                        class="@(selectedCategoryId.HasValue ? string.Empty : "is-active")">
                         All
                     </a>
                     @foreach (var category in categories)
                     {
-                        <a asp-action="Index"
-                           asp-area="" asp-controller="Products"
-                           asp-route-categoryId="@category.Value"
-                           asp-route-sortBy="@selectedSortValue"
-                           asp-route-keyWord="@keyword"
-                           asp-route-minPrice="@minPriceValue"
-                           asp-route-maxPrice="@maxPriceValue"
+                        <a href="/products?categoryId=@category.Value&sortBy=@selectedSortValue&keyWord=@keyword&minPrice=@minPriceValue&maxPrice=@maxPriceValue"
                            class="@(selectedCategoryId.HasValue && selectedCategoryId.Value.ToString() == category.Value ? "is-active" : string.Empty)">
                             @category.Text
                         </a>
@@ -77,7 +65,7 @@
         </aside>
 
         <div class="product-main">
-            <form method="get" asp-action="Index" asp-area="" asp-controller="Products" class="product-toolbar product-filter-form" data-auto-submit="true" id="productFilterForm">
+            <form method="get" action="/products" class="product-toolbar product-filter-form" data-auto-submit="true" id="productFilterForm">
                 <label class="product-search">
                     <i class="fa-solid fa-magnifying-glass"></i>
                     <input type="text" name="keyWord" value="@keyword" placeholder="Search products" />
@@ -100,11 +88,11 @@
                     var badge = item.AverageRating >= 4.5 ? "Bestseller" : (hasDiscount ? "Sale" : "New");
                     <article class="product-card">
                         <div class="product-media">
-                            <a asp-action="Details" asp-route-id="@item.Id" class="product-media-link">
+                            <a href="/products/details/@item.Id" class="product-media-link">
                                 <img src="@(item.ThumbnailUrl ?? "/images/placeholder.png")" alt="@item.Title" />
                             </a>
                             <span class="product-badge">@badge</span>
-                            <form asp-area="" asp-controller="WishListItems" asp-action="Add" method="post" style="display: inline;">
+                            <form action="/Wishlist/Add" method="post" style="display: inline;">
                                 @Html.AntiForgeryToken()
                                 <input type="hidden" name="productId" value="@item.Id" />
                                 <input type="hidden" name="returnUrl" value="@returnUrl" />
@@ -114,7 +102,7 @@
                             </form>
 
                             
-                            <form asp-area="" asp-controller="Cart" asp-action="Add" method="post" class="product-add">
+                            <form action="/Cart/Add" method="post" class="product-add">
                                 @Html.AntiForgeryToken()
                                 <input type="hidden" name="productId" value="@item.Id" />
                                 <input type="hidden" name="qty" value="1" />
@@ -132,7 +120,7 @@
                                 </span>
                             </div>
                             <div class="product-brand">@item.Brand</div>
-                            <a asp-action="Details" asp-route-id="@item.Id" class="product-title">
+                            <a href="/products/details/@item.Id" class="product-title">
                                 @item.Title
                             </a>
                             <div class="product-price">
@@ -152,14 +140,7 @@
                 <div class="product-pagination">
                     @if (currentPage > 1)
                     {
-                        <a class="page-btn" asp-action="Index" asp-area="" asp-controller="Products"
-                           asp-route-page="@(currentPage - 1)"
-                           asp-route-pageSize="@pageSize"
-                           asp-route-categoryId="@selectedCategoryId"
-                           asp-route-sortBy="@selectedSortValue"
-                           asp-route-keyWord="@keyword"
-                           asp-route-minPrice="@minPriceValue"
-                           asp-route-maxPrice="@maxPriceValue">
+                        <a class="page-btn" href="/products?page=@(currentPage - 1)&pageSize=@pageSize&categoryId=@selectedCategoryId&sortBy=@selectedSortValue&keyWord=@keyword&minPrice=@minPriceValue&maxPrice=@maxPriceValue">
                             Previous
                         </a>
                     }
@@ -172,14 +153,7 @@
 
                     @if (currentPage < totalPages)
                     {
-                        <a class="page-btn" asp-action="Index" asp-area="" asp-controller="Products"
-                           asp-route-page="@(currentPage + 1)"
-                           asp-route-pageSize="@pageSize"
-                           asp-route-categoryId="@selectedCategoryId"
-                           asp-route-sortBy="@selectedSortValue"
-                           asp-route-keyWord="@keyword"
-                           asp-route-minPrice="@minPriceValue"
-                           asp-route-maxPrice="@maxPriceValue">
+                        <a class="page-btn" href="/products?page=@(currentPage + 1)&pageSize=@pageSize&categoryId=@selectedCategoryId&sortBy=@selectedSortValue&keyWord=@keyword&minPrice=@minPriceValue&maxPrice=@maxPriceValue">
                             Next
                         </a>
                     }

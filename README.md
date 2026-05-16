@@ -8,92 +8,52 @@ The app runs on **.NET 10** and uses **SQL Server** with Entity Framework Core. 
 
 ## Screenshots (for review)
 
-Add PNG or JPG files under `docs/images/` using the filenames below (or update the paths in this file). Paths are relative to the repo root so they render on GitHub.
+<video controls src="docs\images\output.mp4" title="Title"></video>
+[Watch the demo video](output.mp4)
+Add your screenshots under `docs/images/` as needed.
 
 ### Overview
 
 | | |
 |---|---|
 | **Home / shop entry** | Replace with your screenshot |
-| ![Home](docs/images/01-home.png) | Landing or redirect to catalog (`/products`) |
+|  | Landing or redirect to catalog (`/products`) |
 
 ### Storefront
 
-| Screen | File to add |
-|--------|-------------|
-| Product catalog (filters, paging) | `docs/images/02-products-catalog.png` |
-| Product details & reviews | `docs/images/03-product-detail.png` |
-| Shopping cart | `docs/images/04-cart.png` |
-| Checkout — address | `docs/images/05-checkout-address.png` |
-| Checkout — summary | `docs/images/06-checkout-summary.png` |
-| Stripe payment | `docs/images/07-checkout-payment.png` |
-| Order confirmation | `docs/images/08-order-confirmation.png` |
-| My Orders | `docs/images/09-my-orders.png` |
-| Wishlist | `docs/images/10-wishlist.png` |
-
-![Product catalog](docs/images/02-products-catalog.png)
-
-![Product detail](docs/images/03-product-detail.png)
-
-![Cart](docs/images/04-cart.png)
-
-![Checkout address](docs/images/05-checkout-address.png)
-
-![Checkout summary](docs/images/06-checkout-summary.png)
-
-![Payment](docs/images/07-checkout-payment.png)
-
-![Order confirmation](docs/images/08-order-confirmation.png)
-
-![My orders](docs/images/09-my-orders.png)
-
-![Wishlist](docs/images/10-wishlist.png)
+- Product catalog (filters, paging)
+- Product details & reviews
+- Shopping cart
+- Checkout — address
+- Checkout — summary
+- Stripe payment
+- Order confirmation
+- My Orders
+- Wishlist
 
 ### Authentication
 
-| Screen | File to add |
-|--------|-------------|
-| Login | `docs/images/11-login.png` |
-| Register | `docs/images/12-register.png` |
-| Email confirmation (optional) | `docs/images/13-email-confirmation.png` |
-
-![Login](docs/images/11-login.png)
-
-![Register](docs/images/12-register.png)
+- Login
+- Register
+- Email confirmation (optional)
 
 ### Admin panel (`/Adminn`)
 
-| Screen | File to add |
-|--------|-------------|
-| Dashboard | `docs/images/20-admin-dashboard.png` |
-| Products list | `docs/images/21-admin-products.png` |
-| Product create / edit | `docs/images/22-admin-product-form.png` |
-| Orders | `docs/images/23-admin-orders.png` |
-| Customers | `docs/images/24-admin-customers.png` |
-| Categories | `docs/images/25-admin-categories.png` |
-| Reviews | `docs/images/26-admin-reviews.png` |
-| Settings | `docs/images/27-admin-settings.png` |
-
-![Admin dashboard](docs/images/20-admin-dashboard.png)
-
-![Admin products](docs/images/21-admin-products.png)
-
-![Admin product form](docs/images/22-admin-product-form.png)
-
-![Admin orders](docs/images/23-admin-orders.png)
-
-![Admin customers](docs/images/24-admin-customers.png)
+- Dashboard
+- Products list
+- Product create / edit
+- Orders
+- Customers
+- Categories
+- Reviews
+- Settings
 
 ### Architecture (optional)
 
-| Diagram | File to add |
-|---------|-------------|
-| Solution / layer diagram | `docs/images/30-architecture-layers.png` |
-| Database ER (optional) | `docs/images/31-database-er.png` |
+- Solution / layer diagram
+- Database ER (optional)
 
-![Architecture](docs/images/30-architecture-layers.png)
-
-> **Tip:** Run the app at `http://localhost:5224`, capture full-width browser shots, and name files exactly as in the table so links in this README stay valid. A checklist lives in `docs/images/README.md`.
+> **Tip:** Run the app at `http://localhost:5224`, capture full-width browser shots, and keep a checklist in `docs/images/README.md`.
 
 ---
 
