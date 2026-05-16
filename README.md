@@ -1,3 +1,6 @@
+
+
+
 # ShopEgypt
 
 ShopEgypt is a full-stack e-commerce web application built with **ASP.NET Core MVC** as a team project (ITI — ASP.NET MVC track). The storefront lets customers browse products, manage a cart and wishlist, place orders, and pay through Stripe. A separate admin panel covers catalog management, orders, customers, and store settings.
@@ -8,8 +11,12 @@ The app runs on **.NET 10** and uses **SQL Server** with Entity Framework Core. 
 
 ## Screenshots (for review)
 
-<video controls src="docs\images\output.mp4" title="Title"></video>
-[Watch the demo video](output.mp4)
+
+
+https://github.com/user-attachments/assets/7c75abaf-1355-4a93-99d2-9c9a299bd790
+
+
+
 Add your screenshots under `docs/images/` as needed.
 
 ### Overview
