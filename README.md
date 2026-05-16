@@ -3,7 +3,7 @@
 
 # ShopEgypt
 
-ShopEgypt is a full-stack e-commerce web application built with **ASP.NET Core MVC** as a team project (ITI — ASP.NET MVC track). The storefront lets customers browse products, manage a cart and wishlist, place orders, and pay through Stripe. A separate admin panel covers catalog management, orders, customers, and store settings.
+ShopEgypt is a full-stack e-commerce web application built with **ASP.NET Core MVC** as a team project (ITI — IDA track). The storefront lets customers browse products, manage a cart and wishlist, place orders, and pay through Stripe. A separate admin panel covers catalog management, orders, customers, and store settings.
 
 The app runs on **.NET 10** and uses **SQL Server** with Entity Framework Core. Authentication is handled by **ASP.NET Core Identity** (email/password plus optional Google and Facebook login). Product images are stored on **Cloudinary**; transactional email goes through **SendGrid**.
 
